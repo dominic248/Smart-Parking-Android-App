@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private Button loginBtn;
     private Button registerSwitchBtn;
+    private TextView forgotPasswordText;
 
     private FirebaseAuth auth;
 
@@ -31,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         password=findViewById(R.id.passwordField);
         loginBtn=findViewById(R.id.loginBtn);
         registerSwitchBtn=findViewById(R.id.registerSwitchBtn);
+        forgotPasswordText=findViewById(R.id.forgotPasswordText);
 
         auth=FirebaseAuth.getInstance();
 
@@ -42,11 +45,19 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(txt_email,txt_password);
             }
         });
+
         registerSwitchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
                 finish();
+            }
+        });
+
+        forgotPasswordText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,ForgotPasswordActivity.class));
             }
         });
 
