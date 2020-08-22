@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText email;
+    private EditText email,name,contactNo;
     private EditText password;
     private Button registerBtn;
     private Button loginSwitchBtn;
@@ -35,6 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        name=findViewById(R.id.nameField);
+        contactNo=findViewById(R.id.contactNoField);
         email=findViewById(R.id.emailField);
         password=findViewById(R.id.passwordField);
         registerBtn=findViewById(R.id.registerBtn);
@@ -50,6 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String txt_email=email.getText().toString();
                 String txt_password=password.getText().toString();
+                String txt_name=name.getText().toString();
+                String txt_contact_no=contactNo.getText().toString();
                 int checkedId=userTypes.getCheckedRadioButtonId();
                 int userType=findRadioButton(checkedId);
 
@@ -58,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if(txt_password.length()<6){
                     Toast.makeText(RegisterActivity.this,"Password too short",Toast.LENGTH_SHORT).show();
                 }else{
-                    registerUser(txt_email,txt_password,userType);
+                    registerUser(txt_email,txt_password,txt_name,txt_contact_no,userType);
                 }
             }
         });
@@ -86,13 +90,13 @@ public class RegisterActivity extends AppCompatActivity {
         return user;
     }
 
-    private void registerUser(String email, String password, final int userType) {
+    private void registerUser(String email, String password, final String name, final String contact_no, final int userType) {
         auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            User user=new User(userType);
+                            User user=new User(name,contact_no,userType);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {

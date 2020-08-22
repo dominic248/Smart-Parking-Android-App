@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -26,20 +27,52 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 
 public class GPSMapActivity extends AppCompatActivity {
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
 
+    private FirebaseAuth auth;
+    private FirebaseDatabase db;
+    ArrayList<ParkingArea> parkingAreasList = new ArrayList<ParkingArea>();
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_g_p_s_map);
 
+        auth=FirebaseAuth.getInstance();
+        db=FirebaseDatabase.getInstance();
+
 //        Toolbar toolbar=findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         Button getLocationBtn=findViewById(R.id.getLocationBtn);
+
+        FirebaseDatabase.getInstance().getReference().child("ParkingAreas")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
+                            parkingAreasList.add(parkingArea);
+                            Log.e("GPS Map",parkingArea.name);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
 
 
@@ -74,17 +107,19 @@ public class GPSMapActivity extends AppCompatActivity {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
-                            LatLng latLng1=new LatLng(location.getLatitude()+10,
-                                    location.getLongitude()+10);
-                            MarkerOptions options1=new MarkerOptions().position(latLng1)
-                                    .title("I am there");
                             LatLng latLng=new LatLng(location.getLatitude(),
                                     location.getLongitude());
                             MarkerOptions options=new MarkerOptions().position(latLng)
                                     .title("I am here");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,30));
-                            googleMap.addMarker(options1);
                             googleMap.addMarker(options);
+                            for (ParkingArea parking : parkingAreasList) {
+                                LatLng latLngparking=new LatLng(parking.latitude,
+                                        parking.longitude);
+                                options.position(latLngparking);
+                                options.title(parking.name);
+                                googleMap.addMarker(options);
+                            }
                         }
                     });
                 }

@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,12 +19,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.ArrayList;
+
+// Adds a student to the student array list.
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     GoogleMap gMap;
     Button addLocationBtn;
     LatLng globalLatLng;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +37,17 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
 
         addLocationBtn=findViewById(R.id.addLocationBtn);
 
+
         SupportMapFragment supportMapFragment=(SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Log.e("Map",String.valueOf(globalLatLng.latitude));
+                Intent intent=new Intent(AddPositionActivity.this,RegisterAreaActivity.class);
+                intent.putExtra("latitude", globalLatLng.latitude);
+                intent.putExtra("longitude", globalLatLng.longitude);
+                startActivity(intent);
             }
         });
     }
