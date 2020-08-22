@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private Button logout;
+    private Button logout,getLocationBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,7 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         logout=findViewById(R.id.logoutBtn);
+        getLocationBtn=findViewById(R.id.getLocationBtn);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +32,13 @@ public class DashboardActivity extends AppCompatActivity {
                 Toast.makeText(DashboardActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
 
+            }
+        });
+
+        getLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DashboardActivity.this,GPSMapActivity.class));
             }
         });
 

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Parking System</string>
     <string name="splash_screen">Splash Screen</string>
+    <string name="map_key">AIzaSyDn1u_2ALiD_tDnxZozLkVw6_NZYnB25Xw</string>
 
 </resources>
