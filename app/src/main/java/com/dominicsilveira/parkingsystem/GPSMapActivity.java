@@ -1,6 +1,7 @@
 package com.dominicsilveira.parkingsystem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.ActivityCompat;
@@ -8,6 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -51,11 +53,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
-    public boolean doubleBackToExitPressedOnce = false;
-
     HashMap<String,ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
-//    ArrayList<ParkingArea> parkingAreasList = new ArrayList<ParkingArea>();
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,14 +136,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                                 googleMap.addMarker(options);
 
                             }
-//                            for (ParkingArea parking : parkingAreasList) {
-//                                LatLng latLngParking=new LatLng(parking.latitude,
-//                                        parking.longitude);
-//                                options.position(latLngParking);
-//                                options.title(parking.name);
-//                                options.snippet(parking.name);
-//                                googleMap.addMarker(options);
-//                            }
                         }
                     });
                 }
@@ -165,34 +155,64 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-
-        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (doubleBackToExitPressedOnce) {
-                    String UUID = marker.getTitle();
-                    ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
-                    doubleBackToExitPressedOnce = false;
-                    Intent intent = new Intent(GPSMapActivity.this, BookParkingAreaActivity.class);
-                    intent.putExtra("UUID", UUID);
-                    intent.putExtra("ParkingArea", val);
-                    startActivity(intent);
-                    Log.e("double", String.valueOf(2));
-                    Log.e("title", UUID);
-                } else {
-                    doubleBackToExitPressedOnce = true;
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            doubleBackToExitPressedOnce = false;
+        
+        gMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            public void onInfoWindowClick(final Marker marker) {
+                String[] items={"Book Place","More Info"};
+                AlertDialog.Builder itemDilog = new AlertDialog.Builder(GPSMapActivity.this);
+                itemDilog.setTitle("");
+                itemDilog.setCancelable(true);
+                itemDilog.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch(which){
+                            case 0:{
+                                Log.e("Funct1","Google maps");
+                                String UUID = marker.getTitle();
+                                ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
+                                Intent intent = new Intent(GPSMapActivity.this, BookParkingAreaActivity.class);
+                                intent.putExtra("UUID", UUID);
+                                intent.putExtra("ParkingArea", val);
+                                startActivity(intent);
+                                Log.e("values", String.valueOf(2)+" "+UUID);
+                            }break;
+                            case 1:{
+                                Log.e("Funct2","Google maps");
+                            }break;
                         }
-                    }, 500);
-                    Log.e("double", String.valueOf(1));
-                }
 
-                return false;
+                    }
+                });
+                itemDilog.show();
+
             }
         });
+
+//        Method 2 - No Opts
+//        public boolean doubleBackToExitPressedOnce = false;
+//        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//                if (doubleBackToExitPressedOnce) {
+//                    String UUID = marker.getTitle();
+//                    ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
+//                    doubleBackToExitPressedOnce = false;
+//                    Intent intent = new Intent(GPSMapActivity.this, BookParkingAreaActivity.class);
+//                    intent.putExtra("UUID", UUID);
+//                    intent.putExtra("ParkingArea", val);
+//                    startActivity(intent);
+//                } else {
+//                    doubleBackToExitPressedOnce = true;
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            doubleBackToExitPressedOnce = false;
+//                        }
+//                    }, 500);
+//                    Log.e("double", String.valueOf(1));
+//                }
+//                return false;
+//            }
+//        });
 
     }
 }
