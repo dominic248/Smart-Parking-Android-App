@@ -14,11 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AddPositionActivity"></activity>
 
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
 
-        <activity android:name=".GPSMapActivity"></activity>
+        <activity android:name=".GPSMapActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ScanActivity" />
         <activity android:name=".ForgotPasswordActivity" />

@@ -25,7 +25,10 @@ public class RegisterActivity extends AppCompatActivity {
     private Button loginSwitchBtn;
 
     private FirebaseAuth auth;
+    private FirebaseDatabase db;
+
     private RadioGroup userTypes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         userTypes=findViewById(R.id.userTypes);
 
         auth=FirebaseAuth.getInstance();
+        db=FirebaseDatabase.getInstance();
 
         registerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -88,16 +92,17 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-
                             User user=new User(userType);
-                            FirebaseDatabase.getInstance().getReference("Users")
+                            db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(RegisterActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
+                                        Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+//                                        intent.putExtra("User", user);
+                                        startActivity(intent);
                                         finish();
                                     }else{
                                         Toast.makeText(RegisterActivity.this,"Failed to add extra details",Toast.LENGTH_SHORT).show();

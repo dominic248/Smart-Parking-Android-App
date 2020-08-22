@@ -12,18 +12,26 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private Button logout,getLocationBtn;
+    private Button logout,getLocationBtn,addLocationBtn;
+
+    private FirebaseAuth auth;
+    private FirebaseDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        auth=FirebaseAuth.getInstance();
+        db= FirebaseDatabase.getInstance();
+
         logout=findViewById(R.id.logoutBtn);
         getLocationBtn=findViewById(R.id.getLocationBtn);
+        addLocationBtn=findViewById(R.id.addLocationBtn);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +47,13 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(DashboardActivity.this,GPSMapActivity.class));
+            }
+        });
+
+        addLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DashboardActivity.this,AddPositionActivity.class));
             }
         });
 
