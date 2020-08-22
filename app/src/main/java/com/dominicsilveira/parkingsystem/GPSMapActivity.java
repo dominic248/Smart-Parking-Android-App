@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallback{
@@ -49,11 +51,35 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     FusedLocationProviderClient client;
 
     GoogleMap gMap;
+    LatLng globalLatLng;
 
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
     HashMap<String,ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
+
+    private Handler mHandler = new Handler();
+
+    private Runnable mToastRunnable = new Runnable() {
+        @Override
+        public void run() {
+            getCurrentLocation();
+            Log.i("GPS","Getting new Location after every 5 seconds");
+            mHandler.postDelayed(this, 5000);
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mToastRunnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHandler.postDelayed(mToastRunnable, 5000);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +92,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
+        client=LocationServices.getFusedLocationProviderClient(GPSMapActivity.this);
 
         Button getLocationBtn=findViewById(R.id.getLocationBtn);
 
@@ -77,31 +104,25 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
 //                            parkingAreasList.add(parkingArea);
                             parkingAreasList.put(dataSnapshot.getKey(),parkingArea);
-                            Log.e("GPS Map",parkingArea.name);
+                            Log.d("GPS Map",parkingArea.name);
                         }
-                        Log.e("GPS Map", String.valueOf(parkingAreasList));
+                        Log.d("GPS Map", String.valueOf(parkingAreasList));
                     }
-
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
 
+        getPreCurrentLocation();
+    }
 
-        getLocationBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                client=LocationServices.getFusedLocationProviderClient(GPSMapActivity.this);
-                if(ActivityCompat.checkSelfPermission(GPSMapActivity.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-                    getCurrentLocation();
-                }else{
-                    ActivityCompat.requestPermissions(GPSMapActivity.this,new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},44);
-                }
-            }
-        });
+    private void getPreCurrentLocation() {
+        if(ActivityCompat.checkSelfPermission(GPSMapActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+//            mToastRunnable.run(); //To avoid double looping because of onRequestPermissionsResult
+        }else{
+            ActivityCompat.requestPermissions(GPSMapActivity.this,new String[]
+                    {Manifest.permission.ACCESS_FINE_LOCATION},44);
+        }
     }
 
     private void getCurrentLocation() {
@@ -118,23 +139,33 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
-                            LatLng latLng=new LatLng(location.getLatitude(),
-                                    location.getLongitude());
-                            MarkerOptions options=new MarkerOptions().position(latLng)
-                                    .title("I am here");
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,30));
+                            gMap=googleMap;
+                            gMap.clear();
+                            MarkerOptions options;
+                            if(globalLatLng==null){
+                                globalLatLng=new LatLng(location.getLatitude(),
+                                        location.getLongitude());
+                                options=new MarkerOptions().position(globalLatLng)
+                                        .title("I am here");
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
+                            }else{
+                                globalLatLng=new LatLng(location.getLatitude(),
+                                        location.getLongitude());
+                                options=new MarkerOptions().position(globalLatLng)
+                                        .title("I am here");
+                            }
                             googleMap.addMarker(options);
+
                             Iterator hmIterator = parkingAreasList.entrySet().iterator();
                             while (hmIterator.hasNext()) {
                                 Map.Entry mapElement = (Map.Entry)hmIterator.next();
                                 ParkingArea parking = (ParkingArea)mapElement.getValue();
                                 LatLng latLngParking=new LatLng(parking.latitude,
                                         parking.longitude);
-                                options.position(latLngParking);
-                                options.title(mapElement.getKey().toString());
-                                options.snippet(parking.name);
-                                googleMap.addMarker(options);
-
+                                MarkerOptions option=new MarkerOptions().position(latLngParking)
+                                        .title(mapElement.getKey().toString())
+                                        .snippet(parking.name);
+                                gMap.addMarker(option);
                             }
                         }
                     });
@@ -147,7 +178,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==44){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                getCurrentLocation();
+                mToastRunnable.run();
             }
         }
     }
@@ -155,7 +186,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        
+
         gMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             public void onInfoWindowClick(final Marker marker) {
                 String[] items={"Book Place","More Info"};
@@ -166,17 +197,17 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     public void onClick(DialogInterface dialog, int which) {
                         switch(which){
                             case 0:{
-                                Log.e("Funct1","Google maps");
+                                Log.d("Funct1","Google maps");
                                 String UUID = marker.getTitle();
                                 ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
                                 Intent intent = new Intent(GPSMapActivity.this, BookParkingAreaActivity.class);
                                 intent.putExtra("UUID", UUID);
                                 intent.putExtra("ParkingArea", val);
                                 startActivity(intent);
-                                Log.e("values", String.valueOf(2)+" "+UUID);
+                                Log.d("values", String.valueOf(2)+" "+UUID);
                             }break;
                             case 1:{
-                                Log.e("Funct2","Google maps");
+                                Log.d("Funct2","Google maps");
                             }break;
                         }
 
@@ -208,7 +239,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 //                            doubleBackToExitPressedOnce = false;
 //                        }
 //                    }, 500);
-//                    Log.e("double", String.valueOf(1));
+//                    Log.d("double", String.valueOf(1));
 //                }
 //                return false;
 //            }
