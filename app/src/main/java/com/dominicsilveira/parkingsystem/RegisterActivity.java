@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            User user=new User(name,contact_no,userType);
+                            final User user=new User(name,contact_no,userType);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -105,7 +105,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(RegisterActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                                        Intent intent;
+                                        if(user.userType==2){
+                                            intent = new Intent(RegisterActivity.this, AddPositionActivity.class);
+                                        }else{
+                                            intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                                        }
 //                                        intent.putExtra("User", user);
                                         startActivity(intent);
                                         finish();

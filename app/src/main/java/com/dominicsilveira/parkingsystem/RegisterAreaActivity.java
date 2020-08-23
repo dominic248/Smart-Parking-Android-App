@@ -25,7 +25,7 @@ public class RegisterAreaActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
-    private EditText areaNameText;
+    private EditText areaNameText,upiIdText,upiNameText,amountText,slotsText;
     private TextView latitudeText,longitudeText;
     Button saveBtn,cancelBtn;
     String name;
@@ -40,11 +40,15 @@ public class RegisterAreaActivity extends AppCompatActivity {
         final double longitude = bundle.getDouble("longitude");
 
         final TextView nameText=findViewById(R.id.nameText);
+        areaNameText=findViewById(R.id.areaNameText);
         latitudeText=findViewById(R.id.latitudeText);
         longitudeText=findViewById(R.id.longitudeText);
-        areaNameText=findViewById(R.id.areaNameText);
+        upiIdText=findViewById(R.id.upiIdText);
+        upiNameText=findViewById(R.id.upiNameText);
+        amountText=findViewById(R.id.amountText);
+        slotsText=findViewById(R.id.slotsText);
+
         saveBtn=findViewById(R.id.saveBtn);
-        cancelBtn=findViewById(R.id.cancelBtn);
 
         auth= FirebaseAuth.getInstance();
         db= FirebaseDatabase.getInstance();
@@ -71,16 +75,20 @@ public class RegisterAreaActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     String areaName = areaNameText.getText().toString();
-                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude);
+                    String upiId = upiIdText.getText().toString();
+                    String upiName = upiNameText.getText().toString();
+                    String amount = amountText.getText().toString();
+                    String slots = slotsText.getText().toString();
+                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude,upiId,upiName,amount,slots);
+                    String key=db.getReference("ParkingAreas").push().getKey();
                     db.getReference("ParkingAreas")
-                            .child(auth.getCurrentUser().getUid())
+                            .child(key)
                             .setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(RegisterAreaActivity.this, "Success", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(RegisterAreaActivity.this, DashboardActivity.class);
-            //                                        intent.putExtra("User", user);
                                         startActivity(intent);
                                         finish();
                                     } else {
