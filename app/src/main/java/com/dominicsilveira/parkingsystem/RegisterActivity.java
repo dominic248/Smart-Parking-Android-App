@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText email,name,contactNo;
     private EditText password;
     private Button registerBtn;
-    private Button loginSwitchBtn;
+    private TextView loginSwitchText;
 
     private FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -40,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         email=findViewById(R.id.emailField);
         password=findViewById(R.id.passwordField);
         registerBtn=findViewById(R.id.registerBtn);
-        loginSwitchBtn=findViewById(R.id.loginSwitchBtn);
+        loginSwitchText=findViewById(R.id.loginSwitchText);
 
         userTypes=findViewById(R.id.userTypes);
 
@@ -66,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-        loginSwitchBtn.setOnClickListener(new View.OnClickListener() {
+        loginSwitchText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(RegisterActivity.this,LoginActivity.class));

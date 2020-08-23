@@ -10,74 +10,88 @@
         android:id="@+id/nameField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:background="@drawable/rounded_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_person_24"
+        android:drawablePadding="6dp"
+        android:ems="15"
         android:hint="Name"
         android:inputType="textPersonName"
+        android:padding="15dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.14" />
+        app:layout_constraintVertical_bias="0.296" />
+
 
     <EditText
         android:id="@+id/contactNoField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:background="@drawable/rounded_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_phone_24"
+        android:drawablePadding="6dp"
+        android:ems="15"
         android:hint="Contact Number"
         android:inputType="textPersonName"
+        android:padding="15dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.249" />
+        app:layout_constraintVertical_bias="0.397" />
 
     <EditText
         android:id="@+id/emailField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:background="@drawable/rounded_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_email_24"
+        android:drawablePadding="6dp"
+        android:ems="15"
         android:hint="Email"
         android:inputType="textPersonName"
+        android:padding="15dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.353" />
+        app:layout_constraintVertical_bias="0.496" />
 
     <EditText
         android:id="@+id/passwordField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:background="@drawable/rounded_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_lock_24"
+        android:drawablePadding="6dp"
+        android:ems="15"
         android:hint="Password"
         android:inputType="textPassword"
+        android:padding="15dip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.453" />
+        app:layout_constraintVertical_bias="0.596" />
 
     <RadioGroup
         android:id="@+id/userTypes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checkedButton="@+id/normalType"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.441"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.577"
-        android:checkedButton="@+id/normalType">
+        app:layout_constraintVertical_bias="0.676">
 
         <RadioButton
             android:id="@+id/normalType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingRight="10dp"
             android:text="Normal Type" />
 
         <RadioButton
@@ -94,20 +108,49 @@
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.445"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintVertical_bias="0.746" />
 
-    <Button
-        android:id="@+id/loginSwitchBtn"
+    <include
+        layout="@layout/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.800"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.456"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.825" />
+        app:layout_constraintVertical_bias="0.850">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:text="Already have an Account?"
+            app:layout_constraintEnd_toStartOf="@+id/loginSwitchText"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="613dp" />
+
+        <TextView
+            android:id="@+id/loginSwitchText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            tools:layout_editor_absoluteY="613dp" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -218,7 +218,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-//        Method 2 - No Opts
+//        //Method 2 - No Opts
 //        public boolean doubleBackToExitPressedOnce = false;
 //        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 //            @Override

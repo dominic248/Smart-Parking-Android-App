@@ -19,8 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button loginBtn;
-    private Button registerSwitchBtn;
-    private TextView forgotPasswordText;
+    private TextView forgotPasswordText,registerSwitchText;
 
     private FirebaseAuth auth;
 
@@ -32,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         email=findViewById(R.id.emailField);
         password=findViewById(R.id.passwordField);
         loginBtn=findViewById(R.id.loginBtn);
-        registerSwitchBtn=findViewById(R.id.registerSwitchBtn);
+        registerSwitchText=findViewById(R.id.registerSwitchText);
         forgotPasswordText=findViewById(R.id.forgotPasswordText);
 
         auth=FirebaseAuth.getInstance();
@@ -46,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerSwitchBtn.setOnClickListener(new View.OnClickListener() {
+        registerSwitchText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this,RegisterActivity.class));

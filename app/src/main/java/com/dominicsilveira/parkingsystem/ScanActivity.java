@@ -123,10 +123,15 @@ public class ScanActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
-            Bitmap upload = (Bitmap) data.getExtras().get("data");
-            selectedImage.setImageBitmap(upload);
-            NetworkAsyncTask task=new NetworkAsyncTask(upload);
-            task.execute();
+            try {
+                Bitmap upload = (Bitmap) data.getExtras().get("data");
+                selectedImage.setImageBitmap(upload);
+                NetworkAsyncTask task=new NetworkAsyncTask(upload);
+                task.execute();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
