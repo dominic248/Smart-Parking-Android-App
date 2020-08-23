@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private Button logout,getLocationBtn,addLocationBtn;
+    private Button logout,getLocationBtn,addLocationBtn,payBtn;
 
     private FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -32,6 +32,7 @@ public class DashboardActivity extends AppCompatActivity {
         logout=findViewById(R.id.logoutBtn);
         getLocationBtn=findViewById(R.id.getLocationBtn);
         addLocationBtn=findViewById(R.id.addLocationBtn);
+        payBtn=findViewById(R.id.payBtn);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +55,13 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(DashboardActivity.this,AddPositionActivity.class));
+            }
+        });
+
+        payBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(DashboardActivity.this,BookingPaymentActivity.class));
             }
         });
 
