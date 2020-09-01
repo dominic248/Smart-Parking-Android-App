@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.common;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,36 +10,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
+import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private Button logout,getLocationBtn,addLocationBtn,payBtn;
-
-    private FirebaseAuth auth;
-    private FirebaseDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        auth=FirebaseAuth.getInstance();
-        db= FirebaseDatabase.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
 
-        logout=findViewById(R.id.logoutBtn);
-        getLocationBtn=findViewById(R.id.getLocationBtn);
-        addLocationBtn=findViewById(R.id.addLocationBtn);
-        payBtn=findViewById(R.id.payBtn);
+        Button logout = findViewById(R.id.logoutBtn);
+        Button getLocationBtn = findViewById(R.id.getLocationBtn);
+        Button addLocationBtn = findViewById(R.id.addLocationBtn);
+        Button payBtn = findViewById(R.id.payBtn);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(DashboardActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
+                startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
 
             }
         });
@@ -47,21 +47,21 @@ public class DashboardActivity extends AppCompatActivity {
         getLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this,GPSMapActivity.class));
+                startActivity(new Intent(DashboardActivity.this, GPSMapActivity.class));
             }
         });
 
         addLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this,AddPositionActivity.class));
+                startActivity(new Intent(DashboardActivity.this, AddPositionActivity.class));
             }
         });
 
         payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this,BookingPaymentActivity.class));
+                startActivity(new Intent(DashboardActivity.this, BookingPaymentActivity.class));
             }
         });
 

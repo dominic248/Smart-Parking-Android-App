@@ -4,7 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+    tools:context=".common.DashboardActivity">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card1"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="8dp"
+        app:contentPadding="5dp"
+        app:cardPreventCornerOverlap="true"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cardUseCompatPadding="false">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parking locations on Maps"
+            android:textSize="14dp"
+            android:layout_gravity="left|center_vertical"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/textButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open Maps"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/white"
+            app:cornerRadius="5dp"
+            app:rippleColor="@color/colorPrimary"
+            android:layout_gravity="right|center_vertical"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            />
+    </com.google.android.material.card.MaterialCardView>
 
     <Button
         android:id="@+id/logoutBtn"

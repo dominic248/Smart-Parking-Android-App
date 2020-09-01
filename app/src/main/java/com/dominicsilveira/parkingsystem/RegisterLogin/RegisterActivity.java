@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.RegisterLogin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.common.DashboardActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
+import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

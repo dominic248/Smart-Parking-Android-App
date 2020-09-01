@@ -14,25 +14,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BookingPaymentActivity"></activity>
-        <activity android:name=".BookParkingAreaActivity" />
-        <activity android:name=".RegisterAreaActivity" />
-        <activity android:name=".AddPositionActivity" />
+        <activity android:name=".NormalUser.BookingPaymentActivity"></activity>
+        <activity android:name=".NormalUser.BookParkingAreaActivity" />
+        <activity android:name=".OwnerUser.RegisterAreaActivity" />
+        <activity android:name=".OwnerUser.AddPositionActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name=".GPSMapActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".ScanActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".NormalUser.GPSMapActivity" />
+        <activity android:name=".common.ProfileActivity" />
+        <activity android:name=".common.ScanActivity" />
+        <activity android:name=".RegisterLogin.ForgotPasswordActivity" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".RegisterLogin.RegisterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".DashboardActivity" />
+        <activity android:name=".common.DashboardActivity" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".common.SplashScreen"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".RegisterLogin.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

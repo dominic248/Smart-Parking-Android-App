@@ -1,9 +1,12 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.NormalUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+
+import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
 

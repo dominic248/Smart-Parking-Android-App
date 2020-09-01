@@ -1,14 +1,11 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.NormalUser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,11 +13,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 
+import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,12 +34,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallback{
@@ -56,7 +49,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
-    HashMap<String,ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
+    HashMap<String, ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
 
     private Handler mHandler = new Handler();
 

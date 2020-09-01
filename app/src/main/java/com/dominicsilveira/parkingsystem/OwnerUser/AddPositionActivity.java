@@ -1,27 +1,20 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.OwnerUser;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.android.gms.location.LocationServices;
+import com.dominicsilveira.parkingsystem.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import java.util.ArrayList;
 
-// Adds a student to the student array list.
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -44,7 +37,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(AddPositionActivity.this,RegisterAreaActivity.class);
+                Intent intent=new Intent(AddPositionActivity.this, RegisterAreaActivity.class);
                 intent.putExtra("latitude", globalLatLng.latitude);
                 intent.putExtra("longitude", globalLatLng.longitude);
                 startActivity(intent);
