@@ -1,6 +1,8 @@
 package com.dominicsilveira.parkingsystem;
 
 import android.content.Intent;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.github.mikephil.charting.charts.PieChart;
 import com.google.android.material.card.MaterialCardView;
 
 import java.lang.reflect.Array;
@@ -37,12 +41,15 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+
         MaterialCardView cv;
         TextView stockName;
         Button stockbtn;
+        ConstraintLayout expandableView;
 
         MyViewHolder(View itemView) {
             super(itemView);
+            expandableView = (ConstraintLayout)itemView.findViewById(R.id.expandableView);
             cv = (MaterialCardView)itemView.findViewById(R.id.card1);
             stockName = (TextView)itemView.findViewById(R.id.text);
             stockbtn = (Button)itemView.findViewById(R.id.textButton);
@@ -77,19 +84,39 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
         holder.stockName.setText(parkingArea.name);
 
 
+//        holder.stockbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v ) {
+//                Log.e("Adap",String.valueOf(holder.getAdapterPosition()));
+//                HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(holder.getAdapterPosition()));
+//                String UUID = (String) idParkingArea.keySet().toArray()[0];
+//                ParkingArea val = (ParkingArea) idParkingArea.values().toArray()[0];
+//                Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
+//                intent.putExtra("UUID", UUID);
+//                intent.putExtra("ParkingArea", val);
+//                v.getContext().startActivity(intent);
+//            }
+//        });
+
         holder.stockbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v ) {
-                Log.e("Adap",String.valueOf(holder.getAdapterPosition()));
-                HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(holder.getAdapterPosition()));
-                String UUID = (String) idParkingArea.keySet().toArray()[0];
-                ParkingArea val = (ParkingArea) idParkingArea.values().toArray()[0];
-                Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
-                intent.putExtra("UUID", UUID);
-                intent.putExtra("ParkingArea", val);
-                v.getContext().startActivity(intent);
+            public void onClick(View v) {
+                if (holder.expandableView.getVisibility()==View.GONE){
+                    TransitionManager.beginDelayedTransition(holder.cv, new AutoTransition());
+                    holder.expandableView.setVisibility(View.VISIBLE);
+                    holder.stockbtn.setBackgroundResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
+                } else {
+                    TransitionManager.beginDelayedTransition(holder.cv, new AutoTransition());
+                    holder.expandableView.setVisibility(View.GONE);
+                    holder.stockbtn.setBackgroundResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
+                }
             }
         });
+
+        TextView headerText = (TextView) holder.expandableView.findViewById(R.id.phoneNumber);
+        headerText.setText("this is header by program");
+
+
 
     }
 

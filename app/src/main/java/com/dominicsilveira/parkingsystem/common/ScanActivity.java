@@ -125,7 +125,7 @@ public class ScanActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE) {
             try {
                 Bitmap upload = (Bitmap) data.getExtras().get("data");
-                selectedImage.setImageBitmap(upload);
+//                selectedImage.setImageBitmap(upload);
                 NetworkAsyncTask task=new NetworkAsyncTask(upload);
                 task.execute();
             } catch(Exception e) {
@@ -206,6 +206,7 @@ public class ScanActivity extends AppCompatActivity {
     private void myMethod(String result) throws JSONException {
         final JSONObject obj = new JSONObject(result);
         final JSONArray geodata = obj.getJSONArray("results");
+        Intent intent=new Intent(ScanActivity.this,NumberPlateActivity.class);
         Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
     }
 }

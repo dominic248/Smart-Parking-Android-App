@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NormalUser.BookingPaymentActivity"></activity>
+        <activity android:name=".common.NumberPlateActivity"></activity>
+        <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.RegisterAreaActivity" />
         <activity android:name=".OwnerUser.AddPositionActivity" />
