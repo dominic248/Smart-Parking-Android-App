@@ -156,10 +156,10 @@ public class DashboardFragment extends Fragment {
                                         parkingArea.put(dataSnapshot.getKey(),parkingData);
                                         parkingAreasList.put(distance(location.getLatitude(), location.getLongitude(), parkingData.latitude, parkingData.longitude, "K"),
                                                 parkingArea);
-                                        treeMap = new TreeMap<Double, HashMap<String, ParkingArea>>(parkingAreasList);
-                                        mAdapter = new CloseLocationAdapter(treeMap);
-                                        recyclerView.setAdapter(mAdapter);
                                     }
+                                    treeMap = new TreeMap<Double, HashMap<String, ParkingArea>>(parkingAreasList);
+                                    mAdapter = new CloseLocationAdapter(treeMap);
+                                    recyclerView.setAdapter(mAdapter);
                                     Log.d("GPS Map", String.valueOf(parkingAreasList));
                                 }
                                 @Override

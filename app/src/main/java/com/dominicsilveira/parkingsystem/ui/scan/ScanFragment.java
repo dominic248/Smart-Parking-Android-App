@@ -13,6 +13,7 @@ import com.dominicsilveira.parkingsystem.R;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,7 +42,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -61,6 +64,7 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
     FirebaseDatabase db;
 
     Map<String, NumberPlate> numberPlatesList = new HashMap<String, NumberPlate>();
+    List<String> keys = new ArrayList<String>();
     Map<String, NumberPlate> treeMap;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -89,13 +93,29 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ItemTouchHelper.SimpleCallback itemTouchHelperCallback=new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+                            @Override
+                            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                                return false;
+                            }
+
+                            @Override
+                            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                                int position=viewHolder.getAdapterPosition();
+                                keys.remove(position);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        };
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
                             numberPlatesList.put(dataSnapshot.getKey(),numberPlate);
-                            treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
-                            mAdapter = new NumberPlateAdapter(treeMap);
-                            recyclerView.setAdapter(mAdapter);
+                            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
+                            itemTouchHelper.attachToRecyclerView(recyclerView);
                         }
+                        treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
+                        keys.addAll(treeMap.keySet());
+                        mAdapter = new NumberPlateAdapter(treeMap,keys);
+                        recyclerView.setAdapter(mAdapter);
                         Log.d("GPS Map", String.valueOf(numberPlatesList));
                     }
                     @Override

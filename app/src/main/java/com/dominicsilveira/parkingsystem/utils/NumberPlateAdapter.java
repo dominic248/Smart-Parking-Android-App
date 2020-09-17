@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -22,10 +24,10 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
     Map<String, NumberPlate> numberPlateMap;
     List<String> keys = new ArrayList<String>();
 
-    public NumberPlateAdapter(Map<String, NumberPlate> numberPlateMap){
+    public NumberPlateAdapter(Map<String, NumberPlate> numberPlateMap,List<String> keys){
         this.numberPlateMap = numberPlateMap;
-        keys.addAll(numberPlateMap.keySet());
-        Log.d("NumberPlate", String.valueOf(keys));
+        this.keys=keys;
+        Log.d("NumberPlate keys", String.valueOf(keys));
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -73,7 +75,9 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return numberPlateMap.size();
+        return keys.size();
     }
+
+
 
 }
