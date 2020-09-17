@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".common.NumberPlateActivity"></activity>
+        <activity android:name=".common.MainActivity"></activity>
+        <activity android:name=".common.NumberPlateActivity" />
         <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.RegisterAreaActivity" />
@@ -25,13 +26,10 @@
             android:value="@string/map_key" />
 
         <activity android:name=".NormalUser.GPSMapActivity" />
-        <activity android:name=".common.ProfileActivity" />
-        <activity android:name=".common.ScanActivity" />
         <activity android:name=".RegisterLogin.ForgotPasswordActivity" />
         <activity
             android:name=".RegisterLogin.RegisterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".common.DashboardActivity" />
         <activity
             android:name=".common.SplashScreen"
             android:theme="@style/SplashTheme">

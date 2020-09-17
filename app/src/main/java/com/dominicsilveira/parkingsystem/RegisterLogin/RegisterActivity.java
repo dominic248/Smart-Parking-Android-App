@@ -13,10 +13,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.common.DashboardActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.common.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -113,7 +113,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         if(user.userType==2){
                                             intent = new Intent(RegisterActivity.this, AddPositionActivity.class);
                                         }else{
-                                            intent = new Intent(RegisterActivity.this, DashboardActivity.class);
+                                            intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                            intent.putExtra("FRAGMENT_NO", 0);
                                         }
 //                                        intent.putExtra("User", user);
                                         startActivity(intent);

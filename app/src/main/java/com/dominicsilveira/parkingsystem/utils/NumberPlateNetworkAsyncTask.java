@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import com.dominicsilveira.parkingsystem.common.ScanActivity;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;

@@ -10,8 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.common.DashboardActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.common.MainActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,7 +69,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("FRAGMENT_NO", 0);
+                startActivity(intent);
                 finish();
             }
         });

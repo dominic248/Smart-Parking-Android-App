@@ -82,7 +82,8 @@ public class NumberPlateActivity extends AppCompatActivity  implements NumberPla
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(NumberPlateActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(NumberPlateActivity.this, ScanActivity.class);
+                            Intent intent = new Intent(NumberPlateActivity.this, MainActivity.class);
+                            intent.putExtra("FRAGMENT_NO", 1);
                             startActivity(intent);
                             finish();
                         } else {

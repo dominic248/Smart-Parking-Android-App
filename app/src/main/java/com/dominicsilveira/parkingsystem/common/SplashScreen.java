@@ -14,14 +14,14 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_main);
 
         if(FirebaseAuth.getInstance().getCurrentUser()==null){
             Intent intent=new Intent(SplashScreen.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }else{
-            Intent intent=new Intent(SplashScreen.this, DashboardActivity.class);
+            Intent intent=new Intent(SplashScreen.this, MainActivity.class);
             startActivity(intent);
             finish();
         }

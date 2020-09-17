@@ -1,7 +1,15 @@
-package com.dominicsilveira.parkingsystem.common;
+package com.dominicsilveira.parkingsystem.ui.dashboard;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.dominicsilveira.parkingsystem.R;
+
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,19 +19,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
-import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.CloseLocationAdapter;
@@ -33,8 +36,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,9 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DashboardActivity extends AppCompatActivity {
-    MaterialCardView cv;
-    TextView stockName;
+public class DashboardFragment extends Fragment {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -63,28 +62,27 @@ public class DashboardActivity extends AppCompatActivity {
     Map<Double, HashMap<String, ParkingArea>> treeMap;
     boolean isGPS;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+            ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        Button logout = findViewById(R.id.logoutBtn);
-        Button getLocationBtn = findViewById(R.id.getLocationBtn);
-        Button addLocationBtn = findViewById(R.id.addLocationBtn);
-        Button payBtn = findViewById(R.id.payBtn);
+        Button logout = root.findViewById(R.id.logoutBtn);
+        Button getLocationBtn = root.findViewById(R.id.getLocationBtn);
+        Button addLocationBtn = root.findViewById(R.id.addLocationBtn);
+        Button payBtn = root.findViewById(R.id.payBtn);
 
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(DashboardActivity.this);
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
 
-        client= LocationServices.getFusedLocationProviderClient(DashboardActivity.this);
+        client= LocationServices.getFusedLocationProviderClient(getActivity());
         getPreCurrentLocation();
 
-        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
+        new GpsUtils(getActivity()).turnGPSOn(new GpsUtils.onGpsListener() {
             @Override
             public void gpsStatus(boolean isGPSEnable) {
                 // turn on GPS
@@ -97,8 +95,8 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(DashboardActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
+                Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
 
             }
         });
@@ -106,65 +104,40 @@ public class DashboardActivity extends AppCompatActivity {
         getLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this, GPSMapActivity.class));
+                startActivity(new Intent(getActivity(), GPSMapActivity.class));
             }
         });
 
         addLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this, AddPositionActivity.class));
+                startActivity(new Intent(getActivity(), AddPositionActivity.class));
             }
         });
 
         payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DashboardActivity.this, BookingPaymentActivity.class));
+                startActivity(new Intent(getActivity(), BookingPaymentActivity.class));
             }
         });
 
-        BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation_view);
-        bottomNavigationView.setSelectedItemId(R.id.dashboard);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.dashboard:
-                        return true;
-                    case R.id.scan:
-                        startActivity(new Intent(getApplicationContext(),
-                                ScanActivity.class));
-                        overridePendingTransition(0,0);
-//                        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-                        return true;
-                    case R.id.profile:
-                        startActivity(new Intent(getApplicationContext(),
-                                ProfileActivity.class));
-//                        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
-                        overridePendingTransition(0,0);
-                        return true;
-                }
-                return false;
-            }
-        });
+        return root;
     }
 
-
-
     private void getPreCurrentLocation() {
-        if(ActivityCompat.checkSelfPermission(DashboardActivity.this,
+        if(ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             getCurrentLocation();
         }else{
-            ActivityCompat.requestPermissions(DashboardActivity.this,new String[]
+            ActivityCompat.requestPermissions(getActivity(),new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION},44);
         }
     }
 
     private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION},44);
             return;
         }
@@ -192,8 +165,6 @@ public class DashboardActivity extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {}
                             });
-
-
                 }
             }
         });
@@ -227,7 +198,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AppConstants.GPS_REQUEST) {

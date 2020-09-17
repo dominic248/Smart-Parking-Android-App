@@ -2,5 +2,9 @@
     <string name="app_name">Parking System</string>
     <string name="splash_screen">Splash Screen</string>
     <string name="map_key">AIzaSyDn1u_2ALiD_tDnxZozLkVw6_NZYnB25Xw</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_scan">Scan</string>
+    <string name="title_profile">Profile</string>
 
 </resources>

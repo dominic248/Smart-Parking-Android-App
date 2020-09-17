@@ -12,9 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.common.DashboardActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.common.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -91,7 +91,8 @@ public class RegisterAreaActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(RegisterAreaActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RegisterAreaActivity.this, DashboardActivity.class);
+                                        Intent intent = new Intent(RegisterAreaActivity.this, MainActivity.class);
+                                        intent.putExtra("FRAGMENT_NO", 0);
                                         startActivity(intent);
                                         finish();
                                     } else {
