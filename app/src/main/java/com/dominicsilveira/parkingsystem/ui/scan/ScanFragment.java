@@ -31,7 +31,9 @@ import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.common.NumberPlateActivity;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateAdapter;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
+import com.dominicsilveira.parkingsystem.utils.SimpleToDeleteCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -93,17 +95,38 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ItemTouchHelper.SimpleCallback itemTouchHelperCallback=new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+                        SimpleToDeleteCallback itemTouchHelperCallback=new SimpleToDeleteCallback(getActivity()) {
                             @Override
                             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                                 return false;
                             }
 
                             @Override
-                            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                                int position=viewHolder.getAdapterPosition();
+                            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                                final int position=viewHolder.getAdapterPosition();
+
+                                final String data = keys.get(position);
+                                Snackbar snackbar = Snackbar
+                                        .make(recyclerView, "PHOTO REMOVED", Snackbar.LENGTH_LONG)
+                                        .setAction("UNDO", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+//                                                int mAdapterPosition = viewHolder.getAdapterPosition();
+                                                keys.add(position, data);
+                                                mAdapter.notifyItemInserted(position);
+                                                recyclerView.scrollToPosition(position);
+//                                                photosToDelete.remove(data);
+                                            }
+                                        });
+                                snackbar.show();
                                 keys.remove(position);
-                                mAdapter.notifyDataSetChanged();
+                                mAdapter.notifyItemRemoved(position);
+//                                photosToDelete.add(data);
+
+
+                                // //old
+//                                keys.remove(position);
+//                                mAdapter.notifyDataSetChanged();
                             }
                         };
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
