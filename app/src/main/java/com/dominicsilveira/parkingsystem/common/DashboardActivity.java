@@ -71,7 +71,7 @@ public class DashboardActivity extends AppCompatActivity {
 
     Map<Double, HashMap<String, ParkingArea>> parkingAreasList = new HashMap<Double, HashMap<String, ParkingArea>>();
     Map<Double, HashMap<String, ParkingArea>> treeMap;
-
+    boolean isGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,13 @@ public class DashboardActivity extends AppCompatActivity {
         client= LocationServices.getFusedLocationProviderClient(DashboardActivity.this);
         getPreCurrentLocation();
 
-
+        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                // turn on GPS
+                isGPS = isGPSEnable;
+            }
+        });
 
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -228,5 +234,14 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == AppConstants.GPS_REQUEST) {
+                Log.e("location","enabled");
+                isGPS = true; // flag maintain before get location
+            }
+        }
+    }
 }
