@@ -32,6 +32,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder>{
     Map<Double, HashMap<String, ParkingArea>> distParkingArea;
     List<Double> keys = new ArrayList<Double>();
 
+
     public Adapter(Map<Double, HashMap<String, ParkingArea>> distParkingArea){
         this.distParkingArea = distParkingArea;
         Log.d("distParkingArea", String.valueOf(distParkingArea));

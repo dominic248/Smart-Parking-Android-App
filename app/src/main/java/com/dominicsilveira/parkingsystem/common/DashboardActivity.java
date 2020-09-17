@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.Adapter;
+import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.GpsUtils;
 import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
@@ -85,6 +88,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         client= LocationServices.getFusedLocationProviderClient(DashboardActivity.this);
         getPreCurrentLocation();
+
+
 
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -222,4 +227,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
