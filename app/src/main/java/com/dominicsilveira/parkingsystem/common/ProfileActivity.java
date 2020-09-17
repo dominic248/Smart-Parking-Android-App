@@ -26,11 +26,13 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.dashboard:
                         startActivity(new Intent(getApplicationContext(),
                                 DashboardActivity.class));
+//                        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.scan:
                         startActivity(new Intent(getApplicationContext(),
                                 ScanActivity.class));
+//                        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.profile:

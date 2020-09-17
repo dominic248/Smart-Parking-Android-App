@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".common.ScanActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addVehicle"
@@ -20,6 +29,7 @@
         app:layout_constraintVertical_bias="0.89" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        app:itemHorizontalTranslationEnabled="false"
         android:id="@+id/bottom_navigation_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -32,15 +42,5 @@
         app:menu="@menu/menu_main"
         android:layout_alignParentBottom="true"/>
 
-    <ImageView
-        android:id="@+id/displayImage"
-        android:layout_width="382dp"
-        android:layout_height="478dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.249"
-        tools:srcCompat="@tools:sample/avatars" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

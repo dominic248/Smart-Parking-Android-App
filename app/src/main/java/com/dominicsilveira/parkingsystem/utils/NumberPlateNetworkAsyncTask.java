@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.utils;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class NetworkAsyncTask extends AsyncTask<Void, Void, String> {
+public class NumberPlateNetworkAsyncTask extends AsyncTask<Void, Void, String> {
     public Bitmap bitmap;
     public String response;
 
     public AsyncResponse delegate = null;
 
-    public NetworkAsyncTask(AsyncResponse delegate,Bitmap image){
+    public NumberPlateNetworkAsyncTask(AsyncResponse delegate,Bitmap image){
         super();
         this.bitmap=image;
         this.delegate = delegate;

@@ -5,59 +5,74 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.NetworkAsyncTask;
+import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.NumberPlate;
+import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.CloseLocationAdapter;
+import com.dominicsilveira.parkingsystem.utils.NumberPlateAdapter;
+import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
-public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.AsyncResponse {
 
-    public static final int CAMERA_PERM_CODE = 101;
-    public static final int CAMERA_REQUEST_CODE = 102;
+public class ScanActivity extends AppCompatActivity implements NumberPlateNetworkAsyncTask.AsyncResponse {
+
     ImageView selectedImage;
     FloatingActionButton cameraBtn;
     Bitmap upload;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    FirebaseAuth auth;
+    FirebaseDatabase db;
+
+    Map<String, NumberPlate> numberPlatesList = new HashMap<String, NumberPlate>();
+    Map<String, NumberPlate> treeMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        selectedImage=findViewById(R.id.displayImage);
         cameraBtn=findViewById(R.id.addVehicle);
+
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(ScanActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
 
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation_view);
         bottomNavigationView.setSelectedItemId(R.id.scan);
@@ -69,6 +84,7 @@ public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.
                         startActivity(new Intent(getApplicationContext(),
                                 DashboardActivity.class));
                         overridePendingTransition(0,0);
+//                        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         return true;
                     case R.id.scan:
                         return true;
@@ -76,6 +92,7 @@ public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.
                         startActivity(new Intent(getApplicationContext(),
                                 ProfileActivity.class));
                         overridePendingTransition(0,0);
+//                        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                         return true;
                 }
                 return false;
@@ -89,13 +106,30 @@ public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.
                 Toast.makeText(ScanActivity.this,"Camera Btn clicked",Toast.LENGTH_SHORT).show();
             }
         });
+
+        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
+                            numberPlatesList.put(dataSnapshot.getKey(),numberPlate);
+                            treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
+                            mAdapter = new NumberPlateAdapter(treeMap);
+                            recyclerView.setAdapter(mAdapter);
+                        }
+                        Log.d("GPS Map", String.valueOf(numberPlatesList));
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
     }
 
 
 
     private void askCameraPermission() {
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.CAMERA},CAMERA_PERM_CODE);
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.CAMERA}, AppConstants.CAMERA_PERM_CODE);
         }else{
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.INTERNET},103);
@@ -107,7 +141,7 @@ public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==CAMERA_PERM_CODE){
+        if(requestCode==AppConstants.CAMERA_PERM_CODE){
             if(grantResults.length<0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 openCamera();
             }else{
@@ -119,22 +153,21 @@ public class ScanActivity extends AppCompatActivity implements NetworkAsyncTask.
     private void openCamera() {
         Toast.makeText(this,"Camera Open Request",Toast.LENGTH_SHORT).show();
         Intent camera=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(camera, CAMERA_REQUEST_CODE);
+        startActivityForResult(camera, AppConstants.CAMERA_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE) {
+        if (requestCode == AppConstants.CAMERA_REQUEST_CODE) {
             try {
                 upload = (Bitmap) data.getExtras().get("data");
 //                selectedImage.setImageBitmap(upload);
-                NetworkAsyncTask task=new NetworkAsyncTask(this,upload);
+                NumberPlateNetworkAsyncTask task=new NumberPlateNetworkAsyncTask(this,upload);
                 task.execute();
             } catch(Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 

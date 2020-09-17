@@ -9,7 +9,7 @@
 
 
         <TextView
-            android:id="@+id/phoneIcon"
+            android:id="@+id/availableLabel"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -21,19 +21,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/phoneNumber"
+            android:id="@+id/availableText"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintStart_toEndOf="@+id/phoneIcon"
-            app:layout_constraintTop_toTopOf="@+id/phoneIcon" />
+            app:layout_constraintStart_toEndOf="@+id/availableLabel"
+            app:layout_constraintTop_toTopOf="@+id/availableLabel" />
 
 
         <TextView
-            android:id="@+id/mailIcon"
+            android:id="@+id/outOfLabel"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,63 +41,63 @@
             android:text="Rhr"
             android:textColor="#000"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/phoneIcon" />
+            app:layout_constraintTop_toTopOf="@+id/availableLabel" />
 
         <TextView
-            android:id="@+id/mailNumber"
+            android:id="@+id/outOfText"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintStart_toEndOf="@+id/mailIcon"
-            app:layout_constraintTop_toTopOf="@+id/mailIcon" />
+            app:layout_constraintStart_toEndOf="@+id/outOfLabel"
+            app:layout_constraintTop_toTopOf="@+id/outOfLabel" />
 
         <TextView
-            android:id="@+id/phoneIcon1"
+            android:id="@+id/priceLabel"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Rhr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/phoneIcon"
-            app:layout_constraintStart_toStartOf="@+id/phoneIcon"
-            app:layout_constraintTop_toBottomOf="@+id/phoneIcon" />
+            app:layout_constraintEnd_toEndOf="@+id/availableLabel"
+            app:layout_constraintStart_toStartOf="@+id/availableLabel"
+            app:layout_constraintTop_toBottomOf="@+id/availableLabel" />
 
         <TextView
-            android:id="@+id/phoneNumber1"
+            android:id="@+id/priceText"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/phoneNumber"
-            app:layout_constraintStart_toStartOf="@+id/phoneNumber"
-            app:layout_constraintTop_toTopOf="@+id/phoneIcon1" />
+            app:layout_constraintEnd_toEndOf="@+id/availableText"
+            app:layout_constraintStart_toStartOf="@+id/availableText"
+            app:layout_constraintTop_toTopOf="@+id/priceLabel" />
 
         <TextView
-            android:id="@+id/mailIcon1"
+            android:id="@+id/locationLabel"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Rhr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/mailIcon"
-            app:layout_constraintStart_toStartOf="@+id/mailIcon"
-            app:layout_constraintTop_toTopOf="@+id/phoneIcon1" />
+            app:layout_constraintEnd_toEndOf="@+id/outOfLabel"
+            app:layout_constraintStart_toStartOf="@+id/outOfLabel"
+            app:layout_constraintTop_toTopOf="@+id/priceLabel" />
 
         <TextView
-            android:id="@+id/mailNumber1"
+            android:id="@+id/locationText"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/mailNumber"
-            app:layout_constraintStart_toStartOf="@+id/mailNumber"
-            app:layout_constraintTop_toTopOf="@+id/mailIcon1" />
+            app:layout_constraintEnd_toEndOf="@+id/outOfText"
+            app:layout_constraintStart_toStartOf="@+id/outOfText"
+            app:layout_constraintTop_toTopOf="@+id/locationLabel" />
 
 
         <LinearLayout
@@ -107,7 +107,7 @@
             android:layout_marginTop="75dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phoneIcon1"
+            app:layout_constraintTop_toBottomOf="@+id/priceLabel"
             app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.button.MaterialButton

@@ -19,23 +19,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.Adapter;
 import com.dominicsilveira.parkingsystem.AppConstants;
-import com.dominicsilveira.parkingsystem.GpsUtils;
 import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.CloseLocationAdapter;
+import com.dominicsilveira.parkingsystem.utils.GpsUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,12 +41,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -85,6 +75,11 @@ public class DashboardActivity extends AppCompatActivity {
         Button getLocationBtn = findViewById(R.id.getLocationBtn);
         Button addLocationBtn = findViewById(R.id.addLocationBtn);
         Button payBtn = findViewById(R.id.payBtn);
+
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(DashboardActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
 
         client= LocationServices.getFusedLocationProviderClient(DashboardActivity.this);
         getPreCurrentLocation();
@@ -141,10 +136,12 @@ public class DashboardActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(),
                                 ScanActivity.class));
                         overridePendingTransition(0,0);
+//                        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                         return true;
                     case R.id.profile:
                         startActivity(new Intent(getApplicationContext(),
                                 ProfileActivity.class));
+//                        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                         overridePendingTransition(0,0);
                         return true;
                 }
@@ -152,7 +149,6 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
 
@@ -188,11 +184,7 @@ public class DashboardActivity extends AppCompatActivity {
                                         parkingAreasList.put(distance(location.getLatitude(), location.getLongitude(), parkingData.latitude, parkingData.longitude, "K"),
                                                 parkingArea);
                                         treeMap = new TreeMap<Double, HashMap<String, ParkingArea>>(parkingAreasList);
-                                        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-                                        recyclerView.setHasFixedSize(true);
-                                        layoutManager = new LinearLayoutManager(DashboardActivity.this);
-                                        recyclerView.setLayoutManager(layoutManager);
-                                        mAdapter = new Adapter(treeMap);
+                                        mAdapter = new CloseLocationAdapter(treeMap);
                                         recyclerView.setAdapter(mAdapter);
                                     }
                                     Log.d("GPS Map", String.valueOf(parkingAreasList));

@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dominicsilveira.parkingsystem.AppConstants;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;

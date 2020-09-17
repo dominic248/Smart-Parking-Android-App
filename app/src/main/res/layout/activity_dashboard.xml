@@ -106,6 +106,7 @@
         app:layout_constraintVertical_bias="0.857" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        app:itemHorizontalTranslationEnabled="false"
         android:id="@+id/bottom_navigation_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
