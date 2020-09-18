@@ -107,7 +107,7 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
 
                                 final String data = keys.get(position);
                                 Snackbar snackbar = Snackbar
-                                        .make(recyclerView, "PHOTO REMOVED", Snackbar.LENGTH_LONG)
+                                        .make(recyclerView, "Number Plate Removed", Snackbar.LENGTH_LONG)
                                         .setAction("UNDO", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
@@ -122,11 +122,6 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
                                 keys.remove(position);
                                 mAdapter.notifyItemRemoved(position);
 //                                photosToDelete.add(data);
-
-
-                                // //old
-//                                keys.remove(position);
-//                                mAdapter.notifyDataSetChanged();
                             }
                         };
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {

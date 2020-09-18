@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.google.android.material.card.MaterialCardView;
@@ -103,6 +104,25 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
                 }
             }
         });
+
+        holder.mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v ) {
+                Log.e("Adap",String.valueOf(holder.getAdapterPosition()));
+                HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(holder.getAdapterPosition()));
+                String UUID = (String) idParkingArea.keySet().toArray()[0];
+                ParkingArea val = (ParkingArea) idParkingArea.values().toArray()[0];
+                Intent intent=new Intent(v.getContext(), GPSMapActivity.class);
+                Log.e("Close loc to GPS map",val.name);
+                intent.putExtra("LOCATION_NAME", val.name);
+                intent.putExtra("LOCATION_LATITUDE", val.latitude);
+                intent.putExtra("LOCATION_LONGITUDE", val.longitude);
+                v.getContext().startActivity(intent);
+            }
+        });
+
+
+
 
         TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
         TextView outOfText = (TextView) holder.expandCard.findViewById(R.id.outOfText);

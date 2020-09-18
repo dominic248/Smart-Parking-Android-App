@@ -49,6 +49,11 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
+
+    LatLng globalLatLngIntent=null;
+    MarkerOptions optionsIntent;
+
+
     HashMap<String, ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
 
     private Handler mHandler = new Handler();
@@ -78,6 +83,17 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_g_p_s_map);
+
+        Intent intent=getIntent();
+        String nameIntent=intent.getStringExtra("LOCATION_NAME");
+        double latitudeIntent=intent.getDoubleExtra("LOCATION_LATITUDE",-1);
+        double longitudeIntent= intent.getDoubleExtra("LOCATION_LONGITUDE",-1);
+
+        if(latitudeIntent != -1){
+             globalLatLngIntent=new LatLng(latitudeIntent,longitudeIntent);
+             optionsIntent=new MarkerOptions().position(globalLatLngIntent)
+                    .title(nameIntent);
+        }
 
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
@@ -140,7 +156,10 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                                         location.getLongitude());
                                 options=new MarkerOptions().position(globalLatLng)
                                         .title("I am here");
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
+                                if(globalLatLngIntent != null)
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLngIntent,30));
+                                else
+                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
                             }else{
                                 globalLatLng=new LatLng(location.getLatitude(),
                                         location.getLongitude());
