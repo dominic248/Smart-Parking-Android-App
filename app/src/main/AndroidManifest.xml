@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NormalUser.BookPlateNumberActivity"></activity>
         <activity android:name=".common.MainActivity" />
         <activity android:name=".common.NumberPlateActivity" />
         <activity android:name=".NormalUser.BookingPaymentActivity" />
