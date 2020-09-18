@@ -18,6 +18,12 @@ import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
@@ -126,9 +132,22 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
 
         TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
         TextView outOfText = (TextView) holder.expandCard.findViewById(R.id.outOfText);
-        TextView priceText = (TextView) holder.expandCard.findViewById(R.id.priceText);
-        TextView locationText = (TextView) holder.expandCard.findViewById(R.id.locationText);
+        TextView priceText = (TextView) holder.expandCard.findViewById(R.id.twoPriceText);
+        TextView locationText = (TextView) holder.expandCard.findViewById(R.id.threePriceText);
+        PieChart platforms_chart = (PieChart) holder.expandCard.findViewById(R.id.platforms_chart);
 //        headerText.setText("this is header by program");
+//        platforms_chart.setUsePercentValues(true);
+        Description desc=new Description();
+        desc.setText("Pie CHart");
+        platforms_chart.setDescription(desc);
+        List<PieEntry> value=new ArrayList<>();
+        value.add(new PieEntry(40f,"jan"));
+        value.add(new PieEntry(50f,"feb"));
+        PieDataSet pieDataSet=new PieDataSet(value,"area");
+        PieData pieData=new PieData(pieDataSet);
+        platforms_chart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        platforms_chart.animateXY(1400,1400);
 
     }
 
