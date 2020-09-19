@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="4 Wheeler"
+            android:text="4 wheels"
             android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/price3Label"
             app:layout_constraintTop_toBottomOf="@+id/price3Label" />
@@ -73,9 +73,9 @@
         <TextView
             android:id="@+id/availableText"
             style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="0dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="4dp"
             android:text=": Rs.15/hr"
             android:textColor="#000"
             app:layout_constraintStart_toEndOf="@+id/availableLabel"
@@ -109,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="2 Wheeler"
+            android:text="2 wheels"
             android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/occupiedLabel"
             app:layout_constraintTop_toBottomOf="@+id/occupiedLabel" />
@@ -132,7 +132,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="3 Wheeler"
+            android:text="3 wheels"
             android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/price2Label"
             app:layout_constraintTop_toBottomOf="@+id/price2Label" />
@@ -150,7 +150,7 @@
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/platforms_chart"
-            android:layout_width="188dp"
+            android:layout_width="179dp"
             android:layout_height="197dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

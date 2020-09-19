@@ -90,9 +90,9 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         String prepend=": ";
         availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
         occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
-        price2Text.setText(prepend.concat(String.valueOf(parkingArea.amount2)));
-        price3Text.setText(prepend.concat(String.valueOf(parkingArea.amount3)));
-        price4Text.setText(prepend.concat(String.valueOf(parkingArea.amount4)));
+        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
+        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
+        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
 
         holder.bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override

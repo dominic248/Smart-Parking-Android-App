@@ -13,22 +13,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".AppConstants"
         android:theme="@style/AppTheme">
-        <activity android:name=".common.MainActivity" />
-        <activity android:name=".NormalUser.BookingPaymentActivity" />
-        <activity android:name=".NormalUser.BookParkingAreaActivity" />
-        <activity android:name=".OwnerUser.RegisterAreaActivity" />
-        <activity android:name=".OwnerUser.AddPositionActivity" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name=".NormalUser.GPSMapActivity" />
-        <activity android:name=".RegisterLogin.ForgotPasswordActivity" />
-        <activity
-            android:name=".RegisterLogin.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".common.SplashScreen"
             android:theme="@style/SplashTheme">
@@ -38,6 +29,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".common.MainActivity" />
+        <activity android:name=".NormalUser.BookingPaymentActivity" />
+        <activity android:name=".NormalUser.BookParkingAreaActivity" />
+        <activity android:name=".OwnerUser.RegisterAreaActivity" />
+        <activity android:name=".OwnerUser.AddPositionActivity" />
+        <activity android:name=".NormalUser.GPSMapActivity" />
+        <activity android:name=".RegisterLogin.ForgotPasswordActivity" />
+        <activity
+            android:name=".RegisterLogin.RegisterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RegisterLogin.LoginActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -48,5 +49,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

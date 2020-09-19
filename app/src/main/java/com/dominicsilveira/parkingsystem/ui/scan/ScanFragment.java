@@ -74,83 +74,89 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_scan, container, false);
+        AppConstants globalClass=(AppConstants)getActivity().getApplicationContext();
+        Log.e("Check",String.valueOf(globalClass.getUserType()));
+        if(globalClass.getUserType()==2){
+            View root = inflater.inflate(R.layout.fragment_scan, container, false);
+            cameraBtn=root.findViewById(R.id.addVehicle);
 
-        cameraBtn=root.findViewById(R.id.addVehicle);
+            recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
+            recyclerView.setHasFixedSize(true);
+            layoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance();
+            auth = FirebaseAuth.getInstance();
+            db = FirebaseDatabase.getInstance();
 
 
-        cameraBtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                askCameraPermission();
-                Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
-            }
-        });
+            cameraBtn.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    askCameraPermission();
+                    Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
+                }
+            });
 
-        db.getReference().child("NumberPlates").orderByChild("userID_isDeletedQuery").equalTo(auth.getCurrentUser().getUid()+"_0")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        SimpleToDeleteCallback itemTouchHelperCallback=new SimpleToDeleteCallback(getActivity()) {
-                            @Override
-                            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                                return false;
+            db.getReference().child("NumberPlates").orderByChild("userID_isDeletedQuery").equalTo(auth.getCurrentUser().getUid()+"_0")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            SimpleToDeleteCallback itemTouchHelperCallback=new SimpleToDeleteCallback(getActivity()) {
+                                @Override
+                                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                                    return false;
+                                }
+
+                                @Override
+                                public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                                    final int position=viewHolder.getAdapterPosition();
+                                    final String data = keys.get(position);
+                                    String id;
+                                    Snackbar snackbar = Snackbar
+                                            .make(recyclerView, "Number Plate Removed", Snackbar.LENGTH_LONG)
+                                            .setAction("UNDO", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    keys.add(position, data);
+                                                    mAdapter.notifyItemInserted(position);
+                                                    recyclerView.scrollToPosition(position);
+                                                    db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
+                                                            .setValue(auth.getCurrentUser().getUid()+"_0");
+                                                    db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                                            .setValue(0);
+                                                }
+                                            });
+                                    snackbar.show();
+                                    keys.remove(position);
+                                    mAdapter.notifyItemRemoved(position);
+                                    db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
+                                            .setValue(auth.getCurrentUser().getUid()+"_1");
+                                    db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                            .setValue(1);
+
+
+                                }
+                            };
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
+                                numberPlatesList.put(dataSnapshot.getKey(),numberPlate);
+                                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
+                                itemTouchHelper.attachToRecyclerView(recyclerView);
                             }
-
-                            @Override
-                            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-                                final int position=viewHolder.getAdapterPosition();
-                                final String data = keys.get(position);
-                                String id;
-                                Snackbar snackbar = Snackbar
-                                        .make(recyclerView, "Number Plate Removed", Snackbar.LENGTH_LONG)
-                                        .setAction("UNDO", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                keys.add(position, data);
-                                                mAdapter.notifyItemInserted(position);
-                                                recyclerView.scrollToPosition(position);
-                                                db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
-                                                        .setValue(auth.getCurrentUser().getUid()+"_0");
-                                                db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
-                                                        .setValue(0);
-                                            }
-                                        });
-                                snackbar.show();
-                                keys.remove(position);
-                                mAdapter.notifyItemRemoved(position);
-                                db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
-                                        .setValue(auth.getCurrentUser().getUid()+"_1");
-                                db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
-                                        .setValue(1);
-
-
-                            }
-                        };
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
-                            numberPlatesList.put(dataSnapshot.getKey(),numberPlate);
-                            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
-                            itemTouchHelper.attachToRecyclerView(recyclerView);
+                            treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
+                            keys.addAll(treeMap.keySet());
+                            mAdapter = new NumberPlateAdapter(treeMap,keys);
+                            recyclerView.setAdapter(mAdapter);
+                            Log.d("GPS Map", String.valueOf(numberPlatesList));
                         }
-                        treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
-                        keys.addAll(treeMap.keySet());
-                        mAdapter = new NumberPlateAdapter(treeMap,keys);
-                        recyclerView.setAdapter(mAdapter);
-                        Log.d("GPS Map", String.valueOf(numberPlatesList));
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+            return root;
+        }else{
+            View root = inflater.inflate(R.layout.fragment_scan_owner, container, false);
+            return root;
+        }
 
-        return root;
     }
 
     private void askCameraPermission() {
