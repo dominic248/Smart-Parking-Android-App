@@ -6,6 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".OwnerUser.RegisterAreaActivity">
 
+    <EditText
+        android:id="@+id/amount3Text"
+        android:layout_width="200dp"
+        android:layout_height="37dp"
+        android:background="@drawable/square_edit_text"
+        android:ems="10"
+        android:hint="Amount3/Hour"
+        android:inputType="textPersonName"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.658"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.517" />
+
+    <EditText
+        android:id="@+id/amount2Text"
+        android:layout_width="200dp"
+        android:layout_height="37dp"
+        android:background="@drawable/square_edit_text"
+        android:ems="10"
+        android:hint="Amount2/Hour"
+        android:inputType="textPersonName"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.658"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.446" />
+
     <TextView
         android:id="@+id/slotsLabel"
         android:layout_width="wrap_content"
@@ -14,10 +46,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.050"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.520" />
+        app:layout_constraintVertical_bias="0.678" />
 
     <TextView
         android:id="@+id/nameLabel"
@@ -100,7 +132,7 @@
         app:layout_constraintVertical_bias="0.375" />
 
     <TextView
-        android:id="@+id/amountLabel"
+        android:id="@+id/amount2Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Amount/Hour:"
@@ -200,12 +232,12 @@
         app:layout_constraintVertical_bias="0.373" />
 
     <EditText
-        android:id="@+id/amountText"
+        android:id="@+id/amount4Text"
         android:layout_width="200dp"
         android:layout_height="37dp"
         android:background="@drawable/square_edit_text"
         android:ems="10"
-        android:hint="Amount/Hour"
+        android:hint="Amount4/Hour"
         android:inputType="textPersonName"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -213,10 +245,10 @@
         app:layout_constraintHorizontal_bias="0.658"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.443" />
+        app:layout_constraintVertical_bias="0.593" />
 
     <EditText
-        android:id="@+id/slotsText"
+        android:id="@+id/totalSlotsText"
         android:layout_width="200dp"
         android:layout_height="37dp"
         android:background="@drawable/square_edit_text"
@@ -226,10 +258,10 @@
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.658"
+        app:layout_constraintHorizontal_bias="0.677"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.518" />
+        app:layout_constraintVertical_bias="0.672" />
 
     <Button
         android:id="@+id/saveBtn"

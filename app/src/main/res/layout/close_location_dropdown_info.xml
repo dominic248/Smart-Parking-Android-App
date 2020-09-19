@@ -34,28 +34,28 @@
 <!--        </LinearLayout>-->
 
         <TextView
-            android:id="@+id/fourPriceText"
+            android:id="@+id/price4Text"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text=": Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/threePriceText"
+            app:layout_constraintEnd_toEndOf="@+id/price3Text"
             app:layout_constraintHorizontal_bias="1.0"
 
-            app:layout_constraintStart_toStartOf="@+id/threePriceText"
-            app:layout_constraintTop_toTopOf="@+id/fourPriceLabel" />
+            app:layout_constraintStart_toStartOf="@+id/price3Text"
+            app:layout_constraintTop_toTopOf="@+id/price4Label" />
 
         <TextView
-            android:id="@+id/fourPriceLabel"
+            android:id="@+id/price4Label"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="4 Wheeler"
             android:textColor="#000"
-            app:layout_constraintStart_toStartOf="@+id/threePriceLabel"
-            app:layout_constraintTop_toBottomOf="@+id/threePriceLabel" />
+            app:layout_constraintStart_toStartOf="@+id/price3Label"
+            app:layout_constraintTop_toBottomOf="@+id/price3Label" />
 
         <TextView
             android:id="@+id/availableLabel"
@@ -82,7 +82,7 @@
             app:layout_constraintTop_toTopOf="@+id/availableLabel" />
 
         <TextView
-            android:id="@+id/outOfLabel"
+            android:id="@+id/occupiedLabel"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
             app:layout_constraintTop_toBottomOf="@+id/availableLabel" />
 
         <TextView
-            android:id="@+id/outOfText"
+            android:id="@+id/occupiedText"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -101,52 +101,52 @@
             android:textColor="#000"
             app:layout_constraintEnd_toEndOf="@+id/availableText"
             app:layout_constraintStart_toStartOf="@+id/availableText"
-            app:layout_constraintTop_toTopOf="@+id/outOfLabel" />
+            app:layout_constraintTop_toTopOf="@+id/occupiedLabel" />
 
         <TextView
-            android:id="@+id/twoPriceLabel"
+            android:id="@+id/price2Label"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="2 Wheeler"
             android:textColor="#000"
-            app:layout_constraintStart_toStartOf="@+id/outOfLabel"
-            app:layout_constraintTop_toBottomOf="@+id/outOfLabel" />
+            app:layout_constraintStart_toStartOf="@+id/occupiedLabel"
+            app:layout_constraintTop_toBottomOf="@+id/occupiedLabel" />
 
 
         <TextView
-            android:id="@+id/twoPriceText"
+            android:id="@+id/price2Text"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text=": Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/outOfText"
-            app:layout_constraintStart_toStartOf="@+id/outOfText"
-            app:layout_constraintTop_toTopOf="@+id/twoPriceLabel" />
+            app:layout_constraintEnd_toEndOf="@+id/occupiedText"
+            app:layout_constraintStart_toStartOf="@+id/occupiedText"
+            app:layout_constraintTop_toTopOf="@+id/price2Label" />
 
         <TextView
-            android:id="@+id/threePriceLabel"
+            android:id="@+id/price3Label"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="3 Wheeler"
             android:textColor="#000"
-            app:layout_constraintStart_toStartOf="@+id/twoPriceLabel"
-            app:layout_constraintTop_toBottomOf="@+id/twoPriceLabel" />
+            app:layout_constraintStart_toStartOf="@+id/price2Label"
+            app:layout_constraintTop_toBottomOf="@+id/price2Label" />
 
         <TextView
-            android:id="@+id/threePriceText"
+            android:id="@+id/price3Text"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text=": Rs.15/hr"
             android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="@+id/twoPriceText"
-            app:layout_constraintStart_toStartOf="@+id/twoPriceText"
-            app:layout_constraintTop_toTopOf="@+id/threePriceLabel" />
+            app:layout_constraintEnd_toEndOf="@+id/price2Text"
+            app:layout_constraintStart_toStartOf="@+id/price2Text"
+            app:layout_constraintTop_toTopOf="@+id/price3Label" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/platforms_chart"

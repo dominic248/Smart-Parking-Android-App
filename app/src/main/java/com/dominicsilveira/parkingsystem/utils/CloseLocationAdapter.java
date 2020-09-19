@@ -82,6 +82,18 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         Log.d("id", String.valueOf(id)+String.valueOf(parkingArea));
         holder.mainName.setText(parkingArea.name);
 
+        TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
+        TextView occupiedText = (TextView) holder.expandCard.findViewById(R.id.occupiedText);
+        TextView price2Text = (TextView) holder.expandCard.findViewById(R.id.price2Text);
+        TextView price3Text = (TextView) holder.expandCard.findViewById(R.id.price3Text);
+        TextView price4Text = (TextView) holder.expandCard.findViewById(R.id.price4Text);
+        String prepend=": ";
+        availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
+        occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
+        price2Text.setText(prepend.concat(String.valueOf(parkingArea.amount2)));
+        price3Text.setText(prepend.concat(String.valueOf(parkingArea.amount3)));
+        price4Text.setText(prepend.concat(String.valueOf(parkingArea.amount4)));
+
         holder.bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v ) {
@@ -128,22 +140,15 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         });
 
 
-
-
-        TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
-        TextView outOfText = (TextView) holder.expandCard.findViewById(R.id.outOfText);
-        TextView priceText = (TextView) holder.expandCard.findViewById(R.id.twoPriceText);
-        TextView locationText = (TextView) holder.expandCard.findViewById(R.id.threePriceText);
         PieChart platforms_chart = (PieChart) holder.expandCard.findViewById(R.id.platforms_chart);
-//        headerText.setText("this is header by program");
 //        platforms_chart.setUsePercentValues(true);
         Description desc=new Description();
-        desc.setText("Pie CHart");
+        desc.setText("Details");
         platforms_chart.setDescription(desc);
         List<PieEntry> value=new ArrayList<>();
-        value.add(new PieEntry(40f,"jan"));
-        value.add(new PieEntry(50f,"feb"));
-        PieDataSet pieDataSet=new PieDataSet(value,"area");
+        value.add(new PieEntry(parkingArea.availableSlots,"Available"));
+        value.add(new PieEntry(parkingArea.occupiedSlots,"Occupied"));
+        PieDataSet pieDataSet=new PieDataSet(value,"Slots");
         PieData pieData=new PieData(pieDataSet);
         platforms_chart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);

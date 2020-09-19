@@ -28,8 +28,8 @@ public class RegisterAreaActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
-    private EditText areaNameText,upiIdText,upiNameText,amountText,slotsText;
-    private TextView latitudeText,longitudeText;
+    private EditText areaNameText,upiIdText,upiNameText,amount2Text,amount3Text,amount4Text,totalSlotsText;
+    private TextView latitudeText,longitudeText,nameText;
     Button saveBtn,cancelBtn;
     String name;
 
@@ -42,14 +42,20 @@ public class RegisterAreaActivity extends AppCompatActivity {
         final double latitude = bundle.getDouble("latitude");
         final double longitude = bundle.getDouble("longitude");
 
-        final TextView nameText=findViewById(R.id.nameText);
-        areaNameText=findViewById(R.id.areaNameText);
+        nameText=findViewById(R.id.nameText);
         latitudeText=findViewById(R.id.latitudeText);
         longitudeText=findViewById(R.id.longitudeText);
+
+        areaNameText=findViewById(R.id.areaNameText);
         upiIdText=findViewById(R.id.upiIdText);
         upiNameText=findViewById(R.id.upiNameText);
-        amountText=findViewById(R.id.amountText);
-        slotsText=findViewById(R.id.slotsText);
+        amount2Text=findViewById(R.id.amount2Text);
+        amount3Text=findViewById(R.id.amount3Text);
+        amount4Text=findViewById(R.id.amount4Text);
+        totalSlotsText=findViewById(R.id.totalSlotsText);
+
+
+
 
         saveBtn=findViewById(R.id.saveBtn);
 
@@ -80,9 +86,11 @@ public class RegisterAreaActivity extends AppCompatActivity {
                     String areaName = areaNameText.getText().toString();
                     String upiId = upiIdText.getText().toString();
                     String upiName = upiNameText.getText().toString();
-                    String amount = amountText.getText().toString();
-                    String slots = slotsText.getText().toString();
-                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude,upiId,upiName,amount,slots);
+                    String amount2 = amount2Text.getText().toString();
+                    String amount3 = amount3Text.getText().toString();
+                    String amount4 = amount4Text.getText().toString();
+                    String totalSlots = totalSlotsText.getText().toString();
+                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude,upiId,upiName,auth.getCurrentUser().getUid(),Integer.valueOf(totalSlots),0,amount2,amount3,amount4);
                     String key=db.getReference("ParkingAreas").push().getKey();
                     db.getReference("ParkingAreas")
                             .child(key)
