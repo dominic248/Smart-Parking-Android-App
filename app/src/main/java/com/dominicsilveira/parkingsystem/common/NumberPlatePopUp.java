@@ -36,6 +36,7 @@ import java.util.List;
 public class NumberPlatePopUp extends AppCompatDialogFragment {
     private EditText vehicleNumber;
     private Spinner vehicleWheeler;
+    int wheelerType=4;
     private NumberPlatePopUpListener listener;
 
     List<String> wheeler = new ArrayList<String>();
@@ -59,9 +60,10 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String username = vehicleNumber.getText().toString();
+                        String vehicleNumberStr = vehicleNumber.getText().toString();
                         Intent intent = new Intent();
-                        intent.putExtra("selection",username);
+                        intent.putExtra("vehicleNumber",vehicleNumberStr);
+                        intent.putExtra("wheelerType",wheelerType);
                         listener.onActivityResult(AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE, Activity.RESULT_OK, intent);
                     }
                 });
@@ -79,7 +81,7 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
         try {
             listener = (NumberPlatePopUpListener) getTargetFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +"must implement ExampleDialogListener");
+            throw new ClassCastException(context.toString() +"must implement NumberPlatePopUpListener");
         }
     }
 
@@ -89,10 +91,9 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
 
 
     public void addItemsOnSpinner() {
-        wheeler.add("Select a Wheeler");
-        wheeler.add("2 Wheeler");
-        wheeler.add("3 Wheeler");
         wheeler.add("4 Wheeler");
+        wheeler.add("3 Wheeler");
+        wheeler.add("2 Wheeler");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, wheeler);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -103,8 +104,17 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
         vehicleWheeler.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if(position!=0)
-                    Toast.makeText(getActivity(), String.valueOf(vehicleWheeler.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
+                switch(position){
+                    case 1:
+                        wheelerType=3;
+                        break;
+                    case 2:
+                        wheelerType=2;
+                        break;
+                    default:
+                        wheelerType=4;
+                }
+//                Toast.makeText(getActivity(), String.valueOf(vehicleWheeler.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}

@@ -69,6 +69,9 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         numberPlateSpinner = findViewById(R.id.vehicleSelect);
         startBtn = findViewById(R.id.startBtn);
         endBtn = findViewById(R.id.endBtn);
+        bookBtn = findViewById(R.id.bookBtn);
+
+
         startBtn.setInputType(InputType.TYPE_NULL);
         endBtn.setInputType(InputType.TYPE_NULL);
 

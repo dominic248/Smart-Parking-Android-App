@@ -30,16 +30,20 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
         Log.d("NumberPlate keys", String.valueOf(keys));
     }
 
+    public void updateVal(){
+
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView numberPlateCard;
         TextView numberPlate;
-        ImageButton deleteBtn;
+        TextView wheelerType;
 
         MyViewHolder(View itemView) {
             super(itemView);
             numberPlateCard = (MaterialCardView)itemView.findViewById(R.id.numberPlateCard);
             numberPlate = (TextView)itemView.findViewById(R.id.mainText);
-            deleteBtn = (ImageButton)itemView.findViewById(R.id.deleteBtn);
+            wheelerType = (TextView)itemView.findViewById(R.id.wheelerType);
         }
     }
     @Override
@@ -63,13 +67,15 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
         NumberPlate numberPlate=numberPlateMap.get(id);
         Log.d("Number plate id", String.valueOf(id)+String.valueOf(numberPlate));
         holder.numberPlate.setText(numberPlate.numberPlate);
+        String wheelerTypeStr="";
+        if(numberPlate.wheelerType==3)
+            wheelerTypeStr="3 Wheeler";
+        else if(numberPlate.wheelerType==2)
+            wheelerTypeStr="3 Wheeler";
+        else
+            wheelerTypeStr="4 Wheeler";
+        holder.wheelerType.setText(wheelerTypeStr);
 
-        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //remove the data
-            }
-        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -77,7 +83,4 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
     public int getItemCount() {
         return keys.size();
     }
-
-
-
 }

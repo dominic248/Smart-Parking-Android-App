@@ -29,11 +29,12 @@ import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
-import com.dominicsilveira.parkingsystem.common.NumberPlateActivity;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateAdapter;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
 import com.dominicsilveira.parkingsystem.utils.SimpleToDeleteCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,7 +94,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
             }
         });
 
-        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
+        db.getReference().child("NumberPlates").orderByChild("userID_isDeletedQuery").equalTo(auth.getCurrentUser().getUid()+"_0")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -106,24 +107,31 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                             @Override
                             public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
                                 final int position=viewHolder.getAdapterPosition();
-
                                 final String data = keys.get(position);
+                                String id;
                                 Snackbar snackbar = Snackbar
                                         .make(recyclerView, "Number Plate Removed", Snackbar.LENGTH_LONG)
                                         .setAction("UNDO", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-//                                                int mAdapterPosition = viewHolder.getAdapterPosition();
                                                 keys.add(position, data);
                                                 mAdapter.notifyItemInserted(position);
                                                 recyclerView.scrollToPosition(position);
-//                                                photosToDelete.remove(data);
+                                                db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
+                                                        .setValue(auth.getCurrentUser().getUid()+"_0");
+                                                db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                                        .setValue(0);
                                             }
                                         });
                                 snackbar.show();
                                 keys.remove(position);
                                 mAdapter.notifyItemRemoved(position);
-//                                photosToDelete.add(data);
+                                db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
+                                        .setValue(auth.getCurrentUser().getUid()+"_1");
+                                db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                        .setValue(1);
+
+
                             }
                         };
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -180,7 +188,6 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
         if (requestCode == AppConstants.CAMERA_REQUEST_CODE) {
             try {
                 upload = (Bitmap) data.getExtras().get("data");
-//                selectedImage.setImageBitmap(upload);
                 NumberPlateNetworkAsyncTask task=new NumberPlateNetworkAsyncTask(this,upload);
                 task.execute();
             } catch(Exception e) {
@@ -191,6 +198,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
         if(requestCode==AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK){
+                saveData(data.getStringExtra("vehicleNumber"),data.getIntExtra("wheelerType",4));
                 Toast.makeText(getActivity(), data.getStringExtra("selection"), Toast.LENGTH_SHORT).show();
             }else if (resultCode == Activity.RESULT_CANCELED) {
                     //Do Something in case not recieved the data
@@ -199,20 +207,38 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
     }
 
+    private void saveData(String vehicleNumber,int wheelerType) {
+        final NumberPlate numberPlate = new NumberPlate(vehicleNumber,wheelerType,0,auth.getCurrentUser().getUid(),auth.getCurrentUser().getUid()+"_0");
+        final String key=db.getReference("NumberPlates").push().getKey();
+        db.getReference("NumberPlates")
+                .child(key)
+                .setValue(numberPlate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "Failed to add extra details", Toast.LENGTH_SHORT).show();
+                }
+                numberPlatesList.put(key,numberPlate);
+                treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
+                keys.add(key);
+                mAdapter = new NumberPlateAdapter(treeMap,keys);
+                recyclerView.setAdapter(mAdapter);
+
+            }
+        });
+    }
+
     public void myMethod(String result) throws JSONException {
         JSONObject obj = new JSONObject(result);
         JSONArray geodata = obj.getJSONArray("results");
-//        openDialog();
         Bundle args = new Bundle();
         args.putString("numberPlate", geodata.getJSONObject(0).getString("plate"));
         NumberPlatePopUp numberPlateDialog = new NumberPlatePopUp();
         numberPlateDialog.setTargetFragment(ScanFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
         numberPlateDialog.setArguments(args);
         numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
-//        Intent intent=new Intent(getActivity(), NumberPlateActivity.class);
-//        intent.putExtra("image", upload);
-//        intent.putExtra("numberPlate", geodata.getJSONObject(0).getString("plate"));
-//        startActivity(intent);
         Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
     }
 
