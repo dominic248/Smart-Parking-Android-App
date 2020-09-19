@@ -7,12 +7,88 @@
     tools:context=".NormalUser.BookParkingAreaActivity">
 
     <Spinner
-        android:id="@+id/selectPlateNumber"
+        android:id="@+id/vehicleSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slotNoText"
+        tools:layout_editor_absoluteX="135dp" />
+
+    <TextView
+        android:id="@+id/slotNoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Slot number:"
+        app:layout_constraintTop_toBottomOf="@+id/coordLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/placeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Place Name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/coordLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coordinates"
+        app:layout_constraintTop_toBottomOf="@+id/placeLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/vehicleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vehicle"
+        app:layout_constraintTop_toBottomOf="@+id/slotNoLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/placeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="116dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/coordText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/placeText"
+        tools:layout_editor_absoluteX="124dp" />
+
+    <TextView
+        android:id="@+id/slotNoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/coordText"
+        tools:layout_editor_absoluteX="124dp" />
+
+    <TextView
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Select Start Date"
+        app:layout_constraintTop_toBottomOf="@+id/vehicleSelect"
+        tools:layout_editor_absoluteX="124dp" />
+
+    <TextView
+        android:id="@+id/endBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="Select End Date"
+        app:layout_constraintTop_toBottomOf="@+id/startBtn"
+        tools:layout_editor_absoluteX="124dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
