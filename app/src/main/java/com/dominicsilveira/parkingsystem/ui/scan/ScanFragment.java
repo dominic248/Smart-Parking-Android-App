@@ -1,5 +1,6 @@
 package com.dominicsilveira.parkingsystem.ui.scan;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.common.NumberPlateActivity;
+import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateAdapter;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
 import com.dominicsilveira.parkingsystem.utils.SimpleToDeleteCallback;
@@ -52,7 +54,7 @@ import java.util.TreeMap;
 
 
 
-public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTask.AsyncResponse {
+public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
 
     ImageView selectedImage;
     FloatingActionButton cameraBtn;
@@ -185,15 +187,33 @@ public class ScanFragment extends Fragment implements NumberPlateNetworkAsyncTas
                 e.printStackTrace();
             }
         }
+
+
+        if(requestCode==AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                Toast.makeText(getActivity(), data.getStringExtra("selection"), Toast.LENGTH_SHORT).show();
+            }else if (resultCode == Activity.RESULT_CANCELED) {
+                    //Do Something in case not recieved the data
+            }
+        }
+
     }
 
     public void myMethod(String result) throws JSONException {
         JSONObject obj = new JSONObject(result);
         JSONArray geodata = obj.getJSONArray("results");
-        Intent intent=new Intent(getActivity(), NumberPlateActivity.class);
-        intent.putExtra("image", upload);
-        intent.putExtra("numberPlate", geodata.getJSONObject(0).getString("plate"));
-        startActivity(intent);
+//        openDialog();
+        Bundle args = new Bundle();
+        args.putString("numberPlate", geodata.getJSONObject(0).getString("plate"));
+        NumberPlatePopUp numberPlateDialog = new NumberPlatePopUp();
+        numberPlateDialog.setTargetFragment(ScanFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
+        numberPlateDialog.setArguments(args);
+        numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
+//        Intent intent=new Intent(getActivity(), NumberPlateActivity.class);
+//        intent.putExtra("image", upload);
+//        intent.putExtra("numberPlate", geodata.getJSONObject(0).getString("plate"));
+//        startActivity(intent);
         Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
     }
+
 }
