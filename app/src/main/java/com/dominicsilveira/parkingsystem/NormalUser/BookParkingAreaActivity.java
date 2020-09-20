@@ -45,11 +45,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     TextView placeText,coordText,slotNoText;
     TextView startBtn, endBtn;
     Button cancelBtn,bookBtn;
+    DateTime startDateTime,endDateTime;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
-
-    DateTime startDateTime,endDateTime;
 
     List<String> numberPlateKeys = new ArrayList<String>();
     List<String> numberPlateList = new ArrayList<String>();

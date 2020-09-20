@@ -54,18 +54,24 @@ public class BookingPaymentActivity extends AppCompatActivity {
         nameEt = findViewById(R.id.name);
         upiIdEt = findViewById(R.id.upi_id);
     }
-
+// https://developers.google.com/pay/india/api/android/in-app-payments request pay
     void payUsingUpi(String amount, String upiId, String name, String note) {
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", upiId)
                 .appendQueryParameter("pn", name)
-                .appendQueryParameter("tn", note)
-                .appendQueryParameter("am", amount)
+                .appendQueryParameter("mc", "1234")
+                .appendQueryParameter("tr", "123456789")
+                .appendQueryParameter("tn", "test transaction note")
+                .appendQueryParameter("am", "10.01")
                 .appendQueryParameter("cu", "INR")
+                .appendQueryParameter("url", "https://test.merchant.website")
                 .build();
 
+//        String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
+//996041
         Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
         upiPayIntent.setData(uri);
+//        upiPayIntent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
 
         // will always show a dialog to user to choose an app
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");

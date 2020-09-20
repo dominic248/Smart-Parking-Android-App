@@ -55,9 +55,6 @@ public class RegisterAreaActivity extends AppCompatActivity {
         amount4Text=findViewById(R.id.amount4Text);
         totalSlotsText=findViewById(R.id.totalSlotsText);
 
-
-
-
         saveBtn=findViewById(R.id.saveBtn);
 
         auth= FirebaseAuth.getInstance();
@@ -91,7 +88,7 @@ public class RegisterAreaActivity extends AppCompatActivity {
                     String amount3 = amount3Text.getText().toString();
                     String amount4 = amount4Text.getText().toString();
                     String totalSlots = totalSlotsText.getText().toString();
-                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude,upiId,upiName,auth.getCurrentUser().getUid(),Integer.valueOf(totalSlots),0,amount2,amount3,amount4);
+                    ParkingArea parkingArea = new ParkingArea(areaName,latitude,longitude,upiId,upiName,auth.getCurrentUser().getUid(),Integer.parseInt(totalSlots),0,Integer.parseInt(amount2),Integer.parseInt(amount3),Integer.parseInt(amount4));
                     String key=db.getReference("ParkingAreas").push().getKey();
                     db.getReference("ParkingAreas")
                             .child(key)
@@ -111,14 +108,6 @@ public class RegisterAreaActivity extends AppCompatActivity {
                     });
                 }
             });
-
-
-//        cancelBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
 
     }
 }

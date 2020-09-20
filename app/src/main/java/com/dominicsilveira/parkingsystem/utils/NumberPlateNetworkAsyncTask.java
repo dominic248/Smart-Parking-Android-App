@@ -34,7 +34,7 @@ public class NumberPlateNetworkAsyncTask extends AsyncTask<Void, Void, String> {
     }
 
     public interface AsyncResponse {
-        void myMethod(String output) throws JSONException;
+        void NumberPlateNetworkAsyncTaskCallback(String output) throws JSONException;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class NumberPlateNetworkAsyncTask extends AsyncTask<Void, Void, String> {
 
     protected void onPostExecute(String result) {//***HERE
         try {
-            delegate.myMethod(result);
+            delegate.NumberPlateNetworkAsyncTaskCallback(result);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -57,7 +57,6 @@ import java.util.TreeMap;
 
 public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
 
-    ImageView selectedImage;
     FloatingActionButton cameraBtn;
     Bitmap upload;
 
@@ -228,7 +227,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
         });
     }
 
-    public void myMethod(String result) throws JSONException {
+    public void NumberPlateNetworkAsyncTaskCallback(String result) throws JSONException {
         JSONObject obj = new JSONObject(result);
         JSONArray geodata = obj.getJSONArray("results");
         Bundle args = new Bundle();

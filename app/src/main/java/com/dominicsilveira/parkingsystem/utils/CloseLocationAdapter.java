@@ -130,7 +130,6 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
 
     public void setDatas(MyViewHolder holder, final String id, final ParkingArea parkingArea){
         holder.mainName.setText(parkingArea.name);
-
         TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
         TextView occupiedText = (TextView) holder.expandCard.findViewById(R.id.occupiedText);
         TextView price2Text = (TextView) holder.expandCard.findViewById(R.id.price2Text);
@@ -143,7 +142,6 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
         price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
         PieChart platforms_chart = (PieChart) holder.expandCard.findViewById(R.id.platforms_chart);
-//        platforms_chart.setUsePercentValues(true);
         Description desc=new Description();
         desc.setText("Details");
         platforms_chart.setDescription(desc);
@@ -154,7 +152,6 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         PieData pieData=new PieData(pieDataSet);
         platforms_chart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-//        platforms_chart.animateXY(1400,1400);
         platforms_chart.notifyDataSetChanged();
         platforms_chart.invalidate();
 
@@ -179,7 +176,6 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
                 v.getContext().startActivity(intent);
             }
         });
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

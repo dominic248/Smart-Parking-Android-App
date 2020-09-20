@@ -3,16 +3,16 @@ package com.dominicsilveira.parkingsystem.classes;
 import java.io.Serializable;
 
 public class ParkingArea implements Serializable{
-    public String name,upiId,upiName,amount2,amount3,amount4,userID;
+    public String name,upiId,upiName,userID;
     public double latitude,longitude;
-    public int totalSlots,occupiedSlots,availableSlots;
+    public int totalSlots,occupiedSlots,availableSlots,amount2,amount3,amount4;
 
     public ParkingArea(){}
 
     public ParkingArea(String name, double latitude,double longitude,
                        String upiId,String upiName, String userID,
                        int totalSlots,int occupiedSlots,
-                       String amount2,String amount3,String amount4){
+                       int amount2,int amount3,int amount4){
         this.name=name;
         this.latitude=latitude;
         this.longitude=longitude;
