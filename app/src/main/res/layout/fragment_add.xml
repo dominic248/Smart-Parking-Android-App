@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Cancel"
+        android:text="scan"
         app:layout_constraintTop_toBottomOf="@+id/bookBtn"
         tools:layout_editor_absoluteX="92dp" />
 
@@ -117,10 +117,10 @@
         android:id="@+id/amountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="80dp"
         android:text="TextView"
         app:layout_constraintTop_toBottomOf="@+id/numberPlate"
-        tools:layout_editor_absoluteX="63dp" />
+        tools:layout_editor_absoluteX="55dp" />
 
     <TextView
         android:id="@+id/wheelerText"
@@ -129,5 +129,16 @@
         android:layout_marginTop="28dp"
         android:text="TextView"
         app:layout_constraintTop_toBottomOf="@+id/amountText"
+        tools:layout_editor_absoluteX="55dp" />
+
+    <EditText
+        android:id="@+id/emailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="email"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/numberPlate"
         tools:layout_editor_absoluteX="55dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

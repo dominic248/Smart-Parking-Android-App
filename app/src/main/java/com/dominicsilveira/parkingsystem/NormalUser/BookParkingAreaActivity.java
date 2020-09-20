@@ -157,7 +157,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     public void addItemsOnSpinner() {
         numberPlateKeys.add("0");
         numberPlateList.add("Select a vehicle");
-        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
+        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(auth.getCurrentUser().getUid()).limitToFirst(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,6 +58,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     TextView placeText,coordText,slotNoText,numberPlate,amountText,wheelerText;
     TextView startBtn, endBtn;
     Button cameraBtn,bookBtn;
+    EditText emailText;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -81,6 +84,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         bookBtn = root.findViewById(R.id.bookBtn);
         amountText=root.findViewById(R.id.amountText);
         wheelerText=root.findViewById(R.id.wheelerText);
+        emailText=root.findViewById(R.id.emailText);
 
         startBtn.setInputType(InputType.TYPE_NULL);
         endBtn.setInputType(InputType.TYPE_NULL);
@@ -267,21 +271,39 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     }
 
     private void saveData() {
-        int wheelerInt=Integer.parseInt(wheelerText.getText().toString()),amountInt=Integer.parseInt(amountText.getText().toString());
-        BookedSlots bookingSlot=new BookedSlots(auth.getCurrentUser().getUid(),placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
-        String key=db.getReference("BookedSlots").push().getKey();
-        db.getReference("BookedSlots")
-                .child(key)
-                .setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        final int wheelerInt=Integer.parseInt(wheelerText.getText().toString()),amountInt=Integer.parseInt(amountText.getText().toString());
+        db.getReference().child("Users").orderByChild("email").equalTo(emailText.getText().toString()).limitToFirst(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                String userID = dataSnapshot.getKey();
+                                BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
+                                String key=db.getReference("BookedSlots").push().getKey();
+                                db.getReference("BookedSlots")
+                                        .child(key)
+                                        .setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }else{
+                            Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+
+
+
     }
 
     public void NumberPlateNetworkAsyncTaskCallback(String result) throws JSONException {

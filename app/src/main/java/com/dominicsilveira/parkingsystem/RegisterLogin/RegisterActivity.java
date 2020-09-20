@@ -95,13 +95,13 @@ public class RegisterActivity extends AppCompatActivity {
         return user;
     }
 
-    private void registerUser(String email, String password, final String name, final String contact_no, final int userType) {
+    private void registerUser(final String email, String password, final String name, final String contact_no, final int userType) {
         auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            final User user=new User(name,contact_no,userType);
+                            final User user=new User(name,email,contact_no,userType);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
