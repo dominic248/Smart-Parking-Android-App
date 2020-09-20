@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.dashboard.normal.DashboardNormalFragment" >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoutBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card1" />
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card1"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="8dp"
+        app:contentPadding="5dp"
+        app:cardPreventCornerOverlap="true"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cardUseCompatPadding="false">
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parking locations on Maps"
+            android:textSize="14dp"
+            android:layout_marginStart="12dp"
+            android:layout_gravity="left|center_vertical"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/textButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Open Maps"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/white"
+            app:cornerRadius="5dp"
+            android:layout_marginEnd="12dp"
+            app:rippleColor="@color/colorPrimary"
+            android:layout_gravity="right|center_vertical"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            />
+    </com.google.android.material.card.MaterialCardView>
+
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/getLocationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GET LOCATION"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.635" />
+
+    <Button
+        android:id="@+id/addLocationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add LOCATION"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.761" />
+
+    <Button
+        android:id="@+id/payBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.857" />
+</androidx.constraintlayout.widget.ConstraintLayout>

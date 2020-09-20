@@ -8,17 +8,16 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".AppConstants"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".AppConstants"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
-
 
         <activity
             android:name=".common.SplashScreen"
@@ -29,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".common.MainActivity" />
+        <activity android:name=".common.MainOwnerActivity" />
+        <activity android:name=".common.MainNormalActivity" />
         <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.RegisterAreaActivity" />
@@ -49,4 +49,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

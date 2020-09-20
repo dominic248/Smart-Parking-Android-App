@@ -6,10 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
-import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +20,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
 
@@ -38,7 +35,11 @@ public class SplashScreen extends AppCompatActivity {
                     int val=snapshot.getValue(int.class);
                     Log.e("userTyp",String.valueOf(val));
                     globalClass.setUserType(val);
-                    Intent intent=new Intent(SplashScreen.this, MainActivity.class);
+                    Intent intent;
+                    if (val==2)
+                        intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                    else
+                        intent=new Intent(SplashScreen.this, MainNormalActivity.class);
                     startActivity(intent);
                     finish();
                 }

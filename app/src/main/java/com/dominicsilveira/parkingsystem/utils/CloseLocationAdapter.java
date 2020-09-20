@@ -153,6 +153,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         platforms_chart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
         platforms_chart.animateXY(1400,1400);
+        platforms_chart.notifyDataSetChanged();
+        platforms_chart.invalidate();
 
     }
 

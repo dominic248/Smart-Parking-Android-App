@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.ui.dashboard;
+package com.dominicsilveira.parkingsystem.ui.dashboard.normal;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

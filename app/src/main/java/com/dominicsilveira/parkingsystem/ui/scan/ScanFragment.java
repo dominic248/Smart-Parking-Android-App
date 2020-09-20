@@ -74,9 +74,6 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        AppConstants globalClass=(AppConstants)getActivity().getApplicationContext();
-        Log.e("Check",String.valueOf(globalClass.getUserType()));
-        if(globalClass.getUserType()==2){
             View root = inflater.inflate(R.layout.fragment_scan, container, false);
             cameraBtn=root.findViewById(R.id.addVehicle);
 
@@ -152,11 +149,6 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                         public void onCancelled(@NonNull DatabaseError error) {}
                     });
             return root;
-        }else{
-            View root = inflater.inflate(R.layout.fragment_scan_owner, container, false);
-            return root;
-        }
-
     }
 
     private void askCameraPermission() {

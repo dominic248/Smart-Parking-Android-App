@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.ui.dashboard;
+package com.dominicsilveira.parkingsystem.ui.dashboard.normal;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,7 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DashboardFragment extends Fragment {
+public class DashboardNormalFragment extends Fragment {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -64,7 +64,7 @@ public class DashboardFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_dashboard_normal, container, false);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();

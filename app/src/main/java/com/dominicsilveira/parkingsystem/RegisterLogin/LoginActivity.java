@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.common.MainActivity;
-import com.dominicsilveira.parkingsystem.common.SplashScreen;
+import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,7 +85,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("userTyp",String.valueOf(val));
                         globalClass.setUserType(val);
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent;
+                        if(val==2)
+                            intent=new Intent(LoginActivity.this, MainOwnerActivity.class);
+                        else
+                            intent=new Intent(LoginActivity.this, MainNormalActivity.class);
                         intent.putExtra("FRAGMENT_NO", 0);
                         startActivity(intent);
                         finish();
