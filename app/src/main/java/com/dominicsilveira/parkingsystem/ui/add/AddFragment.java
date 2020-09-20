@@ -279,20 +279,33 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         if(snapshot.exists()){
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
-                                BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
-                                String key=db.getReference("BookedSlots").push().getKey();
-                                db.getReference("BookedSlots")
-                                        .child(key)
-                                        .setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                                        }else{
-                                            Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
+                                final String key=db.getReference("BookedSlots").push().getKey();
+                                if(parkingArea.availableSlots>0){
+                                    parkingArea.availableSlots-=1;
+                                    parkingArea.occupiedSlots+=1;
+                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful()){
+                                                                Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                                            }else{
+                                                                Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                                                                parkingArea.availableSlots+=1;
+                                                                parkingArea.occupiedSlots-=1;
+                                                                db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
                                         }
-                                    }
-                                });
+                                    );
+                                }
                             }
                         }else{
                             Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
@@ -301,9 +314,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-
-
-
     }
 
     public void NumberPlateNetworkAsyncTaskCallback(String result) throws JSONException {

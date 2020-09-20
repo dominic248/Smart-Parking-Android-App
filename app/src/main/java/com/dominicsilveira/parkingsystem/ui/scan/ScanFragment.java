@@ -117,7 +117,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                                                     recyclerView.scrollToPosition(position);
                                                     db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
                                                             .setValue(auth.getCurrentUser().getUid()+"_0");
-                                                    db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                                    db.getReference().child("NumberPlates").child(data).child("isDeleted")
                                                             .setValue(0);
                                                 }
                                             });
