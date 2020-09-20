@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -32,6 +33,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,6 +49,8 @@ public class DashboardOwnerFragment extends Fragment {
     ConstraintLayout expandCard;
     TextView availableText,occupiedText,price2Text,price3Text,price4Text;
     PieChart platforms_chart;
+
+    boolean dataSet=false;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -78,21 +82,34 @@ public class DashboardOwnerFragment extends Fragment {
         });
 
         db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
+                        setDashboardValues(parkingArea);
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+
+        db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
-                            String prepend=": ";
-                            availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
-                            occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
-                            price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
-                            price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
-                            price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
-
-                            setPieChartValues(parkingArea.availableSlots,parkingArea.occupiedSlots);
+                            setDashboardValues(parkingArea);
                             Log.e("CalledTwice","12");
-
                         }
                     }
                     @Override
@@ -101,19 +118,28 @@ public class DashboardOwnerFragment extends Fragment {
         return root;
     }
 
-    private void setPieChartValues(int availableSlots,int occupiedSlots) {
+    private void setDashboardValues(ParkingArea parkingArea) {
+        String prepend=": ";
+        availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
+        occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
+        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
+        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
+        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
 //        platforms_chart.setUsePercentValues(true);
         Description desc=new Description();
         desc.setText("Details");
         platforms_chart.setDescription(desc);
         List<PieEntry> value=new ArrayList<>();
-        value.add(new PieEntry(availableSlots,"Available"));
-        value.add(new PieEntry(occupiedSlots,"Occupied"));
+        value.add(new PieEntry(parkingArea.availableSlots,"Available"));
+        value.add(new PieEntry(parkingArea.occupiedSlots,"Occupied"));
         PieDataSet pieDataSet=new PieDataSet(value,"Slots");
         PieData pieData=new PieData(pieDataSet);
         platforms_chart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        platforms_chart.animateXY(1400,1400);
+        if(!dataSet){
+            platforms_chart.animateXY(1400,1400);
+            dataSet=true;
+        }
         platforms_chart.notifyDataSetChanged();
         platforms_chart.invalidate();
     }

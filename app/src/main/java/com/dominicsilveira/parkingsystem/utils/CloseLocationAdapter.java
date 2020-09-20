@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +42,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
 
     Map<Double, HashMap<String, ParkingArea>> distParkingArea;
     List<Double> keys = new ArrayList<Double>();
+    FirebaseAuth auth;
+    FirebaseDatabase db;
 
     public CloseLocationAdapter(Map<Double, HashMap<String, ParkingArea>> distParkingArea){
         this.distParkingArea = distParkingArea;
@@ -76,37 +85,13 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(position));
-        String id = (String) idParkingArea.keySet().toArray()[0];
-        ParkingArea parkingArea = (ParkingArea) idParkingArea.values().toArray()[0];
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        final HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(position));
+        final String id = (String) idParkingArea.keySet().toArray()[0];
+        final ParkingArea parkingArea = (ParkingArea) idParkingArea.values().toArray()[0];
         Log.d("id", String.valueOf(id)+String.valueOf(parkingArea));
-        holder.mainName.setText(parkingArea.name);
-
-        TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
-        TextView occupiedText = (TextView) holder.expandCard.findViewById(R.id.occupiedText);
-        TextView price2Text = (TextView) holder.expandCard.findViewById(R.id.price2Text);
-        TextView price3Text = (TextView) holder.expandCard.findViewById(R.id.price3Text);
-        TextView price4Text = (TextView) holder.expandCard.findViewById(R.id.price4Text);
-        String prepend=": ";
-        availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
-        occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
-        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
-        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
-        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
-
-        holder.bookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v ) {
-                Log.e("Adap",String.valueOf(holder.getAdapterPosition()));
-                HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(holder.getAdapterPosition()));
-                String UUID = (String) idParkingArea.keySet().toArray()[0];
-                ParkingArea val = (ParkingArea) idParkingArea.values().toArray()[0];
-                Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
-                intent.putExtra("UUID", UUID);
-                intent.putExtra("ParkingArea", val);
-                v.getContext().startActivity(intent);
-            }
-        });
+        setDatas(holder,id,parkingArea);
 
         holder.dropdownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,23 +108,40 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
             }
         });
 
-        holder.mapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v ) {
-                Log.e("Adap",String.valueOf(holder.getAdapterPosition()));
-                HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(holder.getAdapterPosition()));
-                String UUID = (String) idParkingArea.keySet().toArray()[0];
-                ParkingArea val = (ParkingArea) idParkingArea.values().toArray()[0];
-                Intent intent=new Intent(v.getContext(), GPSMapActivity.class);
-                Log.e("Close loc to GPS map",val.name);
-                intent.putExtra("LOCATION_NAME", val.name);
-                intent.putExtra("LOCATION_LATITUDE", val.latitude);
-                intent.putExtra("LOCATION_LONGITUDE", val.longitude);
-                v.getContext().startActivity(intent);
-            }
-        });
 
+        db.getReference().child("ParkingAreas").child(id)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                        setDatas(holder,id,parkingArea);
+                        Log.e("updateView", snapshot.getKey()+" "+snapshot.getValue(int.class)+" "+parkingArea.occupiedSlots);
+                    }
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {}
+                });
+    }
 
+    public void setDatas(MyViewHolder holder, final String id, final ParkingArea parkingArea){
+        holder.mainName.setText(parkingArea.name);
+
+        TextView availableText = (TextView) holder.expandCard.findViewById(R.id.availableText);
+        TextView occupiedText = (TextView) holder.expandCard.findViewById(R.id.occupiedText);
+        TextView price2Text = (TextView) holder.expandCard.findViewById(R.id.price2Text);
+        TextView price3Text = (TextView) holder.expandCard.findViewById(R.id.price3Text);
+        TextView price4Text = (TextView) holder.expandCard.findViewById(R.id.price4Text);
+        String prepend=": ";
+        availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
+        occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
+        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
+        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
+        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
         PieChart platforms_chart = (PieChart) holder.expandCard.findViewById(R.id.platforms_chart);
 //        platforms_chart.setUsePercentValues(true);
         Description desc=new Description();
@@ -152,9 +154,31 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         PieData pieData=new PieData(pieDataSet);
         platforms_chart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        platforms_chart.animateXY(1400,1400);
+//        platforms_chart.animateXY(1400,1400);
         platforms_chart.notifyDataSetChanged();
         platforms_chart.invalidate();
+
+        holder.bookBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v ) {
+                Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
+                intent.putExtra("UUID", id);
+                intent.putExtra("ParkingArea", parkingArea);
+                v.getContext().startActivity(intent);
+            }
+        });
+
+        holder.mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v ) {
+                Intent intent=new Intent(v.getContext(), GPSMapActivity.class);
+                Log.e("Close loc to GPS map",parkingArea.name);
+                intent.putExtra("LOCATION_NAME", parkingArea.name);
+                intent.putExtra("LOCATION_LATITUDE", parkingArea.latitude);
+                intent.putExtra("LOCATION_LONGITUDE", parkingArea.longitude);
+                v.getContext().startActivity(intent);
+            }
+        });
 
     }
 

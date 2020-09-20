@@ -26,6 +26,15 @@ public class ParkingArea implements Serializable{
         this.amount3=amount3;
         this.amount4=amount4;
     }
+
+    public void setData(String varName,int varData){
+        if(varName.equals("availableSlots"))
+            this.availableSlots=varData;
+        if(varName.equals("occupiedSlots"))
+            this.occupiedSlots=varData;
+        if(varName.equals("totalSlots"))
+            this.totalSlots=varData;
+    }
 }
 
 
