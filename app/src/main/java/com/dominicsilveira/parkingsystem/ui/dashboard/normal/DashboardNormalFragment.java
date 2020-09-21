@@ -51,6 +51,8 @@ public class DashboardNormalFragment extends Fragment {
     FirebaseAuth auth;
     FirebaseDatabase db;
 
+    Button logout,openMapsBtn,addLocationBtn,payBtn;
+
     FusedLocationProviderClient client;
     LatLng globalLatLng;
 
@@ -60,7 +62,7 @@ public class DashboardNormalFragment extends Fragment {
 
     Map<Double, HashMap<String, ParkingArea>> parkingAreasList = new HashMap<Double, HashMap<String, ParkingArea>>();
     Map<Double, HashMap<String, ParkingArea>> treeMap;
-    boolean isGPS;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -69,10 +71,10 @@ public class DashboardNormalFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        Button logout = root.findViewById(R.id.logoutBtn);
-        Button getLocationBtn = root.findViewById(R.id.getLocationBtn);
-        Button addLocationBtn = root.findViewById(R.id.addLocationBtn);
-        Button payBtn = root.findViewById(R.id.payBtn);
+        logout = root.findViewById(R.id.logoutBtn);
+        openMapsBtn = root.findViewById(R.id.openMapsBtn);
+        addLocationBtn = root.findViewById(R.id.addLocationBtn);
+        payBtn = root.findViewById(R.id.payBtn);
 
         recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -81,14 +83,6 @@ public class DashboardNormalFragment extends Fragment {
 
         client= LocationServices.getFusedLocationProviderClient(getActivity());
         getPreCurrentLocation();
-
-        new GpsUtils(getActivity()).turnGPSOn(new GpsUtils.onGpsListener() {
-            @Override
-            public void gpsStatus(boolean isGPSEnable) {
-                // turn on GPS
-                isGPS = isGPSEnable;
-            }
-        });
 
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +95,7 @@ public class DashboardNormalFragment extends Fragment {
             }
         });
 
-        getLocationBtn.setOnClickListener(new View.OnClickListener() {
+        openMapsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), GPSMapActivity.class));
@@ -197,14 +191,5 @@ public class DashboardNormalFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == AppConstants.GPS_REQUEST) {
-                Log.e("location","enabled");
-                isGPS = true; // flag maintain before get location
-            }
-        }
-    }
+
 }

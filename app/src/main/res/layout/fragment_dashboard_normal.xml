@@ -16,13 +16,13 @@
         app:layout_constraintBottom_toTopOf="@+id/logoutBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card1" />
+        app:layout_constraintTop_toBottomOf="@+id/openBookingsCard" />
 
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/card1"
+        android:id="@+id/openMapsCard"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         android:theme="@style/Theme.MaterialComponents.Light"
         app:cardUseCompatPadding="false">
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/openMapsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Parking locations on Maps"
@@ -46,8 +46,8 @@
             android:layout_gravity="left|center_vertical"
             />
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/textButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/openMapsBtn"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:text="Open Maps"
             android:backgroundTint="@color/colorAccent"
@@ -60,6 +60,49 @@
             />
     </com.google.android.material.card.MaterialCardView>
 
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/myBookingsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="8dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="false"
+        app:contentPadding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/openMapsCard">
+
+        <TextView
+            android:id="@+id/myBookingsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginStart="12dp"
+            android:text="Bookings"
+            android:textSize="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/myBookingsText"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="My Bookings"
+            android:textColor="@color/white"
+            app:cornerRadius="5dp"
+            app:rippleColor="@color/colorPrimary" />
+    </com.google.android.material.card.MaterialCardView>
+
     <Button
         android:id="@+id/logoutBtn"
         android:layout_width="wrap_content"
@@ -67,8 +110,10 @@
         android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.657" />
 
     <Button
         android:id="@+id/getLocationBtn"
@@ -77,10 +122,10 @@
         android:text="GET LOCATION"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintHorizontal_bias="0.56"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.635" />
+        app:layout_constraintVertical_bias="0.727" />
 
     <Button
         android:id="@+id/addLocationBtn"
@@ -92,7 +137,7 @@
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.761" />
+        app:layout_constraintVertical_bias="0.787" />
 
     <Button
         android:id="@+id/payBtn"

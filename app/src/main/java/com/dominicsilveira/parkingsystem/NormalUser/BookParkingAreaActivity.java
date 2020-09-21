@@ -3,11 +3,9 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -23,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -34,7 +31,7 @@ import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.NotificationHelper;
-import com.dominicsilveira.parkingsystem.utils.Notification_reciever;
+import com.dominicsilveira.parkingsystem.utils.NotificationReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,17 +41,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.joda.time.DateTime;
-import org.joda.time.Hours;
-
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
@@ -211,7 +203,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     else
                                         Log.e("AfterNotifiy","1");
                                     AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
-                                    Intent intent=new Intent(getApplicationContext(), Notification_reciever.class);
+                                    Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
                                     PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                                 }else{
