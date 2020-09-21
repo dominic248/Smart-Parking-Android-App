@@ -30,7 +30,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".common.MainOwnerActivity" />
-        <activity android:name=".common.MainNormalActivity" />
+        <activity android:name=".common.MainNormalActivity"
+            android:launchMode="singleTop" /> <!--for no stacking due to notification-->
         <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.RegisterAreaActivity" />

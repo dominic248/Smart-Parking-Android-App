@@ -3,6 +3,7 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -32,6 +33,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.Notification_reciever;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -74,6 +76,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     int wheelerTypeText;
     final int UPI_PAYMENT = 0;
 
+    private NotificationHelper mNotificationHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +95,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookBtn = findViewById(R.id.bookBtn);
         wheelerText = findViewById(R.id.wheelerText);
         amountText = findViewById(R.id.amountText);
+
+        mNotificationHelper=new NotificationHelper(this);
 
 
         startBtn.setInputType(InputType.TYPE_NULL);
@@ -194,13 +200,19 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(bookingSlot.endTime);
-                                    Toast.makeText(BookParkingAreaActivity.this,"Success "+calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.AM_PM)+" "
-                                            +calendar.get(Calendar.DAY_OF_MONTH)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.YEAR)+" "
-                                            ,Toast.LENGTH_SHORT).show();
+                                    SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
+                                    Toast.makeText(BookParkingAreaActivity.this,"Success "+simpleDateFormat.format(calendar.getTime())
+                                            ,Toast.LENGTH_SHORT).show();
+//                                    NotificationCompat.Builder nb= mNotificationHelper.getChannelNotification("Test","test1");
+//                                    mNotificationHelper.getManager().notify(1,nb.build());
+                                    if (calendar.before(Calendar.getInstance()))
+                                        Log.e("BeforeNotifiy","1");
+                                    else
+                                        Log.e("AfterNotifiy","1");
+                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
                                     Intent intent=new Intent(getApplicationContext(), Notification_reciever.class);
                                     PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
 
                                 }else{
@@ -231,10 +243,11 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                         calendar.set(Calendar.HOUR_OF_DAY,hour);
                         calendar.set(Calendar.MINUTE,minute);
+                        calendar.set(Calendar.SECOND, 0);
                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         button.setText(simpleDateFormat.format(calendar.getTime()));
                         if(end){
-                            calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH)+1);
+//                            calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH)+1);
                             endDateTime = calendar.getTime();
                         }else{
                             startDateTime = calendar.getTime();
