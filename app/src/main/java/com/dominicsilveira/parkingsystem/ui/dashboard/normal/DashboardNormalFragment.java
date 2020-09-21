@@ -1,5 +1,7 @@
 package com.dominicsilveira.parkingsystem.ui.dashboard.normal;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,14 +24,14 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.utils.CloseLocationAdapter;
-import com.dominicsilveira.parkingsystem.utils.GpsUtils;
+import com.dominicsilveira.parkingsystem.utils.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
@@ -52,6 +53,7 @@ public class DashboardNormalFragment extends Fragment {
     FirebaseDatabase db;
 
     Button logout,openMapsBtn,addLocationBtn,payBtn;
+    Button startService,stopService,checkService;
 
     FusedLocationProviderClient client;
     LatLng globalLatLng;
@@ -76,6 +78,10 @@ public class DashboardNormalFragment extends Fragment {
         addLocationBtn = root.findViewById(R.id.addLocationBtn);
         payBtn = root.findViewById(R.id.payBtn);
 
+        startService = root.findViewById(R.id.startService);
+        stopService = root.findViewById(R.id.stopService);
+        checkService = root.findViewById(R.id.checkService);
+
         recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -84,6 +90,30 @@ public class DashboardNormalFragment extends Fragment {
         client= LocationServices.getFusedLocationProviderClient(getActivity());
         getPreCurrentLocation();
 
+
+        startService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startService(new Intent(getActivity(), MyParkingService.class));
+                Toast.makeText(getActivity(), "Service started", Toast.LENGTH_SHORT).show();
+            }
+        });
+        stopService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
+                Toast.makeText(getActivity(), "Service stopped", Toast.LENGTH_SHORT).show();
+            }
+        });
+        checkService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isMyServiceRunning(MyParkingService.class))
+                    Toast.makeText(getActivity(), "Service is not running", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), "Service is running", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +147,16 @@ public class DashboardNormalFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void getPreCurrentLocation() {

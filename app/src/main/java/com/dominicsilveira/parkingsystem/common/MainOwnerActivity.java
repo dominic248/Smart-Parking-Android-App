@@ -1,5 +1,6 @@
 package com.dominicsilveira.parkingsystem.common;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -17,6 +18,8 @@ public class MainOwnerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_owner);
+
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_dashboard, R.id.navigation_add, R.id.navigation_profile)
