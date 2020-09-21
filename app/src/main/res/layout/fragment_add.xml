@@ -91,28 +91,29 @@
         android:id="@+id/endBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:text="Select End Date"
         app:layout_constraintTop_toBottomOf="@+id/startBtn"
-        tools:layout_editor_absoluteX="64dp" />
+        tools:layout_editor_absoluteX="96dp" />
 
     <Button
         android:id="@+id/bookBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="64dp"
         android:text="Book "
         app:layout_constraintTop_toBottomOf="@+id/startBtn"
-        tools:layout_editor_absoluteX="75dp" />
+        tools:layout_editor_absoluteX="36dp" />
 
     <Button
         android:id="@+id/scanBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="516dp"
+        android:layout_marginEnd="112dp"
         android:text="scan"
-        app:layout_constraintTop_toBottomOf="@+id/bookBtn"
-        tools:layout_editor_absoluteX="92dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/amountText"

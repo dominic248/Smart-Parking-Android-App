@@ -9,11 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
+import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -21,14 +24,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class MyParkingService extends Service {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
     @Override
     public IBinder onBind(Intent intent) {
+        Toast.makeText(MyParkingService.this,"bind",Toast.LENGTH_SHORT).show();
         return null;
     }
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Service started by user.", Toast.LENGTH_LONG).show();
@@ -38,13 +47,56 @@ public class MyParkingService extends Service {
         db.getReference().child("BookedSlots")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        Toast.makeText(MyParkingService.this,snapshot.getKey()+" Added",Toast.LENGTH_SHORT).show();
+                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(bookedSlots.endTime);
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                        Toast.makeText(MyParkingService.this,"Success "+simpleDateFormat.format(calendar.getTime())
+                                ,Toast.LENGTH_SHORT).show();
+
+                        if (calendar.before(Calendar.getInstance()))
+                            Log.e("BeforeNotifiy","1");
+                        else{
+                            Log.e("AfterNotifiy","1");
+                        }
+                        AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
+                        Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
+                        intent.putExtra("title",snapshot.getKey());
+                        intent.putExtra("message","Confirm your Booking");
+                        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),
+                                Integer.parseInt(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).concat(String.valueOf(calendar.get(Calendar.MONTH)))
+                                        .concat(String.valueOf(calendar.get(Calendar.HOUR)))
+                                        .concat(String.valueOf(calendar.get(Calendar.MINUTE)))
+                                        .concat(String.valueOf(calendar.get(Calendar.AM_PM))))
+                                ,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                    }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        Toast.makeText(MyParkingService.this, snapshot.getKey(), Toast.LENGTH_SHORT).show();
-//                        ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
-//                        setAddValues(parkingArea,snapshot.getKey());
+                        Toast.makeText(MyParkingService.this,snapshot.getKey()+" Changed",Toast.LENGTH_SHORT).show();
+                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(bookedSlots.endTime);
+                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                        Toast.makeText(MyParkingService.this,"Success "+simpleDateFormat.format(calendar.getTime())
+                                ,Toast.LENGTH_SHORT).show();
+
+                        if (calendar.before(Calendar.getInstance()))
+                            Log.e("BeforeNotifiy","1");
+                        else{
+                            Log.e("AfterNotifiy","1");
+                        }
+                        AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
+                        Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
+                        intent.putExtra("title",bookedSlots.placeID);
+                        intent.putExtra("message","Confirm your Booking");
+                        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                     }
 
                     @Override
@@ -56,10 +108,9 @@ public class MyParkingService extends Service {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-
-
         return START_STICKY;
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -68,6 +119,7 @@ public class MyParkingService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent){
+        Toast.makeText(this, "Service TaskRemoved by user.", Toast.LENGTH_LONG).show();
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
 
@@ -79,4 +131,5 @@ public class MyParkingService extends Service {
                 restartServicePendingIntent);
         super.onTaskRemoved(rootIntent);
     }
+
 }

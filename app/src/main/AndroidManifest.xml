@@ -54,7 +54,8 @@
             android:name=".utils.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-        <service android:name = ".utils.MyParkingService"/>
+        <service android:name = ".utils.MyParkingService"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>

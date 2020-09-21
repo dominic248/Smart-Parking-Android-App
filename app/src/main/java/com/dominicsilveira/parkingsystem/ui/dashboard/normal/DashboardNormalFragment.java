@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -94,6 +95,7 @@ public class DashboardNormalFragment extends Fragment {
         startService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ContextCompat.startForegroundService(getActivity(),new Intent(getActivity(), MyParkingService.class));
                 getActivity().startService(new Intent(getActivity(), MyParkingService.class));
                 Toast.makeText(getActivity(), "Service started", Toast.LENGTH_SHORT).show();
             }
