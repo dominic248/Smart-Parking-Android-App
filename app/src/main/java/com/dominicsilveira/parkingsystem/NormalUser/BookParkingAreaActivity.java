@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +32,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.Notification_reciever;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +46,14 @@ import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
     Spinner numberPlateSpinner;
@@ -52,7 +61,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     TextView startBtn, endBtn;
     Button cancelBtn,bookBtn;
 
-    DateTime startDateTime,endDateTime;
+    Date startDateTime,endDateTime;
     String placeID;
     ParkingArea parkingArea;
 
@@ -123,7 +132,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 //        payBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-                //Getting the values from the EditTexts
 //                String amount = "1";
 //                String note ="Payment";
 //                String name = "Michael Silveira";
@@ -184,7 +192,17 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(bookingSlot.endTime);
+                                    Toast.makeText(BookParkingAreaActivity.this,"Success "+calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.AM_PM)+" "
+                                            +calendar.get(Calendar.DAY_OF_MONTH)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.YEAR)+" "
+                                            ,Toast.LENGTH_SHORT).show();
+
+                                    Intent intent=new Intent(getApplicationContext(), Notification_reciever.class);
+                                    PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
+                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+
                                 }else{
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
@@ -200,7 +218,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     }
 
     private void showDateTIme(final TextView button, final boolean end) {
-        final Calendar calendar=Calendar.getInstance();
+        final Calendar calendar=new GregorianCalendar();
         DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, final int date) {
@@ -216,17 +234,18 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         button.setText(simpleDateFormat.format(calendar.getTime()));
                         if(end){
-                            endDateTime = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0,0);
+                            calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH)+1);
+                            endDateTime = calendar.getTime();
                         }else{
-                            startDateTime = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0,0);
+                            startDateTime = calendar.getTime();
                         }
                         if(endDateTime!=null && startDateTime!=null){
-                            if(endDateTime.getMillis()>startDateTime.getMillis()){
+                            if(endDateTime.after(startDateTime)){
                                 Toast.makeText(BookParkingAreaActivity.this,
-                                        "after", Toast.LENGTH_SHORT).show();
+                                        "after"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(BookParkingAreaActivity.this,
-                                        "before", Toast.LENGTH_SHORT).show();
+                                        "before"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -269,7 +288,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 if(position!=0){
                     numberPlateText= numberPlateNumber.get(position);
                     wheelerTypeText= numberPlateWheeler.get(position);
-                    Hours hours = Hours.hoursBetween(startDateTime, endDateTime);
+                    long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
+                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                     int wheelerAmount;
                     if(wheelerTypeText==2)
                         wheelerAmount=parkingArea.amount2;
@@ -277,7 +297,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         wheelerAmount=parkingArea.amount3;
                     else
                         wheelerAmount=parkingArea.amount4;
-                    int amount=hours.getHours()*wheelerAmount;
+                    int amount=(int)diff*wheelerAmount;
                     String amountStr=String.valueOf(amount);
                     String wheelerTypeStr=String.valueOf(wheelerTypeText);
                     amountText.setText(amountStr);
