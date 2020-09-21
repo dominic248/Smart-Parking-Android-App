@@ -214,7 +214,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     Intent intent=new Intent(getApplicationContext(), Notification_reciever.class);
                                     PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
                                     alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
-
                                 }else{
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
@@ -247,7 +246,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         button.setText(simpleDateFormat.format(calendar.getTime()));
                         if(end){
-//                            calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH)+1);
                             endDateTime = calendar.getTime();
                         }else{
                             startDateTime = calendar.getTime();

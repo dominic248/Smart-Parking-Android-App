@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
@@ -51,6 +52,8 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
     Bitmap upload;
@@ -63,7 +66,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    DateTime startDateTime,endDateTime;
+    Date startDateTime,endDateTime;
     String placeID;
     ParkingArea parkingArea;
 
@@ -175,20 +178,21 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                         calendar.set(Calendar.HOUR_OF_DAY,hour);
                         calendar.set(Calendar.MINUTE,minute);
+                        calendar.set(Calendar.SECOND, 0);
                         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         button.setText(simpleDateFormat.format(calendar.getTime()));
                         if(end){
-                            endDateTime = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0,0);
+                            endDateTime = calendar.getTime();
                         }else{
-                            startDateTime = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), 0,0);
+                            startDateTime = calendar.getTime();
                         }
                         if(endDateTime!=null && startDateTime!=null){
-                            if(endDateTime.getMillis()>startDateTime.getMillis()){
+                            if(endDateTime.after(startDateTime)){
                                 Toast.makeText(getActivity(),
-                                        "after", Toast.LENGTH_SHORT).show();
+                                        "after"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(getActivity(),
-                                        "before", Toast.LENGTH_SHORT).show();
+                                        "before"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -248,7 +252,9 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             if(resultCode == Activity.RESULT_OK){
                 int wheelerType=data.getIntExtra("wheelerType",4);
                 String vehicleNumber=data.getStringExtra("vehicleNumber");
-                Hours hours = Hours.hoursBetween(startDateTime, endDateTime);
+                String wheelerTypeStr=String.valueOf(wheelerType);
+                long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
+                long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                 int wheelerAmount;
                 if(wheelerType==2)
                     wheelerAmount=parkingArea.amount2;
@@ -256,13 +262,11 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     wheelerAmount=parkingArea.amount3;
                 else
                     wheelerAmount=parkingArea.amount4;
-                int amount=hours.getHours()*wheelerAmount;
+                int amount=(int)diff*wheelerAmount;
                 String amountStr=String.valueOf(amount);
-                String wheelerTypeStr=String.valueOf(wheelerType);
                 numberPlate.setText(vehicleNumber);
                 amountText.setText(amountStr);
                 wheelerText.setText(wheelerTypeStr);
-//                saveData(data.getStringExtra("vehicleNumber"),wheelerType,amount);
             }else if (resultCode == Activity.RESULT_CANCELED) {
                 //Do Something in case not recieved the data
             }
@@ -279,7 +283,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         if(snapshot.exists()){
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
-                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime.toDate(),endDateTime.toDate(),0,amountInt);
+                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
                                 final String key=db.getReference("BookedSlots").push().getKey();
                                 if(parkingArea.availableSlots>0){
                                     parkingArea.availableSlots-=1;
@@ -303,8 +307,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                                     });
                                                 }
                                             }
-                                        }
-                                    );
+                                    });
                                 }
                             }
                         }else{
