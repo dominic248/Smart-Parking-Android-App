@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.network;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;

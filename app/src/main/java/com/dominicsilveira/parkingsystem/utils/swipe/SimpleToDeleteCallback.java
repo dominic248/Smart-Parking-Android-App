@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.swipe;
 
 
 //https://www.journaldev.com/23164/android-recyclerview-swipe-to-delete-undo

@@ -51,11 +51,13 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".utils.NotificationReceiver"
+            android:name=".utils.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-        <service android:name = ".utils.MyParkingService"
-            android:stopWithTask="false"/>
+        <receiver android:name=".utils.notifications.NotificationActionReceiver" />
+        <service android:name = ".utils.services.MyParkingService"
+            android:foregroundServiceType="dataSync"/> <!--or https://stackoverflow.com/questions/19568315/how-to-handle-code-when-app-is-killed-by-swiping-in-android/26882533#26882533-->
+
     </application>
 
 </manifest>

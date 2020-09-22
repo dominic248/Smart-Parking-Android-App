@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.notifications;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -44,15 +45,28 @@ public class NotificationHelper extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String title, String message){
+    public NotificationCompat.Builder getChannelNotification(String title, String message,String readID){
+        Log.i("NotificationSet",title+":"+message);
 
         Intent resultIntent=new Intent(this, MainNormalActivity.class);
         PendingIntent pendingIntent=PendingIntent.getActivity(this,1,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        //This is the intent of PendingIntent
+        Intent intentAction = new Intent(this, NotificationActionReceiver.class);
+        //This is optional if you have more than one buttons and want to differentiate between two
+        intentAction.putExtra("action","MarkAsRead");
+        intentAction.putExtra("readID",readID);
+        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+
         return new NotificationCompat.Builder(getApplicationContext(),channeldID)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
+                .setGroup("check_booking")
+                .setContentIntent(pendingIntent)
+                .addAction(0, "Mark As Read", pIntentlogin);
     }
+
+
 }

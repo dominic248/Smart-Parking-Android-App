@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.adapters;
 
 import android.content.Intent;
 import android.transition.AutoTransition;

@@ -28,13 +28,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
-import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
-import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
+import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,8 +42,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.joda.time.DateTime;
-import org.joda.time.Hours;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -283,7 +279,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         if(snapshot.exists()){
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
-                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt);
+                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,(int)Calendar.getInstance().getTimeInMillis(),0);
                                 final String key=db.getReference("BookedSlots").push().getKey();
                                 if(parkingArea.availableSlots>0){
                                     parkingArea.availableSlots-=1;

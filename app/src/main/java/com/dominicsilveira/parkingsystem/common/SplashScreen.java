@@ -4,14 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
-import com.dominicsilveira.parkingsystem.utils.GpsUtils;
+import com.dominicsilveira.parkingsystem.utils.gps.GpsUtils;
+import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +52,9 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void startApp() {
+        if(!isMyServiceRunning(MyParkingService.class))
+            SplashScreen.this.startService(new Intent(SplashScreen.this, MyParkingService.class));
+        startService(new Intent(SplashScreen.this, MyParkingService.class));
         Log.e("location","enabled");
         isGPS = true; // flag maintain before get location
         if(auth.getCurrentUser()==null){
@@ -78,5 +83,15 @@ public class SplashScreen extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) SplashScreen.this.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

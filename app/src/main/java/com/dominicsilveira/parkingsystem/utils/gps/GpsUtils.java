@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.gps;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

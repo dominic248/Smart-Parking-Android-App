@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -30,8 +28,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.utils.NotificationHelper;
-import com.dominicsilveira.parkingsystem.utils.NotificationReceiver;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -177,7 +174,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     private void saveData() {
         final int amountInt=Integer.parseInt(amountText.getText().toString());
         String userID = auth.getCurrentUser().getUid();
-        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,0,amountInt);
+        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,0,amountInt,(int)Calendar.getInstance().getTimeInMillis(),0);
         final String key=db.getReference("BookedSlots").push().getKey();
         if(parkingArea.availableSlots>0){
             parkingArea.availableSlots-=1;
@@ -194,18 +191,21 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     calendar.setTime(bookingSlot.endTime);
                                     SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-                                    Toast.makeText(BookParkingAreaActivity.this,"Success "+simpleDateFormat.format(calendar.getTime())
-                                            ,Toast.LENGTH_SHORT).show();
+                                    Log.i(String.valueOf(this.getClass()),key+" onChildChanged ,id "+Math.abs(bookingSlot.notificationID)+", Success: Alarm at "+simpleDateFormat.format(calendar.getTime()));
+
 //                                    NotificationCompat.Builder nb= mNotificationHelper.getChannelNotification("Test","test1");
 //                                    mNotificationHelper.getManager().notify(1,nb.build());
                                     if (calendar.before(Calendar.getInstance()))
                                         Log.e("BeforeNotifiy","1");
                                     else
                                         Log.e("AfterNotifiy","1");
-                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
-                                    Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
-                                    PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+//                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
+//                                    Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
+//                                    intent.putExtra("title",key);
+//                                    intent.putExtra("message","Confirm your Booking");
+//                                    intent.putExtra("id",Math.abs(bookingSlot.notificationID));// for multiple notifications
+//                                    PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                                 }else{
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;

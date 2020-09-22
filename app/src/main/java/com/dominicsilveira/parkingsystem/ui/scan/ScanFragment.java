@@ -24,15 +24,14 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
-import com.dominicsilveira.parkingsystem.utils.NumberPlateAdapter;
-import com.dominicsilveira.parkingsystem.utils.NumberPlateNetworkAsyncTask;
-import com.dominicsilveira.parkingsystem.utils.SimpleToDeleteCallback;
+import com.dominicsilveira.parkingsystem.utils.adapters.NumberPlateAdapter;
+import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
+import com.dominicsilveira.parkingsystem.utils.swipe.SimpleToDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

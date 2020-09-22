@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -30,9 +29,8 @@ import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
-import com.dominicsilveira.parkingsystem.utils.CloseLocationAdapter;
-import com.dominicsilveira.parkingsystem.utils.MyParkingService;
+import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
+import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
