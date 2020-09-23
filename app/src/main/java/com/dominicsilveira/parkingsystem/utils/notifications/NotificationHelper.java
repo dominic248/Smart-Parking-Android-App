@@ -2,6 +2,7 @@ package com.dominicsilveira.parkingsystem.utils.notifications;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -17,7 +18,6 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 
 public class NotificationHelper extends ContextWrapper {
-    public static final String channeldID="Channel ID",channelName="Channel name";
     private NotificationManager mManager;
 
     public NotificationHelper(Context base) {
@@ -29,12 +29,21 @@ public class NotificationHelper extends ContextWrapper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createChannels() {
-        NotificationChannel notificationChannel=new NotificationChannel(channeldID,channelName, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannelGroup groupNotificationChannel=new NotificationChannelGroup(
+                getApplicationContext().getString(R.string.notification_group_id_1),
+                getApplicationContext().getString(R.string.notification_group_name_1)
+        );
+        NotificationChannel notificationChannel=new NotificationChannel(
+                getApplicationContext().getString(R.string.notification_channel_id_1),
+                getApplicationContext().getString(R.string.notification_channel_name_1),
+                NotificationManager.IMPORTANCE_DEFAULT);
         notificationChannel.enableLights(true);
         notificationChannel.enableVibration(true);
         notificationChannel.setLightColor(R.color.colorPrimary);
         notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        notificationChannel.setGroup(getApplicationContext().getString(R.string.notification_group_id_1));
 
+        getManager().createNotificationChannelGroup(groupNotificationChannel);
         getManager().createNotificationChannel(notificationChannel);
     }
 
@@ -58,14 +67,15 @@ public class NotificationHelper extends ContextWrapper {
         intentAction.putExtra("readID",readID);
         PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        return new NotificationCompat.Builder(getApplicationContext(),channeldID)
+        return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_baseline_keyboard_arrow_down_24)
                 .setAutoCancel(true)
-                .setGroup("check_booking")
+                .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
                 .setContentIntent(pendingIntent)
                 .addAction(0, "Mark As Read", pIntentlogin);
+
     }
 
 

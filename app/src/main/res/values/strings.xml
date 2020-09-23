@@ -8,5 +8,9 @@
     <string name="title_profile">Profile</string>
     <string name="title_activity_main_owner">MainActivity</string>
     <string name="title_add">Add</string>
+    <string name="notification_group_id_1">check_booking</string>
+    <string name="notification_channel_id_1">channeldID1</string>
+    <string name="notification_group_name_1">Group 1</string>
+    <string name="notification_channel_name_1">Channel name</string>
 
 </resources>
