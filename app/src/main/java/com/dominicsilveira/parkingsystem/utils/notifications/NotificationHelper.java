@@ -67,7 +67,12 @@ public class NotificationHelper extends ContextWrapper {
         intentAction.putExtra("action","MarkAsRead");
         intentAction.putExtra("readID",readID);
         intentAction.putExtra("notificationID",notificationID);
-        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,notificationID+1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent intentAction2 = new Intent(this, NotificationActionReceiver.class);
+        //This is optional if you have more than one buttons and want to differentiate between two
+        intentAction2.putExtra("action","Calendar");
+        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,notificationID+2,intentAction2,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
                 .setContentTitle(title)
@@ -76,7 +81,9 @@ public class NotificationHelper extends ContextWrapper {
                 .setAutoCancel(true)
                 .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
                 .setContentIntent(pendingIntent)
-                .addAction(0, "Mark As Read", pIntentlogin);
+                .addAction(0, "Mark As Read", pIntentMarkAsRead)
+                .addAction(0, "Remind me", pIntentlogin);
+
 
     }
 

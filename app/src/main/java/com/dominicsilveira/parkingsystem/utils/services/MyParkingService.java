@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -46,12 +50,23 @@ public class MyParkingService extends Service {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        updateBookedSlots(snapshot);
+                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                        updateBookedSlots(snapshot,bookedSlots);
                     }
 
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        updateBookedSlots(snapshot);
+                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                        updateBookedSlots(snapshot,bookedSlots);
+                        if(bookedSlots.readNotification==1){
+                            NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
+                            int notificationCount=notificationHelper.countNotificationGroup(getApplicationContext().getString(R.string.notification_group_id_1));
+                            if(notificationCount==1){
+                                notificationHelper.cancelNotification(AppConstants.NOTIFICATION_GROUP_REQUEST_CODE);
+                            }
+                            Log.i(String.valueOf(this.getClass()),"Notifications Count: ".concat(String.valueOf(notificationCount)));
+                        }
                     }
 
                     @Override
@@ -66,8 +81,7 @@ public class MyParkingService extends Service {
         return START_STICKY;
     }
 
-    private void updateBookedSlots(DataSnapshot snapshot) {
-        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+    private void updateBookedSlots(DataSnapshot snapshot,BookedSlots bookedSlots) {
         if(bookedSlots.readNotification==0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(bookedSlots.endTime);
@@ -76,22 +90,23 @@ public class MyParkingService extends Service {
             Log.i(String.valueOf(this.getClass()), snapshot.getKey() + " onChildChanged ,id " + Math.abs(bookedSlots.notificationID) + ", Success: Alarm at " + simpleDateFormat.format(calendar.getTime()));
 
             if (calendar.before(Calendar.getInstance()))
-                Toast.makeText(MyParkingService.this, "Invalid! End time can't be  less than Start time!", Toast.LENGTH_SHORT).show();
+                Log.i(String.valueOf(this.getClass()),"Old Notification!");
             else {
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-                intent.putExtra("title", snapshot.getKey());
-                intent.putExtra("message", "Confirm your Booking");
-                intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
-                intent.putExtra("readID", snapshot.getKey());
-                PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),
-                        Integer.parseInt(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).concat(String.valueOf(calendar.get(Calendar.MONTH)))
-                                .concat(String.valueOf(calendar.get(Calendar.HOUR)))
-                                .concat(String.valueOf(calendar.get(Calendar.MINUTE)))
-                                .concat(String.valueOf(calendar.get(Calendar.AM_PM))))
-                        ,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                Log.i(String.valueOf(this.getClass()),"New Notification!");
             }
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+            intent.putExtra("title", snapshot.getKey());
+            intent.putExtra("message", "Confirm your Booking");
+            intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
+            intent.putExtra("readID", snapshot.getKey());
+            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),
+                    Integer.parseInt(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).concat(String.valueOf(calendar.get(Calendar.MONTH)))
+                            .concat(String.valueOf(calendar.get(Calendar.HOUR)))
+                            .concat(String.valueOf(calendar.get(Calendar.MINUTE)))
+                            .concat(String.valueOf(calendar.get(Calendar.AM_PM))))
+                    ,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
 
+import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -22,6 +23,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setGroup(context.getString(R.string.notification_group_id_1))
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                 .setGroupSummary(true);
-        notificationHelper.getManager().notify(2,summary.build());
+        notificationHelper.getManager().notify(AppConstants.NOTIFICATION_GROUP_REQUEST_CODE,summary.build());
     }
 }

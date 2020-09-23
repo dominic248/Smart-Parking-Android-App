@@ -279,7 +279,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         if(snapshot.exists()){
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
-                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,(int)Calendar.getInstance().getTimeInMillis(),0);
+                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
                                 final String key=db.getReference("BookedSlots").push().getKey();
                                 if(parkingArea.availableSlots>0){
                                     parkingArea.availableSlots-=1;

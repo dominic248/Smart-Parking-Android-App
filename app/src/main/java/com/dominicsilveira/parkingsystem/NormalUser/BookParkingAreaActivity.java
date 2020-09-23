@@ -120,20 +120,16 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                String amount = "1";
+//                String note ="Payment for ".concat(placeID).concat(" and number ").concat(numberPlateText);
+//                String name = "Michael Silveira";
+//                String upiId = "micsilveira111@oksbi";
+//                payUsingUpi(amount, upiId, name, note);
                 saveData();
             }
         });
 
-//        payBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String amount = "1";
-//                String note ="Payment";
-//                String name = "Michael Silveira";
-//                String upiId = "micsilveira111@oksbi";
-//                payUsingUpi(amount, upiId, name, note);
-//            }
-//        });
+
         db.getReference().child("ParkingAreas").child(UUID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -174,7 +170,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     private void saveData() {
         final int amountInt=Integer.parseInt(amountText.getText().toString());
         String userID = auth.getCurrentUser().getUid();
-        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,0,amountInt,(int)Calendar.getInstance().getTimeInMillis(),0);
+        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,1,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
         final String key=db.getReference("BookedSlots").push().getKey();
         if(parkingArea.availableSlots>0){
             parkingArea.availableSlots-=1;
@@ -190,22 +186,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(bookingSlot.endTime);
                                     SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
                                     Log.i(String.valueOf(this.getClass()),key+" onChildChanged ,id "+Math.abs(bookingSlot.notificationID)+", Success: Alarm at "+simpleDateFormat.format(calendar.getTime()));
-
-//                                    NotificationCompat.Builder nb= mNotificationHelper.getChannelNotification("Test","test1");
-//                                    mNotificationHelper.getManager().notify(1,nb.build());
-                                    if (calendar.before(Calendar.getInstance()))
-                                        Log.e("BeforeNotifiy","1");
-                                    else
-                                        Log.e("AfterNotifiy","1");
-//                                    AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
-//                                    Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
-//                                    intent.putExtra("title",key);
-//                                    intent.putExtra("message","Confirm your Booking");
-//                                    intent.putExtra("id",Math.abs(bookingSlot.notificationID));// for multiple notifications
-//                                    PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-//                                    alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                                 }else{
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
@@ -384,7 +365,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
                 Toast.makeText(BookParkingAreaActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
-                Log.d("UPI", "responseStr: "+approvalRefNo);
+                saveData();
+                Log.d("UPIPay", "responseStr: "+approvalRefNo);
             } else if("Payment cancelled by user.".equals(paymentCancel))
                 Toast.makeText(BookParkingAreaActivity.this, "Payment cancelled by user-2.", Toast.LENGTH_SHORT).show();
             else
