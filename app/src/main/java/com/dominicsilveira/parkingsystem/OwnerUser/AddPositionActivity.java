@@ -17,20 +17,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
-
     GoogleMap gMap;
     Button addLocationBtn;
     LatLng globalLatLng;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_position);
-
         addLocationBtn=findViewById(R.id.addLocationBtn);
-
-
         SupportMapFragment supportMapFragment=(SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
@@ -48,7 +43,6 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap=googleMap;
-
         gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -54,7 +55,7 @@ public class NotificationHelper extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String title, String message,String readID){
+    public NotificationCompat.Builder getChannelNotification(String title, String message,String readID,int notificationID){
         Log.i("NotificationSet",title+":"+message);
 
         Intent resultIntent=new Intent(this, MainNormalActivity.class);
@@ -65,12 +66,13 @@ public class NotificationHelper extends ContextWrapper {
         //This is optional if you have more than one buttons and want to differentiate between two
         intentAction.putExtra("action","MarkAsRead");
         intentAction.putExtra("readID",readID);
-        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        intentAction.putExtra("notificationID",notificationID);
+        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,notificationID+1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
                 .setContentTitle(title)
                 .setContentText(message)
-                .setSmallIcon(R.drawable.ic_baseline_keyboard_arrow_down_24)
+                .setSmallIcon(R.drawable.ic_baseline_directions_car_24)
                 .setAutoCancel(true)
                 .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
                 .setContentIntent(pendingIntent)
@@ -78,5 +80,21 @@ public class NotificationHelper extends ContextWrapper {
 
     }
 
+    public void cancelNotification(int id) {
+        //you can get notificationManager like this:
+        getManager().cancel(id);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public int countNotificationGroup(String notificationGroupID) {
+        int count=0;
+        StatusBarNotification[] activeNotifications = getManager().getActiveNotifications();
+        for (StatusBarNotification activeNotification : activeNotifications) {
+            Log.e("GroupID",activeNotification.getGroupKey().toString().split("g:")[1]+" "+activeNotification.getGroupKey().toString());
+            if(activeNotification.getGroupKey().toString().split("g:")[1].equals(notificationGroupID)){
+                count+=1;
+            }
+        }
+        return count;
+    }
 }

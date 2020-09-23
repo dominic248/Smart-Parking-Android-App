@@ -15,6 +15,7 @@ public class AppConstants extends Application {
     public static final int CAMERA_PERM_CODE = 101;
     public static final int CAMERA_REQUEST_CODE = 102;
     public static final int NUMBER_PLATE_POPUP_REQUEST_CODE = 1002;
+    public static final int RESTART_SERVICE_REQUEST_CODE = 1003;
 
     private int userType;
 

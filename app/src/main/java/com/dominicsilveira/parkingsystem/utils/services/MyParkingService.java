@@ -1,7 +1,5 @@
 package com.dominicsilveira.parkingsystem.utils.services;
 
-
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.dominicsilveira.parkingsystem.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,58 +46,12 @@ public class MyParkingService extends Service {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
-                        if(bookedSlots.readNotification==0){
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(bookedSlots.endTime);
-                            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                            Log.i(String.valueOf(this.getClass()),snapshot.getKey()+" onChildChanged ,id "+Math.abs(bookedSlots.notificationID)+", Success: Alarm at "+simpleDateFormat.format(calendar.getTime()));
-
-                            if (calendar.before(Calendar.getInstance()))
-                                Log.e("BeforeNotifiy","1");
-                            else{
-                                Log.e("AfterNotifiy","1");
-                            }
-                            AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
-                            Intent intent=new Intent(getApplicationContext(), NotificationReceiver.class);
-                            intent.putExtra("title",snapshot.getKey());
-                            intent.putExtra("message","Confirm your Booking");
-                            intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
-                            intent.putExtra("readID", snapshot.getKey());
-                            PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),
-                                    Integer.parseInt(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).concat(String.valueOf(calendar.get(Calendar.MONTH)))
-                                            .concat(String.valueOf(calendar.get(Calendar.HOUR)))
-                                            .concat(String.valueOf(calendar.get(Calendar.MINUTE)))
-                                            .concat(String.valueOf(calendar.get(Calendar.AM_PM))))
-                                    ,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
-                        }
+                        updateBookedSlots(snapshot);
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
-                        if(bookedSlots.readNotification==0) {
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(bookedSlots.endTime);
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-                            Log.i(String.valueOf(this.getClass()), snapshot.getKey() + " onChildChanged ,id " + Math.abs(bookedSlots.notificationID) + ", Success: Alarm at " + simpleDateFormat.format(calendar.getTime()));
-
-                            if (calendar.before(Calendar.getInstance()))
-                                Log.e("BeforeNotifiy", "1");
-                            else {
-                                Log.e("AfterNotifiy", "1");
-                            }
-                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-                            intent.putExtra("title", snapshot.getKey());
-                            intent.putExtra("message", "Confirm your Booking");
-                            intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
-                            intent.putExtra("readID", snapshot.getKey());
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                        }
+                        updateBookedSlots(snapshot);
                     }
 
                     @Override
@@ -113,6 +66,35 @@ public class MyParkingService extends Service {
         return START_STICKY;
     }
 
+    private void updateBookedSlots(DataSnapshot snapshot) {
+        BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+        if(bookedSlots.readNotification==0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(bookedSlots.endTime);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            Log.i(String.valueOf(this.getClass()), snapshot.getKey() + " onChildChanged ,id " + Math.abs(bookedSlots.notificationID) + ", Success: Alarm at " + simpleDateFormat.format(calendar.getTime()));
+
+            if (calendar.before(Calendar.getInstance()))
+                Toast.makeText(MyParkingService.this, "Invalid! End time can't be  less than Start time!", Toast.LENGTH_SHORT).show();
+            else {
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                intent.putExtra("title", snapshot.getKey());
+                intent.putExtra("message", "Confirm your Booking");
+                intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
+                intent.putExtra("readID", snapshot.getKey());
+                PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),
+                        Integer.parseInt(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).concat(String.valueOf(calendar.get(Calendar.MONTH)))
+                                .concat(String.valueOf(calendar.get(Calendar.HOUR)))
+                                .concat(String.valueOf(calendar.get(Calendar.MINUTE)))
+                                .concat(String.valueOf(calendar.get(Calendar.AM_PM))))
+                        ,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -124,8 +106,7 @@ public class MyParkingService extends Service {
         Log.i(String.valueOf(this.getClass()),"Service onTaskRemoved");
         Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
         restartServiceIntent.setPackage(getPackageName());
-
-        PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), AppConstants.RESTART_SERVICE_REQUEST_CODE, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmService.set(
                 AlarmManager.ELAPSED_REALTIME,
@@ -133,5 +114,4 @@ public class MyParkingService extends Service {
                 restartServicePendingIntent);
         super.onTaskRemoved(rootIntent);
     }
-
 }
