@@ -12,14 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-
-import com.dominicsilveira.parkingsystem.AppConstants;
-import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
-import com.dominicsilveira.parkingsystem.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,7 +33,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         notificationHelper.cancelNotification(intent.getIntExtra("notificationID",1));
     }
 
-    private void showDateTIme(Context context) {
+    private void showDateTime(Context context) {
 
     }
 
@@ -53,7 +46,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         if(action.equals("MarkAsRead")){
             performMarkAsRead(context, intent);
         }else if(action.equals("Calendar")){
-            showDateTIme(context);
+            showDateTime(context);
             //This is used to close the notification tray
             Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.sendBroadcast(it);

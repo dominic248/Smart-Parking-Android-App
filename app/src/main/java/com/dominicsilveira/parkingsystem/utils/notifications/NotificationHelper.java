@@ -83,8 +83,6 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentIntent(pendingIntent)
                 .addAction(0, "Mark As Read", pIntentMarkAsRead)
                 .addAction(0, "Remind me", pIntentlogin);
-
-
     }
 
     public void cancelNotification(int id) {
