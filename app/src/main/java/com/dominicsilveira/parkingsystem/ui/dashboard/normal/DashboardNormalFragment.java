@@ -28,6 +28,7 @@ import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
+import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
@@ -42,7 +43,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -63,6 +66,7 @@ public class DashboardNormalFragment extends Fragment {
 
     Map<Double, HashMap<String, ParkingArea>> parkingAreasList = new HashMap<Double, HashMap<String, ParkingArea>>();
     Map<Double, HashMap<String, ParkingArea>> treeMap;
+    List<ClosestDistance> closestDistanceList=new ArrayList<ClosestDistance>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -186,13 +190,13 @@ public class DashboardNormalFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         ParkingArea parkingData = dataSnapshot.getValue(ParkingArea.class);
-                                        HashMap<String, ParkingArea> parkingArea = new HashMap<String, ParkingArea>();
-                                        parkingArea.put(dataSnapshot.getKey(),parkingData);
-                                        parkingAreasList.put(distance(location.getLatitude(), location.getLongitude(), parkingData.latitude, parkingData.longitude, "K"),
-                                                parkingArea);
+                                        ClosestDistance closestDistance=new ClosestDistance(
+                                                distance(location.getLatitude(), location.getLongitude(), parkingData.latitude, parkingData.longitude, "K"),
+                                                parkingData,
+                                                dataSnapshot.getKey());
+                                        closestDistanceList.add(closestDistance);
                                     }
-                                    treeMap = new TreeMap<Double, HashMap<String, ParkingArea>>(parkingAreasList);
-                                    mAdapter = new CloseLocationAdapter(treeMap);
+                                    mAdapter = new CloseLocationAdapter(closestDistanceList);
                                     recyclerView.setAdapter(mAdapter);
                                     Log.d("GPS Map", String.valueOf(parkingAreasList));
                                 }

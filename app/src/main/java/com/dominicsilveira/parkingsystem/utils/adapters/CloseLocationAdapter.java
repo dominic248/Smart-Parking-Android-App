@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -34,21 +35,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdapter.MyViewHolder>{
 
-    Map<Double, HashMap<String, ParkingArea>> distParkingArea;
-    List<Double> keys = new ArrayList<Double>();
+    List<ClosestDistance> closestDistances = new ArrayList<ClosestDistance>();
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    public CloseLocationAdapter(Map<Double, HashMap<String, ParkingArea>> distParkingArea){
-        this.distParkingArea = distParkingArea;
-        keys.addAll(distParkingArea.keySet());
-        Log.d("distParkingArea", String.valueOf(keys));
+    public CloseLocationAdapter(List<ClosestDistance> closestDistances){
+        this.closestDistances = closestDistances;
+        Collections.sort(closestDistances, ClosestDistance.ClosestDistComparator);
+        Log.d("distParkingArea", String.valueOf(closestDistances));
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -68,7 +69,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
             bookBtn = (ImageButton)itemView.findViewById(R.id.bookBtn);
         }
     }
-        @Override
+    
+    @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
@@ -87,9 +89,9 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
-        final HashMap<String, ParkingArea> idParkingArea=distParkingArea.get(keys.get(position));
-        final String id = (String) idParkingArea.keySet().toArray()[0];
-        final ParkingArea parkingArea = (ParkingArea) idParkingArea.values().toArray()[0];
+        ClosestDistance closestDistance=closestDistances.get(position);
+        final String id = (String) closestDistance.key;
+        final ParkingArea parkingArea = (ParkingArea) closestDistance.parkingArea;
         Log.d("id", String.valueOf(id)+String.valueOf(parkingArea));
         setDatas(holder,id,parkingArea);
 
@@ -181,7 +183,7 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return distParkingArea.size();
+        return closestDistances.size();
     }
 
 }
