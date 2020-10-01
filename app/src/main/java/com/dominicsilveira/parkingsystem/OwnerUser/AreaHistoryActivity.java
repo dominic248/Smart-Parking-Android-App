@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.NormalUser;
+package com.dominicsilveira.parkingsystem.OwnerUser;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
-import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
+import com.dominicsilveira.parkingsystem.utils.adapters.AreaHistoryAdapter;
 import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserHistoryActivity extends AppCompatActivity {
+public class AreaHistoryActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -37,27 +37,37 @@ public class UserHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_history);
+        setContentView(R.layout.activity_area_history);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.area_history_recycler_view);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(UserHistoryActivity.this);
+        layoutManager = new LinearLayoutManager(AreaHistoryActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-
-        db.getReference().child("BookedSlots").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
+        db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            BookedSlots bookedSlot = dataSnapshot.getValue(BookedSlots.class);
-                            bookedSlotsList.add(bookedSlot);
+                            db.getReference().child("BookedSlots").orderByChild("placeID").equalTo(dataSnapshot.getKey())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                BookedSlots bookedSlot = dataSnapshot.getValue(BookedSlots.class);
+                                                bookedSlotsList.add(bookedSlot);
+                                            }
+                                            mAdapter = new AreaHistoryAdapter(bookedSlotsList);
+                                            recyclerView.setAdapter(mAdapter);
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                    });
                         }
-                        mAdapter = new UserHistoryAdapter(bookedSlotsList);
-                        recyclerView.setAdapter(mAdapter);
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}

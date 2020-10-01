@@ -140,7 +140,7 @@
         app:layout_constraintVertical_bias="0.808" />
 
     <Button
-        android:id="@+id/payBtn"
+        android:id="@+id/historyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pay"

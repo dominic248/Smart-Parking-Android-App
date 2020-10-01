@@ -32,11 +32,9 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
-import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,10 +44,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class DashboardNormalFragment extends Fragment {
 
@@ -78,7 +73,7 @@ public class DashboardNormalFragment extends Fragment {
         logout = root.findViewById(R.id.logoutBtn);
         openMapsBtn = root.findViewById(R.id.openMapsBtn);
         addLocationBtn = root.findViewById(R.id.addLocationBtn);
-        payBtn = root.findViewById(R.id.payBtn);
+        payBtn = root.findViewById(R.id.historyBtn);
         myBookingsBtn = root.findViewById(R.id.myBookingsBtn);
 
         startService = root.findViewById(R.id.startService);

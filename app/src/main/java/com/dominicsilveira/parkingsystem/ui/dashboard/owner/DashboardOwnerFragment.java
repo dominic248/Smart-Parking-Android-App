@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.OwnerUser.AreaHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
@@ -38,7 +39,7 @@ import java.util.List;
 
 public class DashboardOwnerFragment extends Fragment {
 
-    Button logout;
+    Button logoutBtn,historyBtn;
     ConstraintLayout expandCard;
     TextView availableText,occupiedText,price2Text,price3Text,price4Text;
     PieChart platforms_chart;
@@ -55,7 +56,8 @@ public class DashboardOwnerFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        logout = root.findViewById(R.id.logoutBtn);
+        logoutBtn = root.findViewById(R.id.logoutBtn);
+        historyBtn= root.findViewById(R.id.historyBtn);
         expandCard = root.findViewById(R.id.expandCard);
         availableText = expandCard.findViewById(R.id.availableText);
         occupiedText = expandCard.findViewById(R.id.occupiedText);
@@ -65,12 +67,19 @@ public class DashboardOwnerFragment extends Fragment {
         platforms_chart = expandCard.findViewById(R.id.platforms_chart);
 
 
-        logout.setOnClickListener(new View.OnClickListener() {
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
+            }
+        });
+
+        historyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
             }
         });
 
