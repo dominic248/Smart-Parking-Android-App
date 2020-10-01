@@ -16,11 +16,11 @@ public class ClosestDistance {
 
     /*Comparator for sorting the list by roll no*/
     public static Comparator<ClosestDistance> ClosestDistComparator = new Comparator<ClosestDistance>() {
-
         public int compare(ClosestDistance s1, ClosestDistance s2) {
             /*For ascending order*/
             return Double.compare(s1.distance,s2.distance);
             /*For descending order*/
             //rollno2-rollno1;
-        }};
+        }
+    };
 }

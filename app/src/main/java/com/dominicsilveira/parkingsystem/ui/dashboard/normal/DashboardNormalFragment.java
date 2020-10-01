@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 
 import androidx.core.app.ActivityCompat;
@@ -31,6 +32,7 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
+import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -54,18 +56,15 @@ public class DashboardNormalFragment extends Fragment {
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    Button logout,openMapsBtn,addLocationBtn,payBtn;
+    Button logout,openMapsBtn,addLocationBtn,payBtn,myBookingsBtn;
     Button startService,stopService,checkService;
 
     FusedLocationProviderClient client;
-    LatLng globalLatLng;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    Map<Double, HashMap<String, ParkingArea>> parkingAreasList = new HashMap<Double, HashMap<String, ParkingArea>>();
-    Map<Double, HashMap<String, ParkingArea>> treeMap;
     List<ClosestDistance> closestDistanceList=new ArrayList<ClosestDistance>();
 
 
@@ -80,12 +79,13 @@ public class DashboardNormalFragment extends Fragment {
         openMapsBtn = root.findViewById(R.id.openMapsBtn);
         addLocationBtn = root.findViewById(R.id.addLocationBtn);
         payBtn = root.findViewById(R.id.payBtn);
+        myBookingsBtn = root.findViewById(R.id.myBookingsBtn);
 
         startService = root.findViewById(R.id.startService);
         stopService = root.findViewById(R.id.stopService);
         checkService = root.findViewById(R.id.checkService);
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) root.findViewById(R.id.closest_location_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -133,6 +133,13 @@ public class DashboardNormalFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), GPSMapActivity.class));
+            }
+        });
+
+        myBookingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), UserHistoryActivity.class));
             }
         });
 
@@ -198,7 +205,7 @@ public class DashboardNormalFragment extends Fragment {
                                     }
                                     mAdapter = new CloseLocationAdapter(closestDistanceList);
                                     recyclerView.setAdapter(mAdapter);
-                                    Log.d("GPS Map", String.valueOf(parkingAreasList));
+                                    Log.d("GPS Map", String.valueOf(closestDistanceList));
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {}

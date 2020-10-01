@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
 
+import java.util.Comparator;
 import java.util.Date;
 
 public class BookedSlots {
@@ -37,6 +38,16 @@ public class BookedSlots {
         this.readNotification=readNotification;
 
     }
+
+
+    public static Comparator<BookedSlots> DateComparator = new Comparator<BookedSlots>() {
+        public int compare(BookedSlots s1, BookedSlots s2) {
+            /*For ascending order*/
+//            return s1.startTime.compareTo(s2.startTime);
+            /*For descending order*/
+            return s2.startTime.compareTo(s1.startTime);
+        }
+    };
 
     public void saveToFirebase(final Context context, final ParkingArea parkingArea) {
         auth = FirebaseAuth.getInstance();
