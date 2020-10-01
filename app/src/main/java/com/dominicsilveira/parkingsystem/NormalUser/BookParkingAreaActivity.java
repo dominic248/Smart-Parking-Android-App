@@ -172,33 +172,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         String userID = auth.getCurrentUser().getUid();
         final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,1,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
         final String key=db.getReference("BookedSlots").push().getKey();
-        if(parkingArea.availableSlots>0){
-            parkingArea.availableSlots-=1;
-            parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(bookingSlot.endTime);
-                                    SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                    Log.i(String.valueOf(this.getClass()),key+" onChildChanged ,id "+Math.abs(bookingSlot.notificationID)+", Success: Alarm at "+simpleDateFormat.format(calendar.getTime()));
-                                }else{
-                                    Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                                    parkingArea.availableSlots+=1;
-                                    parkingArea.occupiedSlots-=1;
-                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
+        bookingSlot.saveToFirebase(BookParkingAreaActivity.this,parkingArea);
     }
 
     private void showDateTIme(final TextView button, final boolean end) {

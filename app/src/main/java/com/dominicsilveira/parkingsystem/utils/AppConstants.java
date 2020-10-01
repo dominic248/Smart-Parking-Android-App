@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem;
+package com.dominicsilveira.parkingsystem.utils;
 
 import android.app.Activity;
 import android.app.Application;

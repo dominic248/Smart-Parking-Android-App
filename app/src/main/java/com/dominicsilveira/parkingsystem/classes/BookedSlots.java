@@ -1,5 +1,15 @@
 package com.dominicsilveira.parkingsystem.classes;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.joda.time.DateTime;
 
 import java.util.Date;
@@ -8,6 +18,9 @@ public class BookedSlots {
     public String userID,placeID,numberPlate;
     public int hasPaid,amount,wheelerType,notificationID,readNotification;
     public Date startTime, endTime;
+
+    FirebaseAuth auth;
+    FirebaseDatabase db;
 
     public BookedSlots(){}
 
@@ -23,5 +36,37 @@ public class BookedSlots {
         this.notificationID=notificationID;
         this.readNotification=readNotification;
 
+    }
+
+    public void saveToFirebase(final Context context, final ParkingArea parkingArea) {
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        final String key=db.getReference("BookedSlots").push().getKey();
+        if(parkingArea.availableSlots>0){
+            parkingArea.availableSlots-=1;
+            parkingArea.occupiedSlots+=1;
+            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        db.getReference("BookedSlots").child(key).setValue(BookedSlots.this).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(context,"Success",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(context,"Failed",Toast.LENGTH_SHORT).show();
+                                    parkingArea.availableSlots+=1;
+                                    parkingArea.occupiedSlots-=1;
+                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(context,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+        }
     }
 }

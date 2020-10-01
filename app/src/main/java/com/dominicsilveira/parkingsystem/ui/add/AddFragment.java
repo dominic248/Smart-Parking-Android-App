@@ -27,14 +27,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -280,31 +278,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
                                 final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
-                                final String key=db.getReference("BookedSlots").push().getKey();
-                                if(parkingArea.availableSlots>0){
-                                    parkingArea.availableSlots-=1;
-                                    parkingArea.occupiedSlots+=1;
-                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
-                                                    db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if(task.isSuccessful()){
-                                                                Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                                                            }else{
-                                                                Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
-                                                                parkingArea.availableSlots+=1;
-                                                                parkingArea.occupiedSlots-=1;
-                                                                db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                    });
-                                }
+                                bookingSlot.saveToFirebase(getActivity(),parkingArea);
                             }
                         }else{
                             Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();

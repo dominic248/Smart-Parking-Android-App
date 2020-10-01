@@ -26,7 +26,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.adapters.NumberPlateAdapter;
@@ -127,8 +127,6 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                                             .setValue(auth.getCurrentUser().getUid()+"_1");
                                     db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
                                             .setValue(1);
-
-
                                 }
                             };
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
@@ -213,15 +211,14 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                    numberPlatesList.put(key,numberPlate);
+                    treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
+                    keys.add(key);
+                    mAdapter = new NumberPlateAdapter(treeMap,keys);
+                    recyclerView.setAdapter(mAdapter);
                 } else {
                     Toast.makeText(getActivity(), "Failed to add extra details", Toast.LENGTH_SHORT).show();
                 }
-                numberPlatesList.put(key,numberPlate);
-                treeMap = new TreeMap<String, NumberPlate>(numberPlatesList);
-                keys.add(key);
-                mAdapter = new NumberPlateAdapter(treeMap,keys);
-                recyclerView.setAdapter(mAdapter);
-
             }
         });
     }

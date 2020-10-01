@@ -7,7 +7,7 @@ import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
 
-import com.dominicsilveira.parkingsystem.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 
 public class NotificationReceiver extends BroadcastReceiver {
