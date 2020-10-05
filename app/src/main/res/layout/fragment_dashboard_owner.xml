@@ -12,6 +12,7 @@
         android:id="@+id/dashboardCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:theme="@style/Theme.MaterialComponents.Light"
         app:cardCornerRadius="3dp"
         app:cardElevation="2dp"
@@ -19,9 +20,7 @@
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:contentPadding="5dp"
-        android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,12 +28,11 @@
             android:id="@+id/expandCard"
             layout="@layout/close_location_dropdown_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_height="match_parent"
             android:paddingBottom="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mainName" />
+            app:layout_constraintTop_toBottomOf="parent" />
     </com.google.android.material.card.MaterialCardView>
 
     <Button

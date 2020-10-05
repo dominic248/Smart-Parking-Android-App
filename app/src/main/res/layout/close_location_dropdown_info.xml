@@ -7,31 +7,13 @@
     android:layout_height="wrap_content"
     >
 
-<!--        <LinearLayout-->
-<!--            android:id="@+id/linearLayout"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            tools:layout_editor_absoluteX="31dp"-->
-<!--            tools:layout_editor_absoluteY="230dp">-->
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    style="?attr/borderlessButtonStyle"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginRight="25dp"-->
-<!--                    android:text="Book" />-->
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    style="?attr/borderlessButtonStyle"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginRight="25dp"-->
-<!--                    android:text="more Details" />-->
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    style="?attr/borderlessButtonStyle"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Maps" />-->
-<!--        </LinearLayout>-->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/platforms_chart"
+            android:layout_width="150dp"
+            android:layout_height="198dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"  />
 
         <TextView
             android:id="@+id/price4Text"
@@ -41,8 +23,6 @@
             android:text=": Rs.15/hr"
             android:textColor="#000"
             app:layout_constraintEnd_toEndOf="@+id/price3Text"
-            app:layout_constraintHorizontal_bias="1.0"
-
             app:layout_constraintStart_toStartOf="@+id/price3Text"
             app:layout_constraintTop_toTopOf="@+id/price4Label" />
 
@@ -73,7 +53,7 @@
         <TextView
             android:id="@+id/availableText"
             style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text=": Rs.15/hr"
@@ -147,15 +127,6 @@
             app:layout_constraintEnd_toEndOf="@+id/price2Text"
             app:layout_constraintStart_toStartOf="@+id/price2Text"
             app:layout_constraintTop_toTopOf="@+id/price3Label" />
-
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/platforms_chart"
-            android:layout_width="179dp"
-            android:layout_height="197dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

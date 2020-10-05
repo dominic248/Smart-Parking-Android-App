@@ -33,6 +33,7 @@ import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -52,10 +53,11 @@ import java.util.concurrent.TimeUnit;
 public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
     Bitmap upload;
 
-    TextView placeText,coordText,slotNoText,numberPlate,amountText,wheelerText;
+    TextView coordText,slotNoText,numberPlate,amountText,wheelerText;
     TextView startBtn, endBtn;
     Button cameraBtn,bookBtn;
     EditText emailText;
+    TextView placeText;
 
     FirebaseAuth auth;
     FirebaseDatabase db;

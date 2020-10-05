@@ -1,7 +1,9 @@
 package com.dominicsilveira.parkingsystem.ui.scan;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.utils.ApiService;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
@@ -46,12 +49,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
@@ -182,6 +197,35 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
         if (requestCode == AppConstants.CAMERA_REQUEST_CODE) {
             try {
                 upload = (Bitmap) data.getExtras().get("data");
+//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                upload.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//                String fileName="testimage.jpg";
+//                File file = new File(Environment.getExternalStorageDirectory()
+//                        + File.separator + fileName);
+//                file.createNewFile();
+//                FileOutputStream fo = new FileOutputStream(file);
+//                fo.write(outputStream.toByteArray());
+//                fo.close();
+//                Uri yourUri = Uri.fromFile(file);
+//                OkHttpClient client = new OkHttpClient.Builder().build();
+//
+//                ApiService apiService = new Retrofit.Builder().baseUrl("http://2262b6a58631.ngrok.io/").client(client).build().create(ApiService.class);
+//                RequestBody reqFile = RequestBody.create(okhttp3.MediaType.parse("image/*"), file);
+//                MultipartBody.Part body = MultipartBody.Part.createFormData("upload",
+//                        file.getName(), reqFile);
+//                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
+//                Call<ResponseBody> req = apiService.postImage(body, name);
+//                req.enqueue(new Callback<ResponseBody>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                            Toast.makeText(getActivity(), response.code() + " ", Toast.LENGTH_SHORT).show();
+//                    }
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_SHORT).show();
+//                        t.printStackTrace();
+//                    }
+//                });
                 NumberPlateNetworkAsyncTask task=new NumberPlateNetworkAsyncTask(this,upload);
                 task.execute();
             } catch(Exception e) {
