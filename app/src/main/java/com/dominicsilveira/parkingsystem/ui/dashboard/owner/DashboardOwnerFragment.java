@@ -73,6 +73,7 @@ public class DashboardOwnerFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
+                getActivity().finish();
             }
         });
 
