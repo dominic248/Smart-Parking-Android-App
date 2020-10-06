@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
@@ -27,11 +28,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.ui.scan.ScanFragment;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
+import com.dominicsilveira.parkingsystem.utils.network.ApiService;
 import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,12 +48,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener,NumberPlateNetworkAsyncTask.AsyncResponse {
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener {
     Bitmap upload;
 
     TextView coordText,slotNoText,numberPlate,amountText,wheelerText;
@@ -237,8 +254,51 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         if (requestCode == AppConstants.CAMERA_REQUEST_CODE) {
             try {
                 upload = (Bitmap) data.getExtras().get("data");
-                NumberPlateNetworkAsyncTask task=new NumberPlateNetworkAsyncTask(this,upload);
-                task.execute();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                upload.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                String fileName="testimage.jpg";
+                final File file = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + fileName);
+                file.createNewFile();
+                FileOutputStream fo = new FileOutputStream(file);
+                fo.write(outputStream.toByteArray());
+                fo.close();
+//                Uri yourUri = Uri.fromFile(file);
+                OkHttpClient client = new OkHttpClient.Builder().build();
+                ApiService apiService = new Retrofit.Builder().baseUrl("https://api.platerecognizer.com").client(client).build().create(ApiService.class);
+                RequestBody reqFile = RequestBody.create(okhttp3.MediaType.parse("image/*"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("upload",
+                        file.getName(), reqFile);
+                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
+                Call<ResponseBody> req = apiService.postImage(body, name,"Token 0bd1219a5d0dfc9c5a4a633af1e3e9dd74fb882b");
+                req.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Toast.makeText(getActivity(), response.code() + " ", Toast.LENGTH_SHORT).show();
+                        try {
+                            String resp=response.body().string();
+                            Log.i("LogPlateRespon", resp);
+                            JSONObject obj = new JSONObject(resp); //response.body().string() fetched only once
+                            JSONArray geodata = obj.getJSONArray("results");
+                            Bundle args = new Bundle();
+                            args.putString("numberPlate", geodata.getJSONObject(0).getString("plate"));
+                            NumberPlatePopUp numberPlateDialog = new NumberPlatePopUp();
+                            numberPlateDialog.setTargetFragment(AddFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
+                            numberPlateDialog.setArguments(args);
+                            numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
+                            Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
+                        } catch (JSONException | IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        file.delete();
+                    }
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getActivity(), "Request failed", Toast.LENGTH_SHORT).show();
+                        t.printStackTrace();
+                    }
+                });
             } catch(Exception e) {
                 e.printStackTrace();
             }
@@ -291,15 +351,4 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 });
     }
 
-    public void NumberPlateNetworkAsyncTaskCallback(String result) throws JSONException {
-        JSONObject obj = new JSONObject(result);
-        JSONArray geodata = obj.getJSONArray("results");
-        Bundle args = new Bundle();
-        args.putString("numberPlate", geodata.getJSONObject(0).getString("plate"));
-        NumberPlatePopUp numberPlateDialog = new NumberPlatePopUp();
-        numberPlateDialog.setTargetFragment(AddFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
-        numberPlateDialog.setArguments(args);
-        numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
-        Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
-    }
 }
