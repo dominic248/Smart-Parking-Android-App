@@ -28,15 +28,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.dominicsilveira.parkingsystem.ui.scan.ScanFragment;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.network.ApiService;
-import com.dominicsilveira.parkingsystem.utils.network.NumberPlateNetworkAsyncTask;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

@@ -168,9 +168,15 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
             if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.INTERNET},103);
             }else{
-                openCamera();
+                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, AppConstants.WRITE_EXTERNAL_STORAGE_PERM_CODE);
+                }else{
+                    openCamera();
+                }
             }
         }
+
+
     }
 
     @Override
