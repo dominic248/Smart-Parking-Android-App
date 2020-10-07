@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ import java.util.List;
 public class DashboardOwnerFragment extends Fragment {
 
     Button logoutBtn,historyBtn;
-    ConstraintLayout expandCard;
+    LinearLayout expandCard;
     TextView availableText,occupiedText,price2Text,price3Text,price4Text;
     PieChart platforms_chart;
 
@@ -57,7 +58,6 @@ public class DashboardOwnerFragment extends Fragment {
         db = FirebaseDatabase.getInstance();
 
         logoutBtn = root.findViewById(R.id.logoutBtn);
-        historyBtn= root.findViewById(R.id.historyBtn);
         expandCard = root.findViewById(R.id.expandCard);
         availableText = expandCard.findViewById(R.id.availableText);
         occupiedText = expandCard.findViewById(R.id.occupiedText);
@@ -77,12 +77,12 @@ public class DashboardOwnerFragment extends Fragment {
             }
         });
 
-        historyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
-            }
-        });
+//        historyBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
+//            }
+//        });
 
         db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addChildEventListener(new ChildEventListener() {
@@ -122,12 +122,12 @@ public class DashboardOwnerFragment extends Fragment {
     }
 
     private void setDashboardValues(ParkingArea parkingArea) {
-        String prepend=": ";
+        String prepend="Rs.";
         availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
         occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
-        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
-        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
-        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
+        price2Text.setText(prepend.concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
+        price3Text.setText(prepend.concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
+        price4Text.setText(prepend.concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
 //        platforms_chart.setUsePercentValues(true);
         Description desc=new Description();
         desc.setText("Details");

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 
@@ -23,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookingPaymentActivity;
@@ -50,17 +52,12 @@ public class DashboardNormalFragment extends Fragment {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
+    LinearLayout openMapsBtn,myBookingsBtn,nearByBtn;
 
-    Button logout,openMapsBtn,addLocationBtn,payBtn,myBookingsBtn;
+    Button logout;
     Button startService,stopService,checkService;
-
     FusedLocationProviderClient client;
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-
-    List<ClosestDistance> closestDistanceList=new ArrayList<ClosestDistance>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -72,38 +69,26 @@ public class DashboardNormalFragment extends Fragment {
 
         logout = root.findViewById(R.id.logoutBtn);
         openMapsBtn = root.findViewById(R.id.openMapsBtn);
-        addLocationBtn = root.findViewById(R.id.addLocationBtn);
-        payBtn = root.findViewById(R.id.historyBtn);
         myBookingsBtn = root.findViewById(R.id.myBookingsBtn);
-
-        startService = root.findViewById(R.id.startService);
-        stopService = root.findViewById(R.id.stopService);
         checkService = root.findViewById(R.id.checkService);
+        nearByBtn = root.findViewById(R.id.nearByBtn);
 
-        recyclerView = (RecyclerView) root.findViewById(R.id.closest_location_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+//        startService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                ContextCompat.startForegroundService(getActivity(),new Intent(getActivity(), MyParkingService.class));
+//                getActivity().startService(new Intent(getActivity(), MyParkingService.class));
+//                Toast.makeText(getActivity(), "Service started", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        stopService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
+//                Toast.makeText(getActivity(), "Service stopped", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-        client= LocationServices.getFusedLocationProviderClient(getActivity());
-        getPreCurrentLocation();
-
-
-        startService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                ContextCompat.startForegroundService(getActivity(),new Intent(getActivity(), MyParkingService.class));
-                getActivity().startService(new Intent(getActivity(), MyParkingService.class));
-                Toast.makeText(getActivity(), "Service started", Toast.LENGTH_SHORT).show();
-            }
-        });
-        stopService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
-                Toast.makeText(getActivity(), "Service stopped", Toast.LENGTH_SHORT).show();
-            }
-        });
         checkService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +96,27 @@ public class DashboardNormalFragment extends Fragment {
                     Toast.makeText(getActivity(), "Service is not running", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getActivity(), "Service is running", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        nearByBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), NearByAreaActivity.class));
+            }
+        });
+
+        myBookingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), UserHistoryActivity.class));
+            }
+        });
+
+        openMapsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), GPSMapActivity.class));
             }
         });
 
@@ -123,35 +129,6 @@ public class DashboardNormalFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
-        openMapsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), GPSMapActivity.class));
-            }
-        });
-
-        myBookingsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), UserHistoryActivity.class));
-            }
-        });
-
-        addLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddPositionActivity.class));
-            }
-        });
-
-        payBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), BookingPaymentActivity.class));
-            }
-        });
-
         return root;
     }
 
@@ -164,78 +141,5 @@ public class DashboardNormalFragment extends Fragment {
         }
         return false;
     }
-
-    private void getPreCurrentLocation() {
-        if(ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
-            getCurrentLocation();
-        }else{
-            ActivityCompat.requestPermissions(getActivity(),new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},44);
-        }
-    }
-
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},44);
-            return;
-        }
-        Task<Location> task= client.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(final Location location) {
-                if(location!=null){
-                    db.getReference().child("ParkingAreas")
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        ParkingArea parkingData = dataSnapshot.getValue(ParkingArea.class);
-                                        ClosestDistance closestDistance=new ClosestDistance(
-                                                distance(location.getLatitude(), location.getLongitude(), parkingData.latitude, parkingData.longitude, "K"),
-                                                parkingData,
-                                                dataSnapshot.getKey());
-                                        closestDistanceList.add(closestDistance);
-                                    }
-                                    mAdapter = new CloseLocationAdapter(closestDistanceList);
-                                    recyclerView.setAdapter(mAdapter);
-                                    Log.d("GPS Map", String.valueOf(closestDistanceList));
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {}
-                            });
-                }
-            }
-        });
-    }
-
-    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
-        if ((lat1 == lat2) && (lon1 == lon2)) {
-            return 0;
-        }
-        else {
-            double theta = lon1 - lon2;
-            double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
-            dist = Math.acos(dist);
-            dist = Math.toDegrees(dist);
-            dist = dist * 60 * 1.1515;
-            if (unit.equals("K")) {
-                dist = dist * 1.609344;
-            } else if (unit.equals("N")) {
-                dist = dist * 0.8684;
-            }
-            return (dist);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==44){
-            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            }
-        }
-    }
-
 
 }

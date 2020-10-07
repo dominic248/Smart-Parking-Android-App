@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -56,12 +57,12 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         MaterialCardView closeLocationCard;
         TextView mainName;
         Button dropdownBtn;
-        ConstraintLayout expandCard;
+        LinearLayout expandCard;
         ImageButton mapBtn,bookBtn;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            expandCard = (ConstraintLayout)itemView.findViewById(R.id.expandCard);
+            expandCard = (LinearLayout)itemView.findViewById(R.id.expandCard);
             closeLocationCard = (MaterialCardView)itemView.findViewById(R.id.closeLocationCard);
             mainName = (TextView)itemView.findViewById(R.id.mainName);
             dropdownBtn = (Button)itemView.findViewById(R.id.dropdownBtn);
@@ -137,12 +138,12 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         TextView price2Text = (TextView) holder.expandCard.findViewById(R.id.price2Text);
         TextView price3Text = (TextView) holder.expandCard.findViewById(R.id.price3Text);
         TextView price4Text = (TextView) holder.expandCard.findViewById(R.id.price4Text);
-        String prepend=": ";
+        String prepend="Rs.";
         availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
         occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
-        price2Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
-        price3Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
-        price4Text.setText(prepend.concat("Rs.").concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
+        price2Text.setText(prepend.concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
+        price3Text.setText(prepend.concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
+        price4Text.setText(prepend.concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
         PieChart platforms_chart = (PieChart) holder.expandCard.findViewById(R.id.platforms_chart);
         Description desc=new Description();
         desc.setText("Details");

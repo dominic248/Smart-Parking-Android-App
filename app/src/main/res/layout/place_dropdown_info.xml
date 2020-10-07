@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/platforms_chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1"
+                    android:gravity=""
+                    android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/availableLabel"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Available"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/occupiedLabel"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Occupied"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price2Label"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="2 wheels"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price3Label"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="3 wheels"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price4Label"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="4 wheels"
+                                    android:textColor="#000" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/availableColon"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=" : "
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/occupiedColon"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=" : "
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price2Colon"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=" : "
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price3Colon"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=" : "
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price4Colon"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text=" : "
+                                    android:textColor="#000" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.58"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/availableText"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Rs.15/hr"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/occupiedText"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Rs.15/hr"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price2Text"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Rs.15/hr"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price3Text"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Rs.15/hr"
+                                    android:textColor="#000" />
+
+                                <TextView
+                                    android:id="@+id/price4Text"
+                                    style="@style/TextAppearance.AppCompat.Medium"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="left"
+                                    android:text="Rs.15/hr"
+                                    android:textColor="#000" />
+                        </LinearLayout>
+                </LinearLayout>
+        </LinearLayout>
+
+</LinearLayout>

@@ -73,7 +73,7 @@
                 android:id="@+id/expandCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                layout="@layout/close_location_dropdown_info"
+                layout="@layout/place_dropdown_info"
                 app:layout_constraintTop_toBottomOf="@+id/mainName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
