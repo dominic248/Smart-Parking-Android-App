@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -101,16 +102,28 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            final User user=new User(name,email,contact_no,userType);
+                            final User userObj=new User(name,email,contact_no,userType);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    .setValue(userObj).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if(task.isSuccessful()){
                                         Toast.makeText(RegisterActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                                        final FirebaseUser user = auth.getCurrentUser();
+                                        user.sendEmailVerification()
+                                                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(RegisterActivity.this, "Verification email sent to " + user.getEmail()+"!", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Toast.makeText(RegisterActivity.this, "Failed to send verification email!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
                                         Intent intent;
-                                        if(user.userType==2){
+                                        if(userObj.userType==2){
                                             intent = new Intent(RegisterActivity.this, AddPositionActivity.class);
                                         }else{
                                             intent = new Intent(RegisterActivity.this, MainNormalActivity.class);

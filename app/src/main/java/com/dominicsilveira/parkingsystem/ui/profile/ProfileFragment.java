@@ -6,18 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileFragment extends Fragment {
-
-    private ProfileViewModel notificationsViewModel;
 
     LinearLayout personalDetailsBtn,changePasswordBtn,aboutMeBtn;
 

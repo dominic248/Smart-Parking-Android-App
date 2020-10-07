@@ -24,8 +24,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/logo_315x315"
-                app:tint="@color/blue_grey_800" />
+                android:src="@drawable/logo_no_name" />
 
             <View
                 android:layout_width="0dp"
