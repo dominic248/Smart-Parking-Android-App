@@ -19,14 +19,15 @@ public class ProfileFragment extends Fragment {
 
     private ProfileViewModel notificationsViewModel;
 
-    LinearLayout personalDetailsBtn,changePasswordBtn;
+    LinearLayout personalDetailsBtn,changePasswordBtn,aboutMeBtn;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
         personalDetailsBtn = root.findViewById(R.id.personalDetailsBtn);
-        changePasswordBtn= root.findViewById(R.id.changePasswordBtn);
+        changePasswordBtn = root.findViewById(R.id.changePasswordBtn);
+        aboutMeBtn = root.findViewById(R.id.aboutMeBtn);
 
         personalDetailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,6 +40,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+            }
+        });
+
+        aboutMeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AboutMeActivity.class));
             }
         });
 

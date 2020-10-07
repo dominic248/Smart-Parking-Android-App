@@ -282,6 +282,8 @@
                         android:background="@color/grey_5" />
 
                     <LinearLayout
+                        android:id="@+id/aboutMeBtn"
+                        android:clickable="true"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -290,6 +292,7 @@
                         android:paddingRight="@dimen/spacing_large">
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -297,6 +300,7 @@
                             app:srcCompat="@drawable/ic_baseline_info_24" />
 
                         <TextView
+                            android:clickable="false"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_large"
@@ -308,6 +312,7 @@
                             app:fontFamily="sans-serif-medium" />
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
