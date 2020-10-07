@@ -18,7 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NormalUser.NearByAreaActivity"></activity>
+        <activity android:name=".ui.profile.AboutMeActivity"></activity>
+        <activity android:name=".ui.profile.ChangePasswordActivity" />
+        <activity android:name=".ui.profile.PersonalDetailsActivity" />
+        <activity android:name=".NormalUser.NearByAreaActivity" />
         <activity android:name=".OwnerUser.AreaHistoryActivity" />
         <activity android:name=".NormalUser.UserHistoryActivity" />
 
