@@ -21,6 +21,11 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_middle" />
 
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/logo_no_name" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing_large" />
@@ -45,8 +50,7 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="@dimen/spacing_large" />
 
             <TextView
                 android:layout_width="wrap_content"

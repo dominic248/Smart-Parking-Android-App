@@ -47,7 +47,8 @@
         <activity android:name=".OwnerUser.RegisterAreaActivity" />
         <activity android:name=".OwnerUser.AddPositionActivity" />
         <activity android:name=".NormalUser.GPSMapActivity" />
-        <activity android:name=".RegisterLogin.ForgotPasswordActivity" />
+        <activity android:name=".RegisterLogin.ForgotPasswordActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RegisterLogin.RegisterActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
