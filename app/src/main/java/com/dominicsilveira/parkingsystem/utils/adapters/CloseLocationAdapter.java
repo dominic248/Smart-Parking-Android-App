@@ -139,8 +139,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         TextView price3Text = (TextView) holder.expandCard.findViewById(R.id.price3Text);
         TextView price4Text = (TextView) holder.expandCard.findViewById(R.id.price4Text);
         String prepend="Rs.";
-        availableText.setText(prepend.concat(String.valueOf(parkingArea.availableSlots)));
-        occupiedText.setText(prepend.concat(String.valueOf(parkingArea.occupiedSlots)));
+        availableText.setText(String.valueOf(parkingArea.availableSlots));
+        occupiedText.setText(String.valueOf(parkingArea.occupiedSlots));
         price2Text.setText(prepend.concat(String.valueOf(parkingArea.amount2).concat("/Hr")));
         price3Text.setText(prepend.concat(String.valueOf(parkingArea.amount3).concat("/Hr")));
         price4Text.setText(prepend.concat(String.valueOf(parkingArea.amount4).concat("/Hr")));
