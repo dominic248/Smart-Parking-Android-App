@@ -40,6 +40,4 @@ public class MainNormalActivity extends AppCompatActivity {
             navView.setSelectedItemId(R.id.navigation_profile);
         }
     }
-
-
 }

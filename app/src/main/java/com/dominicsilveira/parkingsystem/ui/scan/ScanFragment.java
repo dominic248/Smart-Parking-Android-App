@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.utils.network.ApiService;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
-import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
+import com.dominicsilveira.parkingsystem.utils.dialog.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.adapters.NumberPlateAdapter;
 import com.dominicsilveira.parkingsystem.utils.swipe.SimpleToDeleteCallback;
 import com.google.android.gms.tasks.OnCompleteListener;

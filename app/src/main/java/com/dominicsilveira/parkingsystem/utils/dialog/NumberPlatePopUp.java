@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.common;
+package com.dominicsilveira.parkingsystem.utils.dialog;
 //https://medium.com/better-programming/what-is-target-fragment-da0e7c7f345c
 
 

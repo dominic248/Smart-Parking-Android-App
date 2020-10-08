@@ -12,11 +12,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,7 +58,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     HashMap<String, ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
 
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Runnable mToastRunnable = new Runnable() {
         @Override
@@ -127,18 +129,17 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private void getPreCurrentLocation() {
         if(ActivityCompat.checkSelfPermission(GPSMapActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-//            mToastRunnable.run(); //To avoid double looping because of onRequestPermissionsResult
+            mToastRunnable.run(); //To avoid double looping because of onRequestPermissionsResult
         }else{
             ActivityCompat.requestPermissions(GPSMapActivity.this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},44);
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
         }
     }
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},44);
-            return;
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
         }
         Task<Location> task= client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -188,7 +189,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==44){
+        if(requestCode== AppConstants.LOCATION_REQUEST){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 mToastRunnable.run();
             }

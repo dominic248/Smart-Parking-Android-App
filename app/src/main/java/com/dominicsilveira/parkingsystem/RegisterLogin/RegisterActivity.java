@@ -17,6 +17,7 @@ import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -124,11 +125,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                 });
                                         Intent intent;
                                         if(userObj.userType==2){
-                                            intent = new Intent(RegisterActivity.this, AddPositionActivity.class);
+                                            intent = new Intent(RegisterActivity.this, MainOwnerActivity.class);
                                         }else{
                                             intent = new Intent(RegisterActivity.this, MainNormalActivity.class);
-                                            intent.putExtra("FRAGMENT_NO", 0);
                                         }
+                                        intent.putExtra("FRAGMENT_NO", 0);
 //                                        intent.putExtra("User", user);
                                         startActivity(intent);
                                         finish();

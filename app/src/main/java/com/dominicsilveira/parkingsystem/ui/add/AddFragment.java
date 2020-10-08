@@ -32,7 +32,7 @@ import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.common.NumberPlatePopUp;
+import com.dominicsilveira.parkingsystem.utils.dialog.NumberPlatePopUp;
 import com.dominicsilveira.parkingsystem.utils.network.ApiService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
