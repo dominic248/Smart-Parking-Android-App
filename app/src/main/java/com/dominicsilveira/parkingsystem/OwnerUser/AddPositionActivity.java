@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
 import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,8 +36,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hootsuite.nachos.NachoTextView;
+import com.hootsuite.nachos.chip.Chip;
+import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -47,12 +53,15 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
     GoogleMap gMap;
     FloatingActionButton addLocationBtn;
     AppCompatEditText areaNameText,upiIdText,upiNameText,amount2Text,amount3Text,amount4Text,totalSlotsText;
+    NachoTextView nachoTextView;
 
     LatLng gpsLatLng=null;
     LatLng globalLatLng=null;
 
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
+    List<SlotNoInfo> slotNos = new ArrayList<>();
+    List<String> slotNoString = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +84,20 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         amount3Text=findViewById(R.id.amount3Text);
         amount4Text=findViewById(R.id.amount4Text);
         addLocationBtn=findViewById(R.id.addLocationBtn);
+        nachoTextView = findViewById(R.id.et_tag);
+        slotNoString.add("Slot-01");
+        nachoTextView.setText(slotNoString);
+        nachoTextView.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
 
         getPreCurrentLocation();
 
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                for (Chip chip : nachoTextView.getAllChips()) {
+                    CharSequence text = chip.getText();
+                    slotNos.add(new SlotNoInfo((String) text,false));
+                }
                 String areaName = areaNameText.getText().toString();
                 String upiId = upiIdText.getText().toString();
                 String upiName = upiNameText.getText().toString();
@@ -88,7 +105,9 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                 String amount3 = amount3Text.getText().toString();
                 String amount4 = amount4Text.getText().toString();
                 String totalSlots = totalSlotsText.getText().toString();
-                ParkingArea parkingArea = new ParkingArea(areaName,globalLatLng.latitude,globalLatLng.longitude,upiId,upiName,auth.getCurrentUser().getUid(),Integer.parseInt(totalSlots),0,Integer.parseInt(amount2),Integer.parseInt(amount3),Integer.parseInt(amount4));
+                ParkingArea parkingArea = new ParkingArea(areaName,globalLatLng.latitude,globalLatLng.longitude,upiId,upiName,
+                        auth.getCurrentUser().getUid(),Integer.parseInt(totalSlots),0,
+                        Integer.parseInt(amount2),Integer.parseInt(amount3),Integer.parseInt(amount4),slotNos);
                 String key=db.getReference("ParkingAreas").push().getKey();
                 db.getReference("ParkingAreas")
                         .child(key)

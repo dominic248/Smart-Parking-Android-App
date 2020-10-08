@@ -44,7 +44,6 @@
             android:launchMode="singleTop" /> <!-- for no stacking due to notification -->
         <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
-        <activity android:name=".OwnerUser.RegisterAreaActivity" />
         <activity android:name=".OwnerUser.AddPositionActivity" />
         <activity android:name=".NormalUser.GPSMapActivity" />
         <activity android:name=".RegisterLogin.ForgotPasswordActivity"
