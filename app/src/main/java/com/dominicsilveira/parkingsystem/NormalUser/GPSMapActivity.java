@@ -132,14 +132,14 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
             mToastRunnable.run(); //To avoid double looping because of onRequestPermissionsResult
         }else{
             ActivityCompat.requestPermissions(GPSMapActivity.this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
         }
     }
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
         }
         Task<Location> task= client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -189,7 +189,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode== AppConstants.LOCATION_REQUEST){
+        if(requestCode== AppConstants.LOCATION_REQUEST_CODE){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 mToastRunnable.run();
             }

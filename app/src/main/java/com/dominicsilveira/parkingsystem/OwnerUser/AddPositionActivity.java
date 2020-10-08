@@ -11,12 +11,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
@@ -41,9 +37,7 @@ import com.hootsuite.nachos.chip.Chip;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -152,14 +146,14 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
             getCurrentLocation();
         }else{
             ActivityCompat.requestPermissions(AddPositionActivity.this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
         }
     }
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST);
+                    {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
         }
         Task<Location> task= client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -183,7 +177,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode== AppConstants.LOCATION_REQUEST){
+        if(requestCode== AppConstants.LOCATION_REQUEST_CODE){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 getCurrentLocation();
             }

@@ -59,7 +59,7 @@ public class MyParkingService extends Service {
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
                         updateBookedSlots(snapshot,bookedSlots);
-                        if(bookedSlots.readNotification==1){
+                        if(bookedSlots.readNotification<=1){
                             NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
                             int notificationCount=notificationHelper.countNotificationGroup(getApplicationContext().getString(R.string.notification_group_id_1));
                             if(notificationCount==1){

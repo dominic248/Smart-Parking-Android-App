@@ -26,9 +26,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -93,7 +95,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         mNotificationHelper=new NotificationHelper(this);
 
         calendar=new GregorianCalendar();
-        startDateTime=calendar.getTime();
+        startDateTime=endDateTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
         endTimeText.setText(simpleDateFormat.format(startDateTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
@@ -178,7 +180,39 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         String userID = auth.getCurrentUser().getUid();
         final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,1,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
         final String key=db.getReference("BookedSlots").push().getKey();
-        bookingSlot.saveToFirebase(BookParkingAreaActivity.this,parkingArea);
+//        bookingSlot.saveToFirebase(BookParkingAreaActivity.this,parkingArea);
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+        if(parkingArea.availableSlots>0){
+            parkingArea.availableSlots-=1;
+            parkingArea.occupiedSlots+=1;
+            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
+                                    intent.putExtra("FRAGMENT_NO", 0);
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+                                    parkingArea.availableSlots+=1;
+                                    parkingArea.occupiedSlots-=1;
+                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showDatePicker(final TextView button) {
@@ -206,12 +240,12 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE,minute);
                 calendar.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+                endDateTime = calendar.getTime();
                 if(endDateTime.after(startDateTime)){
                     button.setText(simpleDateFormat.format(calendar.getTime()));
                     endDateTime = calendar.getTime();
-                    Toast.makeText(BookParkingAreaActivity.this,
-                            "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }else{
+                    endDateTime = startDateTime;
                     Toast.makeText(BookParkingAreaActivity.this,
                             "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }

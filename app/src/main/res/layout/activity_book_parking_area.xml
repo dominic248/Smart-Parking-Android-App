@@ -90,7 +90,7 @@
                                 app:srcCompat="@drawable/ic_baseline_location_on_24" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
 
                             <TextView
@@ -119,7 +119,7 @@
                                 app:srcCompat="@drawable/ic_plate_number" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
                             <Spinner
                                 android:id="@+id/vehicleSelect"
@@ -157,13 +157,13 @@
                                 app:srcCompat="@drawable/ic_baseline_directions_car_24" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
                             <TextView
                                 android:id="@+id/wheelerText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text=""
+                                android:text="Wheeler Type"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                                 android:textColor="@color/grey_80" />
                         </LinearLayout>
@@ -221,7 +221,7 @@
                                 app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
 
                             <TextView
@@ -252,7 +252,7 @@
                                 app:srcCompat="@drawable/ic_baseline_access_time_24" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
 
                             <TextView
@@ -322,7 +322,7 @@
                                 app:srcCompat="@drawable/ic_rupee_indian" />
 
                             <View
-                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_width="@dimen/spacing_large"
                                 android:layout_height="wrap_content" />
 
                             <TextView

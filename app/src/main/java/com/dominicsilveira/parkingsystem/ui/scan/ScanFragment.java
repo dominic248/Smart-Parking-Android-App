@@ -1,6 +1,7 @@
 package com.dominicsilveira.parkingsystem.ui.scan;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -10,16 +11,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.utils.animations.ViewAnimation;
 import com.dominicsilveira.parkingsystem.R;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -70,15 +70,19 @@ import retrofit2.Retrofit;
 
 public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener {
 
-    FloatingActionButton cameraBtn;
+    FloatingActionButton fab_cameraBtn,fab_textBtn,fab_add;
     Bitmap upload;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    boolean rotate = false;
+
     FirebaseAuth auth;
     FirebaseDatabase db;
+
+    View lyt_cameraBtn, lyt_textBtn, back_drop;
 
     Map<String, NumberPlate> numberPlatesList = new HashMap<String, NumberPlate>();
     List<String> keys = new ArrayList<String>();
@@ -86,26 +90,60 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-            View root = inflater.inflate(R.layout.fragment_scan, container, false);
-            cameraBtn=root.findViewById(R.id.addVehicle);
+        View root = inflater.inflate(R.layout.fragment_scan, container, false);
 
-            recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
-            recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
+        fab_cameraBtn = (FloatingActionButton) root.findViewById(R.id.fab_cameraBtn);
+        fab_textBtn = (FloatingActionButton) root.findViewById(R.id.fab_textBtn);
+        fab_add = (FloatingActionButton) root.findViewById(R.id.fab_add);
+        back_drop = root.findViewById(R.id.back_drop);
 
-            auth = FirebaseAuth.getInstance();
-            db = FirebaseDatabase.getInstance();
+        lyt_cameraBtn = root.findViewById(R.id.lyt_cameraBtn);
+        lyt_textBtn = root.findViewById(R.id.lyt_textBtn);
+        ViewAnimation.initShowOut(lyt_cameraBtn);
+        ViewAnimation.initShowOut(lyt_textBtn);
+        back_drop.setVisibility(View.GONE);
+
+        fab_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFabMode(v);
+            }
+        });
+
+        back_drop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFabMode(fab_add);
+            }
+        });
+
+        fab_cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askCameraPermission();
+                Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
+                toggleFabMode(fab_add);
+            }
+        });
+
+        fab_textBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Text clicked", Toast.LENGTH_SHORT).show();
+                toggleFabMode(fab_add);
+            }
+        });
+
+        recyclerView = (RecyclerView) root.findViewById(R.id.my_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
 
 
-            cameraBtn.setOnClickListener(new View.OnClickListener(){
-                public void onClick(View v){
-                    askCameraPermission();
-                    Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            db.getReference().child("NumberPlates").orderByChild("userID_isDeletedQuery").equalTo(auth.getCurrentUser().getUid()+"_0")
+        db.getReference().child("NumberPlates").orderByChild("userID_isDeletedQuery").equalTo(auth.getCurrentUser().getUid()+"_0")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -158,36 +196,57 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {}
                     });
-            return root;
+        return root;
     }
 
-    private void askCameraPermission() {
-        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.CAMERA}, AppConstants.CAMERA_PERM_CODE);
-        }else{
-            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.INTERNET},103);
-            }else{
-                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, AppConstants.WRITE_EXTERNAL_STORAGE_PERM_CODE);
-                }else{
-                    openCamera();
+    private void toggleFabMode(View v) {
+        rotate = ViewAnimation.rotateFab(v, !rotate);
+        if (rotate) {
+            ViewAnimation.showIn(lyt_cameraBtn);
+            ViewAnimation.showIn(lyt_textBtn);
+            back_drop.setVisibility(View.VISIBLE);
+        } else {
+            ViewAnimation.showOut(lyt_cameraBtn);
+            ViewAnimation.showOut(lyt_textBtn);
+            back_drop.setVisibility(View.GONE);
+        }
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
                 }
             }
         }
-
-
+        return true;
     }
+
+    private void askCameraPermission() {
+        String[] PERMISSIONS = {
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.INTERNET,
+        };
+
+        if (!hasPermissions(getActivity(), PERMISSIONS)) {
+            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
+        }else{
+            openCamera();
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==AppConstants.CAMERA_PERM_CODE){
-            if(grantResults.length<0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                openCamera();
-            }else{
-                Toast.makeText(getActivity(),"Camera Permission Required",Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if(requestCode==AppConstants.CAMERA_PERM_CODE){
+//            if(grantResults.length<0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+////                askStoragePermission();
+//            }else{
+//                Toast.makeText(getActivity(),"Camera Permission Required",Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     private void openCamera() {

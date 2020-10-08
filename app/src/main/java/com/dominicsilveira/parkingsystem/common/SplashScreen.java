@@ -43,7 +43,7 @@ public class SplashScreen extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == AppConstants.GPS_REQUEST) {
+            if (requestCode == AppConstants.GPS_REQUEST_CODE) {
                 Log.e("location","enabled");
                 isGPS = true; // flag maintain before get location
                 startApp();

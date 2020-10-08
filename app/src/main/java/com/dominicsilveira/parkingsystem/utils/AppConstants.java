@@ -10,14 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class AppConstants extends Application {
-    public static final int LOCATION_REQUEST = 1000;
-    public static final int GPS_REQUEST = 1001;
-    public static final int CAMERA_PERM_CODE = 101;
-    public static final int CAMERA_REQUEST_CODE = 102;
-    public static final int WRITE_EXTERNAL_STORAGE_PERM_CODE = 103;
-    public static final int NUMBER_PLATE_POPUP_REQUEST_CODE = 1002;
-    public static final int RESTART_SERVICE_REQUEST_CODE = 1003;
-    public static final int NOTIFICATION_GROUP_REQUEST_CODE = 1004;
+    public static final int LOCATION_REQUEST_CODE = 100;
+    public static final int GPS_REQUEST_CODE = 101;
+    public static final int CAMERA_PERM_CODE = 102;
+    public static final int CAMERA_REQUEST_CODE = 103;
+    public static final int INTERNET_PERM_CODE = 104;
+    public static final int WRITE_EXTERNAL_STORAGE_PERM_CODE = 105;
+    public static final int NUMBER_PLATE_POPUP_REQUEST_CODE = 106;
+    public static final int RESTART_SERVICE_REQUEST_CODE = 107;
+    public static final int NOTIFICATION_GROUP_REQUEST_CODE = 108;
+    public static final int SCAN_PERMISSION_ALL = 109;
 
 
 
