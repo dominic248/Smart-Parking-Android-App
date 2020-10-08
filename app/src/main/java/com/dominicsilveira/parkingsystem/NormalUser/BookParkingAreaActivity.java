@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -31,6 +32,7 @@ import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -48,9 +50,10 @@ import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
     Spinner numberPlateSpinner;
-    TextView placeText,coordText,slotNoText,wheelerText,amountText;
-    TextView startBtn, endBtn;
-    Button cancelBtn,bookBtn;
+    TextView placeText,wheelerText,amountText;
+    TextView endDateText,endTimeText;
+    FloatingActionButton bookBtn;
+    LinearLayout endDate,endTime;
 
     Date startDateTime,endDateTime;
     String placeID;
@@ -66,6 +69,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     final int UPI_PAYMENT = 0;
 
     private NotificationHelper mNotificationHelper;
+    Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,20 +80,24 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
 
         placeText = findViewById(R.id.placeText);
-        coordText = findViewById(R.id.coordText);
-        slotNoText = findViewById(R.id.slotNoText);
         numberPlateSpinner = findViewById(R.id.vehicleSelect);
-        startBtn = findViewById(R.id.startBtn);
-        endBtn = findViewById(R.id.endBtn);
+        endDate = findViewById(R.id.endDate);
+        endTime = findViewById(R.id.endTime);
+        endDateText = findViewById(R.id.endDateText);
+        endTimeText = findViewById(R.id.endTimeText);
+//        endDateText.setInputType(InputType.TYPE_NULL);
+//        endTimeText.setInputType(InputType.TYPE_NULL);
         bookBtn = findViewById(R.id.bookBtn);
         wheelerText = findViewById(R.id.wheelerText);
         amountText = findViewById(R.id.amountText);
-
         mNotificationHelper=new NotificationHelper(this);
 
-
-        startBtn.setInputType(InputType.TYPE_NULL);
-        endBtn.setInputType(InputType.TYPE_NULL);
+        calendar=new GregorianCalendar();
+        startDateTime=calendar.getTime();
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+        endTimeText.setText(simpleDateFormat.format(startDateTime));
+        simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
+        endDateText.setText(simpleDateFormat.format(startDateTime));
 
         Bundle bundle = getIntent().getExtras();
         String UUID=bundle.getString("UUID");
@@ -98,19 +106,18 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
         placeText.setText(parkingArea.name);
         String coord=String.valueOf(parkingArea.latitude)+", "+String.valueOf(parkingArea.longitude);
-        coordText.setText(coord);
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
+
+        endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDateTIme(startBtn,false);
+                showDatePicker(endDateText);
             }
         });
-
-        endBtn.setOnClickListener(new View.OnClickListener() {
+        endTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDateTIme(endBtn,true);
+                showTimePicker(endTimeText);
             }
         });
 
@@ -128,7 +135,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 saveData();
             }
         });
-
 
         db.getReference().child("ParkingAreas").child(UUID)
                 .addChildEventListener(new ChildEventListener() {
@@ -160,11 +166,11 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 });
     }
 
+
     private void setAddValues(ParkingArea parkingArea,String placeID) {
         this.placeID=placeID;
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
-        coordText.setText(String.valueOf(parkingArea.latitude).concat(", ").concat(String.valueOf(parkingArea.longitude)));
     }
 
     private void saveData() {
@@ -175,46 +181,44 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookingSlot.saveToFirebase(BookParkingAreaActivity.this,parkingArea);
     }
 
-    private void showDateTIme(final TextView button, final boolean end) {
-        final Calendar calendar=new GregorianCalendar();
+    private void showDatePicker(final TextView button) {
         DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, final int date) {
                 calendar.set(Calendar.YEAR,year);
                 calendar.set(Calendar.MONTH,month);
                 calendar.set(Calendar.DAY_OF_MONTH,date);
-
-                TimePickerDialog.OnTimeSetListener timeSetListener= new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                        calendar.set(Calendar.HOUR_OF_DAY,hour);
-                        calendar.set(Calendar.MINUTE,minute);
-                        calendar.set(Calendar.SECOND, 0);
-                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        button.setText(simpleDateFormat.format(calendar.getTime()));
-                        if(end){
-                            endDateTime = calendar.getTime();
-                        }else{
-                            startDateTime = calendar.getTime();
-                        }
-                        if(endDateTime!=null && startDateTime!=null){
-                            if(endDateTime.after(startDateTime)){
-                                Toast.makeText(BookParkingAreaActivity.this,
-                                        "after"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(BookParkingAreaActivity.this,
-                                        "before"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                };
-                TimePickerDialog timePickerDialog=new TimePickerDialog(BookParkingAreaActivity.this,timeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
-                timePickerDialog.show();
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
+                button.setText(simpleDateFormat.format(calendar.getTime()));
+                endDateTime = calendar.getTime();
             }
         };
         DatePickerDialog datePickerDialog=new DatePickerDialog(BookParkingAreaActivity.this,dateSetListener,calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.show();
+    }
+
+    private void showTimePicker(final TextView button) {
+        TimePickerDialog.OnTimeSetListener timeSetListener= new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY,hour);
+                calendar.set(Calendar.MINUTE,minute);
+                calendar.set(Calendar.SECOND, 0);
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+                if(endDateTime.after(startDateTime)){
+                    button.setText(simpleDateFormat.format(calendar.getTime()));
+                    endDateTime = calendar.getTime();
+                    Toast.makeText(BookParkingAreaActivity.this,
+                            "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(BookParkingAreaActivity.this,
+                            "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        TimePickerDialog timePickerDialog=new TimePickerDialog(BookParkingAreaActivity.this,timeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
+        timePickerDialog.show();
     }
 
     public void addItemsOnSpinner() {

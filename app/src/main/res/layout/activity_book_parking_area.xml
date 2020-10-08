@@ -1,130 +1,478 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NormalUser.BookParkingAreaActivity">
+    android:background="@color/white">
 
-    <Spinner
-        android:id="@+id/vehicleSelect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/slotNoText"
-        tools:layout_editor_absoluteX="135dp" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light">
 
-    <TextView
-        android:id="@+id/slotNoLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Slot number:"
-        app:layout_constraintTop_toBottomOf="@+id/coordLabel"
-        tools:layout_editor_absoluteX="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_10"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/placeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Place Name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <fragment
+                android:id="@+id/google_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
 
-    <TextView
-        android:id="@+id/coordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Coordinates"
-        app:layout_constraintTop_toBottomOf="@+id/placeLabel"
-        tools:layout_editor_absoluteX="16dp" />
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nested_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:clipToPadding="false"
+                android:padding="@dimen/spacing_large"
+                android:scrollbars="none"
+                android:scrollingCache="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/vehicleLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vehicle"
-        app:layout_constraintTop_toBottomOf="@+id/slotNoLabel"
-        tools:layout_editor_absoluteX="16dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/placeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="104dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_middle"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/coordText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/placeText"
-        tools:layout_editor_absoluteX="124dp" />
+                        <ImageView
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="@dimen/spacing_middle"
+                            android:layout_margin="@dimen/spacing_medium"
+                            android:src="@drawable/shape_circle"
+                            app:tint="@color/red_400" />
 
-    <TextView
-        android:id="@+id/slotNoText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/coordText"
-        tools:layout_editor_absoluteX="124dp" />
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
 
-    <TextView
-        android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Select Start Date"
-        app:layout_constraintTop_toBottomOf="@+id/vehicleSelect"
-        tools:layout_editor_absoluteX="117dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Booking Details"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_80" />
 
-    <TextView
-        android:id="@+id/endBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Select End Date"
-        app:layout_constraintTop_toBottomOf="@+id/startBtn"
-        tools:layout_editor_absoluteX="117dp" />
+                    </LinearLayout>
 
-    <Button
-        android:id="@+id/bookBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
-        android:text="Book "
-        app:layout_constraintTop_toBottomOf="@+id/startBtn"
-        tools:layout_editor_absoluteX="92dp" />
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/scanBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:text="Cancel"
-        app:layout_constraintTop_toBottomOf="@+id/bookBtn"
-        tools:layout_editor_absoluteX="82dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
 
-    <TextView
-        android:id="@+id/amountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/endBtn"
-        tools:layout_editor_absoluteX="96dp" />
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_location_on_24" />
 
-    <TextView
-        android:id="@+id/wheelerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/amountText"
-        tools:layout_editor_absoluteX="135dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/placeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_plate_number" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+                            <Spinner
+                                android:id="@+id/vehicleSelect"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:layout_constraintTop_toBottomOf="@+id/slotNoText"
+                                />
+
+<!--                            <Button-->
+<!--                                android:id="@+id/vehicleSelect"-->
+<!--                                style="@style/Base.Widget.AppCompat.Spinner.Underlined"-->
+<!--                                android:layout_width="0dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_weight="1"-->
+<!--                                android:text="Select a Vehicle"-->
+<!--                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+<!--                                android:textColor="@color/grey_40" />-->
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_directions_car_24" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/wheelerText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_middle"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="@dimen/spacing_middle"
+                            android:layout_margin="@dimen/spacing_medium"
+                            android:src="@drawable/shape_circle"
+                            app:tint="@color/red_400" />
+
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Set Exit Date and Time"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_80" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/endDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/endDateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/endTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/endTimeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_10"  />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_middle"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="@dimen/spacing_middle"
+                            android:layout_margin="@dimen/spacing_medium"
+                            android:src="@drawable/shape_circle"
+                            app:tint="@color/red_400" />
+
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Amount Details"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_80" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_rupee_indian" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_medium"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/amountText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/bookBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_smlarge"
+            android:clickable="true"
+            android:tint="@android:color/white"
+            app:fabSize="normal"
+            app:layout_anchor="@id/nested_scroll_view"
+            app:layout_anchorGravity="top|right|end"
+            app:rippleColor="@android:color/white"
+            app:srcCompat="@drawable/ic_baseline_save_24" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
+
+    <!--    <Spinner-->
+<!--        android:id="@+id/vehicleSelect"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/slotNoText"-->
+<!--        tools:layout_editor_absoluteX="135dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/slotNoLabel"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Slot number:"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/coordLabel"-->
+<!--        tools:layout_editor_absoluteX="16dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/placeLabel"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:text="Place Name"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/coordLabel"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Coordinates"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/placeLabel"-->
+<!--        tools:layout_editor_absoluteX="16dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/vehicleLabel"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Vehicle"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/slotNoLabel"-->
+<!--        tools:layout_editor_absoluteX="16dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/placeText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="104dp"-->
+<!--        android:text="TextView"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/coordText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="4dp"-->
+<!--        android:text="TextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/placeText"-->
+<!--        tools:layout_editor_absoluteX="124dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/slotNoText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="TextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/coordText"-->
+<!--        tools:layout_editor_absoluteX="124dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/startBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="Select Start Date"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/vehicleSelect"-->
+<!--        tools:layout_editor_absoluteX="117dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/endBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:text="Select End Date"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/startBtn"-->
+<!--        tools:layout_editor_absoluteX="117dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/bookBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="108dp"-->
+<!--        android:text="Book "-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/startBtn"-->
+<!--        tools:layout_editor_absoluteX="92dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/scanBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="68dp"-->
+<!--        android:text="Cancel"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/bookBtn"-->
+<!--        tools:layout_editor_absoluteX="82dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/amountText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:text="TextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/endBtn"-->
+<!--        tools:layout_editor_absoluteX="96dp" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/wheelerText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="TextView"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/amountText"-->
+<!--        tools:layout_editor_absoluteX="135dp" />-->

@@ -161,6 +161,7 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
         holder.bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v ) {
+                Log.i("ErrSyn", String.valueOf(parkingArea));
                 Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
                 intent.putExtra("UUID", id);
                 intent.putExtra("ParkingArea", parkingArea);

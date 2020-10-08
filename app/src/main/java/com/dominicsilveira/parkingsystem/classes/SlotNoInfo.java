@@ -1,7 +1,9 @@
 package com.dominicsilveira.parkingsystem.classes;
 
 
-public class SlotNoInfo {
+import java.io.Serializable;
+
+public class SlotNoInfo implements Serializable {
     public String name;
     public boolean isFull;
 
