@@ -20,6 +20,9 @@ import androidx.fragment.app.Fragment;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
+import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -72,6 +75,8 @@ public class DashboardOwnerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
+                AlarmUtils.cancelAllAlarms(getActivity(),new Intent(getActivity(), NotificationReceiver.class));
                 Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
                 getActivity().finish();

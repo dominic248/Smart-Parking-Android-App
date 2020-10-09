@@ -52,9 +52,6 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void startApp() {
-        if(!isMyServiceRunning(MyParkingService.class))
-            SplashScreen.this.startService(new Intent(SplashScreen.this, MyParkingService.class));
-        startService(new Intent(SplashScreen.this, MyParkingService.class));
         Log.e("location","enabled");
         isGPS = true; // flag maintain before get location
         if(auth.getCurrentUser()==null){
@@ -83,15 +80,5 @@ public class SplashScreen extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) SplashScreen.this.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

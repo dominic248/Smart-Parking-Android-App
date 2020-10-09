@@ -1,5 +1,7 @@
 package com.dominicsilveira.parkingsystem.common;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +33,10 @@ public class MainOwnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!isMyServiceRunning(MyParkingService.class))
+            MainOwnerActivity.this.startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
+        startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
 
         db=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
@@ -73,5 +80,14 @@ public class MainOwnerActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) MainOwnerActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

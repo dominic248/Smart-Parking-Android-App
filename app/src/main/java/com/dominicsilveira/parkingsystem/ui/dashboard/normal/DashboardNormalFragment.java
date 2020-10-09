@@ -20,6 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
+import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.utils.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -105,6 +108,8 @@ public class DashboardNormalFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
+                AlarmUtils.cancelAllAlarms(getActivity(),new Intent(getActivity(), NotificationReceiver.class));
                 Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
                 getActivity().finish();
