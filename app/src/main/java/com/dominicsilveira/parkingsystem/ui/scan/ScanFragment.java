@@ -87,6 +87,11 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
     Map<String, NumberPlate> numberPlatesList = new HashMap<String, NumberPlate>();
     List<String> keys = new ArrayList<String>();
     Map<String, NumberPlate> treeMap;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.INTERNET,
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -138,6 +143,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
@@ -224,12 +230,6 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
     }
 
     private void askCameraPermission() {
-        String[] PERMISSIONS = {
-                android.Manifest.permission.CAMERA,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.INTERNET,
-        };
-
         if (!hasPermissions(getActivity(), PERMISSIONS)) {
             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
         }else{
@@ -240,12 +240,10 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if(requestCode==AppConstants.CAMERA_PERM_CODE){
-//            if(grantResults.length<0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-////                askStoragePermission();
-//            }else{
-//                Toast.makeText(getActivity(),"Camera Permission Required",Toast.LENGTH_SHORT).show();
-//            }
+//        if (!hasPermissions(getActivity(), PERMISSIONS)) {
+//            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
+//        }else{
+//            openCamera();
 //        }
     }
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
@@ -52,6 +55,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -67,9 +71,10 @@ import retrofit2.Retrofit;
 public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener {
     Bitmap upload;
 
-    TextView coordText,slotNoText,numberPlate,amountText,wheelerText;
-    TextView startBtn, endBtn;
-    Button cameraBtn,bookBtn;
+    TextView slotNoText,numberPlate,amountText,wheelerText;
+    TextView endDateText,endTimeText;
+    LinearLayout endDate,endTime,scanBtn;
+    Button bookBtn;
     EditText emailText;
     TextView placeText;
 
@@ -79,6 +84,12 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     Date startDateTime,endDateTime;
     String placeID;
     ParkingArea parkingArea;
+    Calendar calendar;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.INTERNET,
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -87,37 +98,43 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        cameraBtn=root.findViewById(R.id.scanBtn);
+        scanBtn=root.findViewById(R.id.scanBtn);
         placeText = root.findViewById(R.id.placeText);
-        coordText = root.findViewById(R.id.coordText);
         slotNoText = root.findViewById(R.id.slotNoText);
         numberPlate = root.findViewById(R.id.numberPlate);
-        startBtn = root.findViewById(R.id.startBtn);
-        endBtn = root.findViewById(R.id.endBtn);
+        endDate = root.findViewById(R.id.endDate);
+        endTime = root.findViewById(R.id.endTime);
+        endDateText = root.findViewById(R.id.endDateText);
+        endTimeText = root.findViewById(R.id.endTimeText);
+//        endDateText.setInputType(InputType.TYPE_NULL);
+//        endTimeText.setInputType(InputType.TYPE_NULL);
         bookBtn = root.findViewById(R.id.bookBtn);
         amountText=root.findViewById(R.id.amountText);
         wheelerText=root.findViewById(R.id.wheelerText);
         emailText=root.findViewById(R.id.emailText);
 
-        startBtn.setInputType(InputType.TYPE_NULL);
-        endBtn.setInputType(InputType.TYPE_NULL);
+        calendar=new GregorianCalendar();
+        startDateTime=endDateTime=calendar.getTime();
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+        endTimeText.setText(simpleDateFormat.format(startDateTime));
+        simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
+        endDateText.setText(simpleDateFormat.format(startDateTime));
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDateTIme(startBtn,false);
+                showDatePicker(endDateText);
+            }
+        });
+        endTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimePicker(endTimeText);
             }
         });
 
-        endBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDateTIme(endBtn,true);
-            }
-        });
 
-
-        cameraBtn.setOnClickListener(new View.OnClickListener(){
+        scanBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 askCameraPermission();
                 Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
@@ -171,44 +188,18 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         this.placeID=placeID;
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
-        coordText.setText(String.valueOf(parkingArea.latitude).concat(", ").concat(String.valueOf(parkingArea.longitude)));
     }
 
-    private void showDateTIme(final TextView button, final boolean end) {
-        final Calendar calendar=Calendar.getInstance();
+    private void showDatePicker(final TextView button) {
         DatePickerDialog.OnDateSetListener dateSetListener=new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, final int date) {
                 calendar.set(Calendar.YEAR,year);
                 calendar.set(Calendar.MONTH,month);
                 calendar.set(Calendar.DAY_OF_MONTH,date);
-
-                TimePickerDialog.OnTimeSetListener timeSetListener= new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                        calendar.set(Calendar.HOUR_OF_DAY,hour);
-                        calendar.set(Calendar.MINUTE,minute);
-                        calendar.set(Calendar.SECOND, 0);
-                        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        button.setText(simpleDateFormat.format(calendar.getTime()));
-                        if(end){
-                            endDateTime = calendar.getTime();
-                        }else{
-                            startDateTime = calendar.getTime();
-                        }
-                        if(endDateTime!=null && startDateTime!=null){
-                            if(endDateTime.after(startDateTime)){
-                                Toast.makeText(getActivity(),
-                                        "after"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(getActivity(),
-                                        "before"+calendar.get(Calendar.HOUR_OF_DAY), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                };
-                TimePickerDialog timePickerDialog=new TimePickerDialog(getActivity(),timeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
-                timePickerDialog.show();
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
+                button.setText(simpleDateFormat.format(calendar.getTime()));
+                endDateTime = calendar.getTime();
             }
         };
         DatePickerDialog datePickerDialog=new DatePickerDialog(getActivity(),dateSetListener,calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
@@ -216,27 +207,55 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         datePickerDialog.show();
     }
 
-    private void askCameraPermission() {
-        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.CAMERA}, AppConstants.CAMERA_PERM_CODE);
-        }else{
-            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(getActivity(),new String[] {Manifest.permission.INTERNET},103);
-            }else{
-                openCamera();
+    private void showTimePicker(final TextView button) {
+        TimePickerDialog.OnTimeSetListener timeSetListener= new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                calendar.set(Calendar.HOUR_OF_DAY,hour);
+                calendar.set(Calendar.MINUTE,minute);
+                calendar.set(Calendar.SECOND, 0);
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+                endDateTime = calendar.getTime();
+                if(endDateTime.after(startDateTime)){
+                    button.setText(simpleDateFormat.format(calendar.getTime()));
+                    endDateTime = calendar.getTime();
+                }else{
+                    endDateTime = startDateTime;
+                    Toast.makeText(getActivity(),
+                            "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
+                }
             }
+        };
+        TimePickerDialog timePickerDialog=new TimePickerDialog(getActivity(),timeSetListener,calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),false);
+        timePickerDialog.show();
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void askCameraPermission() {
+        if (!hasPermissions(getActivity(), PERMISSIONS)) {
+            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
+        }else{
+            openCamera();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==AppConstants.CAMERA_PERM_CODE){
-            if(grantResults.length<0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                openCamera();
-            }else{
-                Toast.makeText(getActivity(),"Camera Permission Required",Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if(requestCode==AppConstants.SCAN_PERMISSION_ALL){
+//            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+//                openCamera();
+//            }
+//        }
     }
 
     private void openCamera() {

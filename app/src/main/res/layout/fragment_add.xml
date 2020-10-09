@@ -1,166 +1,495 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.add.AddFragment" >
+    android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/numberPlateCard"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="2dp"
-        app:cardMaxElevation="2dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:padding="@dimen/spacing_large"
+        android:scrollbars="none"
+        android:scrollingCache="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="12dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/placeLabel"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginTop="36dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_baseline_place_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-
-
-            <TextView
-                android:id="@+id/placeText"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/placeLabel"
-                app:layout_constraintTop_toTopOf="@+id/placeLabel" />
+                android:layout_marginTop="@dimen/spacing_middle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/coordText"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="@dimen/spacing_middle"
+                    android:layout_margin="@dimen/spacing_medium"
+                    android:src="@drawable/shape_circle"
+                    app:tint="@color/red_400" />
+
+                <View
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="0dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Booking Details"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="TextView"
-                app:layout_constraintEnd_toEndOf="@+id/placeText"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/placeText"
-                app:layout_constraintTop_toBottomOf="@+id/placeText" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/slotNoLabel"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
+
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/placeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
+
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_baseline_person_24" />
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:id="@+id/emailText"
+                        style="@style/EditText.Flat.Grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@color/white"
+                        android:hint="E-Mail ID"
+                        android:minHeight="45dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/scanBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
+
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_plate_number" />
+
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/numberPlate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Plate Number"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
+
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_baseline_directions_car_24" />
+
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/wheelerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wheeler Type"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:text="Slot number:"
-                app:layout_constraintStart_toStartOf="@+id/amountText"
-                app:layout_constraintTop_toBottomOf="@+id/amountText" />
+                android:layout_marginTop="@dimen/spacing_middle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/slotNoText"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="@dimen/spacing_middle"
+                    android:layout_margin="@dimen/spacing_medium"
+                    android:src="@drawable/shape_circle"
+                    app:tint="@color/red_400" />
+
+                <View
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="0dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Exit Date and Time"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/slotNoLabel"
-                app:layout_constraintTop_toTopOf="@+id/slotNoLabel" />
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/emailLabel"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="60dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_baseline_email_24"
-                app:layout_constraintStart_toStartOf="@+id/placeLabel"
-                app:layout_constraintTop_toBottomOf="@+id/placeLabel" />
+                <LinearLayout
+                    android:id="@+id/endDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
 
-            <EditText
-                android:id="@+id/emailText"
-                android:layout_width="wrap_content"
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/endDateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/endTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
+
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/endTimeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_10"  />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:ems="10"
-                android:hint="email"
-                android:inputType="textPersonName"
-                app:layout_constraintStart_toEndOf="@+id/emailLabel"
-                app:layout_constraintTop_toTopOf="@+id/emailLabel" />
+                android:layout_marginTop="@dimen/spacing_middle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/amountText"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="@dimen/spacing_middle"
+                    android:layout_margin="@dimen/spacing_medium"
+                    android:src="@drawable/shape_circle"
+                    app:tint="@color/red_400" />
+
+                <View
+                    android:layout_width="@dimen/spacing_middle"
+                    android:layout_height="0dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amount Details"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/grey_80" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:text="TextView"
-                app:layout_constraintStart_toStartOf="@+id/startBtn"
-                app:layout_constraintTop_toBottomOf="@+id/startBtn" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/wheelerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="TextView"
-                app:layout_constraintStart_toStartOf="@+id/emailText"
-                app:layout_constraintTop_toBottomOf="@+id/emailText" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/spacing_xxlarge"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/spacing_small">
 
-            <TextView
-                android:id="@+id/numberPlate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                app:layout_constraintStart_toEndOf="@+id/wheelerText"
-                app:layout_constraintTop_toTopOf="@+id/wheelerText" />
+                    <ImageButton
+                        android:layout_width="@dimen/spacing_xmlarge"
+                        android:layout_height="@dimen/spacing_xmlarge"
+                        android:background="@android:color/transparent"
+                        android:tint="@color/grey_40"
+                        app:srcCompat="@drawable/ic_rupee_indian" />
 
-            <TextView
-                android:id="@+id/startBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:text="Select Start Date"
-                app:layout_constraintStart_toStartOf="@+id/wheelerText"
-                app:layout_constraintTop_toBottomOf="@+id/wheelerText" />
+                    <View
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/endBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select End Date"
-                app:layout_constraintStart_toEndOf="@+id/startBtn"
-                app:layout_constraintTop_toTopOf="@+id/startBtn" />
+                    <TextView
+                        android:id="@+id/amountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_80" />
+                </LinearLayout>
+            </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
             <Button
                 android:id="@+id/bookBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="52dp"
-                android:text="Book "
-                app:layout_constraintStart_toStartOf="@+id/slotNoLabel"
-                app:layout_constraintTop_toBottomOf="@+id/slotNoLabel" />
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="@dimen/spacing_mlarge"
+                android:background="@color/colorAccent"
+                android:text="SUBMIT"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-            <Button
-                android:id="@+id/scanBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="scan"
-                app:layout_constraintStart_toEndOf="@+id/bookBtn"
-                app:layout_constraintTop_toTopOf="@+id/bookBtn" />
+<!--    <com.google.android.material.card.MaterialCardView-->
+<!--        android:id="@+id/numberPlateCard"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:theme="@style/Theme.MaterialComponents.Light"-->
+<!--        app:cardCornerRadius="3dp"-->
+<!--        app:cardElevation="2dp"-->
+<!--        app:cardMaxElevation="2dp"-->
+<!--        app:cardPreventCornerOverlap="true"-->
+<!--        app:cardUseCompatPadding="true"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+
+<!--            <TextView-->
+<!--                android:id="@+id/placeText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="28dp"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/placeLabel"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/placeLabel" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/coordText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="28dp"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/placeText"-->
+<!--                app:layout_constraintHorizontal_bias="0.0"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/placeText"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/placeText" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/slotNoLabel"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="44dp"-->
+<!--                android:text="Slot number:"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/amountText"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/amountText" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/slotNoText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/slotNoLabel"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/slotNoLabel" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/emailLabel"-->
+<!--                android:layout_width="30dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="60dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/ic_baseline_email_24"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/placeLabel"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/placeLabel" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/emailText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:ems="10"-->
+<!--                android:hint="email"-->
+<!--                android:inputType="textPersonName"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/emailLabel"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/emailLabel" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/amountText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="44dp"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/startBtn"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/startBtn" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/wheelerText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="28dp"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/emailText"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/emailText" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/numberPlate"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="TextView"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/wheelerText"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/wheelerText" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/startBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="28dp"-->
+<!--                android:text="Select Start Date"-->
+<!--                app:layout_constraintStart_toStartOf="@+id/wheelerText"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/wheelerText" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/endBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Select End Date"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/startBtn"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/startBtn" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/bookBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="52dp"-->
+<!--                android:text="Book "-->
+<!--                app:layout_constraintStart_toStartOf="@+id/slotNoLabel"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/slotNoLabel" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/scanBtn"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="scan"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/bookBtn"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/bookBtn" />-->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </com.google.android.material.card.MaterialCardView>-->
+
+
+</LinearLayout>
