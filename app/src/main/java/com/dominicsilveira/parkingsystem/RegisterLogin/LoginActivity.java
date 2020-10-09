@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
@@ -74,19 +75,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email, String password) {
+        final AppConstants globalClass=(AppConstants)getApplicationContext();
         auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                final AppConstants globalClass=(AppConstants)getApplicationContext();
-                FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).child("userType").addValueEventListener(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int val=snapshot.getValue(int.class);
-                        Log.e("userTyp",String.valueOf(val));
-                        globalClass.setUserType(val);
+                        User userObj=snapshot.getValue(User.class);
+                        globalClass.setUserObj(userObj);
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         Intent intent;
-                        if(val==2)
+                        if(userObj.userType==2)
                             intent=new Intent(LoginActivity.this, MainOwnerActivity.class);
                         else
                             intent=new Intent(LoginActivity.this, MainNormalActivity.class);

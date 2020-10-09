@@ -39,6 +39,7 @@ import androidx.fragment.app.Fragment;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
@@ -365,7 +366,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         if(snapshot.exists()){
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 String userID = dataSnapshot.getKey();
-                                User userObj=dataSnapshot.getValue(User.class);
+                                final User userObj=dataSnapshot.getValue(User.class);
 //                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
                                 final BookedSlots bookingSlot=new BookedSlots(userID,placeID,"xfbhjk".toString(),4,
                                         startDateTime,endDateTime,0,1,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
@@ -384,6 +385,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if(task.isSuccessful()){
                                                             Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                                            File file = new File(Environment.getExternalStorageDirectory()
+                                                                    + File.separator + "invoice.pdf");
+                                                            InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                                                            invoiceGenerator.create();
                                                         }else{
                                                             Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
                                                             parkingArea.availableSlots+=1;
@@ -398,92 +403,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                 }else {
                                     Toast.makeText(getActivity(),"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
                                 }
-                                SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM, yyyy");
-                                SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm a");
-                                SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd-MMM-yyyy, hh:mm a");
-
-                                PdfDocument pdfDocument=new PdfDocument();
-                                Paint paint=new Paint();
-                                PdfDocument.PageInfo pageInfo=new PdfDocument.PageInfo.Builder(1000,700,1).create();
-                                PdfDocument.Page page=pdfDocument.startPage(pageInfo);
-                                Canvas canvas=page.getCanvas();
-
-                                paint.setTextSize(50);
-                                canvas.drawText("Smart Parking System",30,60,paint);
-
-                                paint.setTextSize(25);
-                                canvas.drawText(parkingArea.name,30,90,paint);
-
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText("Invoice no",canvas.getWidth()-40,40,paint);
-                                canvas.drawText(key,canvas.getWidth()-40,80,paint);
-
-                                paint.setTextAlign(Paint.Align.LEFT);
-                                paint.setColor(Color.rgb(150,150,150));
-                                canvas.drawRect(30,120,canvas.getWidth()-30,130,paint);
-
-                                paint.setColor(Color.BLACK);
-                                canvas.drawText("Date: ",50,170,paint);
-                                canvas.drawText(dateFormatter.format(startDateTime),250,170,paint);
-                                canvas.drawText("Time: ",620,170,paint);
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText(timeFormatter.format(startDateTime),canvas.getWidth()-40,170,paint);
-
-                                paint.setTextAlign(Paint.Align.LEFT);
-                                paint.setColor(Color.rgb(150,150,150));
-                                canvas.drawRect(30,220,canvas.getWidth()-40,270,paint);
-
-                                paint.setColor(Color.WHITE);
-                                canvas.drawText("Bill To: ",50,255,paint);
-
-                                paint.setColor(Color.BLACK);
-                                canvas.drawText("Customer Name: ",30,320,paint);
-                                canvas.drawText(userObj.name,250,320,paint);
-                                canvas.drawText("Phone No: ",620,320,paint);
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText(userObj.contact_no,canvas.getWidth()-40,320,paint);
-
-                                paint.setTextAlign(Paint.Align.LEFT);
-                                canvas.drawText("Email ID: ",30,365,paint);
-                                canvas.drawText(emailText.getText().toString(),250,365,paint);
-
-                                paint.setColor(Color.rgb(150,150,150));
-                                canvas.drawRect(30,415,canvas.getWidth()-40,465,paint);
-
-                                paint.setColor(Color.WHITE);
-                                canvas.drawText("Plate-Number",50,450,paint);
-                                canvas.drawText("Wheeler-Type",240,450,paint);
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText("Start-Time",canvas.getWidth()-320,450,paint);
-                                canvas.drawText("End-Time",canvas.getWidth()-50,450,paint);
-
-                                paint.setTextAlign(Paint.Align.LEFT);
-                                paint.setColor(Color.BLACK);
-                                canvas.drawText(bookingSlot.numberPlate,50,495,paint);
-                                canvas.drawText(String.valueOf(bookingSlot.wheelerType),240,495,paint);
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText(dateTimeFormatter.format(bookingSlot.startTime),canvas.getWidth()-320,495,paint);
-                                canvas.drawText(dateTimeFormatter.format(bookingSlot.endTime),canvas.getWidth()-50,495,paint);
-                                paint.setTextAlign(Paint.Align.LEFT);
-
-                                paint.setColor(Color.rgb(150,150,150));
-                                canvas.drawRect(30,565,canvas.getWidth()-40,575,paint);
-
-                                paint.setColor(Color.BLACK);
-                                paint.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));
-                                canvas.drawText("Total",550,615,paint);
-                                paint.setTextAlign(Paint.Align.RIGHT);
-                                canvas.drawText(String.valueOf(bookingSlot.amount),970,615,paint);
-
-                                pdfDocument.finishPage(page);
-                                File file = new File(Environment.getExternalStorageDirectory()
-                                        + File.separator + "invoice.pdf");
-                                try {
-                                    pdfDocument.writeTo(new FileOutputStream(file));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                pdfDocument.close();
 
 //                                Intent target = new Intent(Intent.ACTION_VIEW);
 //                                target.setDataAndType(Uri.fromFile(file),"application/pdf");
@@ -496,15 +415,15 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
 //                                    // Instruct the user to install a PDF reader here, or something
 //                                }
 
-                                Intent share = new Intent(Intent.ACTION_SEND);
-                                if(file.exists()) {
-                                    share.setType("application/pdf");
-                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                                    share.putExtra(Intent.EXTRA_SUBJECT,
-                                            "Sharing File...");
-                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-                                    startActivity(Intent.createChooser(share, "Share File"));
-                                }
+//                                Intent share = new Intent(Intent.ACTION_SEND);
+//                                if(file.exists()) {
+//                                    share.setType("application/pdf");
+//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+//                                    share.putExtra(Intent.EXTRA_SUBJECT,
+//                                            "Sharing File...");
+//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+//                                    startActivity(Intent.createChooser(share, "Share File"));
+//                                }
                             }
                         }else{
                             Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();

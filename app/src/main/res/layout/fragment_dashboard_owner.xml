@@ -326,12 +326,6 @@
 
 
             <Button
-                android:id="@+id/logoutBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Logout" />
-
-            <Button
                 android:id="@+id/checkService"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

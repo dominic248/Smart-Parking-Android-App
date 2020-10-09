@@ -3,9 +3,7 @@ package com.dominicsilveira.parkingsystem.ui.dashboard.normal;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
-import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
-import com.dominicsilveira.parkingsystem.utils.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -38,11 +35,7 @@ public class DashboardNormalFragment extends Fragment {
     FirebaseDatabase db;
     LinearLayout openMapsBtn,myBookingsBtn,nearByBtn;
 
-    Button logout;
     Button startService,stopService,checkService;
-    FusedLocationProviderClient client;
-
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +44,6 @@ public class DashboardNormalFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        logout = root.findViewById(R.id.logoutBtn);
         openMapsBtn = root.findViewById(R.id.openMapsBtn);
         myBookingsBtn = root.findViewById(R.id.myBookingsBtn);
         checkService = root.findViewById(R.id.checkService);
@@ -104,17 +96,6 @@ public class DashboardNormalFragment extends Fragment {
             }
         });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
-                AlarmUtils.cancelAllAlarms(getActivity(),new Intent(getActivity(), NotificationReceiver.class));
-                Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
-            }
-        });
 
         if(!auth.getCurrentUser().isEmailVerified()){
             alertVerifyEmail();

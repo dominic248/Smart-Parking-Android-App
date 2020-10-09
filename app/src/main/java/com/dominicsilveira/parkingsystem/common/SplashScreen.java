@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.utils.gps.GpsUtils;
@@ -60,14 +61,14 @@ public class SplashScreen extends AppCompatActivity {
             finish();
         }else{
             final AppConstants globalClass=(AppConstants)getApplicationContext();
-            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).child("userType").addValueEventListener(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int val=snapshot.getValue(int.class);
-                    Log.e("userTyp",String.valueOf(val));
-                    globalClass.setUserType(val);
+                    User userObj=snapshot.getValue(User.class);
+                    Log.e("userTyp",String.valueOf(userObj.userType));
+                    globalClass.setUserObj(userObj);
                     Intent intent;
-                    if (val==2)
+                    if (userObj.userType==2)
                         intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
                     else
                         intent=new Intent(SplashScreen.this, MainNormalActivity.class);

@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.notifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 
 import org.json.JSONArray;

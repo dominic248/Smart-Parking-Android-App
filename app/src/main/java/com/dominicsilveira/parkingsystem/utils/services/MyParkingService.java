@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.dominicsilveira.parkingsystem.utils.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;

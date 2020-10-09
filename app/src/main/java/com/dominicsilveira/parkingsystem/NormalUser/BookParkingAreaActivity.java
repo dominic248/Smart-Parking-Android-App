@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +33,10 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -53,6 +57,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -211,6 +216,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     }
 
     private void saveData() {
+        final AppConstants globalClass=(AppConstants)getApplicationContext();
+        final User userObj=globalClass.getUserObj();
         final int amountInt=Integer.parseInt(amountText.getText().toString());
         String userID = auth.getCurrentUser().getUid();
         final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,1,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
@@ -230,6 +237,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                                    File file = new File(Environment.getExternalStorageDirectory()
+                                            + File.separator + "invoice.pdf");
+                                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                                    invoiceGenerator.create();
                                     Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
                                     intent.putExtra("FRAGMENT_NO", 0);
                                     startActivity(intent);

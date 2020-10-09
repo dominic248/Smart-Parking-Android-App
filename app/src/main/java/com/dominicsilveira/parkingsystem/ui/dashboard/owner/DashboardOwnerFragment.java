@@ -3,7 +3,6 @@ package com.dominicsilveira.parkingsystem.ui.dashboard.owner;
 
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.utils.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.github.mikephil.charting.charts.PieChart;
@@ -44,7 +43,6 @@ import java.util.List;
 
 public class DashboardOwnerFragment extends Fragment {
 
-    Button logoutBtn,historyBtn;
     LinearLayout expandCard;
     TextView availableText,occupiedText,price2Text,price3Text,price4Text;
     PieChart platforms_chart;
@@ -61,7 +59,6 @@ public class DashboardOwnerFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        logoutBtn = root.findViewById(R.id.logoutBtn);
         expandCard = root.findViewById(R.id.expandCard);
         availableText = expandCard.findViewById(R.id.availableText);
         occupiedText = expandCard.findViewById(R.id.occupiedText);
@@ -70,18 +67,6 @@ public class DashboardOwnerFragment extends Fragment {
         price4Text = expandCard.findViewById(R.id.price4Text);
         platforms_chart = expandCard.findViewById(R.id.platforms_chart);
 
-
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                getActivity().stopService(new Intent(getActivity(), MyParkingService.class));
-                AlarmUtils.cancelAllAlarms(getActivity(),new Intent(getActivity(), NotificationReceiver.class));
-                Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
-            }
-        });
 
 //        historyBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override

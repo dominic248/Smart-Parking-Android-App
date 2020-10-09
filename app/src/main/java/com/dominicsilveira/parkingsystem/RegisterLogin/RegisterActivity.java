@@ -18,6 +18,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -98,12 +99,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser(final String email, String password, final String name, final String contact_no, final int userType) {
+        final AppConstants globalClass=(AppConstants)getApplicationContext();
         auth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             final User userObj=new User(name,email,contact_no,userType);
+                            globalClass.setUserObj(userObj);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
                                     .setValue(userObj).addOnCompleteListener(new OnCompleteListener<Void>() {

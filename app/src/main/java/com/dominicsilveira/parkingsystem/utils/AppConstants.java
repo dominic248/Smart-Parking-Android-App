@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.dominicsilveira.parkingsystem.classes.User;
+
 public class AppConstants extends Application {
     public static final int LOCATION_REQUEST_CODE = 100;
     public static final int GPS_REQUEST_CODE = 101;
@@ -23,14 +25,14 @@ public class AppConstants extends Application {
 
 
 
-    private int userType;
+    private User userObj;
 
-    public int getUserType(){
-        return userType;
+    public User getUserObj(){
+        return userObj;
     }
 
-    public void setUserType(int userType){
-        this.userType=userType;
+    public void setUserObj(User userObj){
+        this.userObj=userObj;
     }
     @Override
     public void onCreate() {
