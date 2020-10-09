@@ -113,7 +113,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
-//                            parkingAreasList.add(parkingArea);
                             parkingAreasList.put(dataSnapshot.getKey(),parkingArea);
                             Log.d("GPS Map",parkingArea.name);
                         }
@@ -158,9 +157,9 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                                 options=new MarkerOptions().position(globalLatLng)
                                         .title("I am here");
                                 if(globalLatLngIntent != null)
-                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLngIntent,30));
+                                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLngIntent,30));
                                 else
-                                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
+                                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
                             }else{
                                 globalLatLng=new LatLng(location.getLatitude(),
                                         location.getLongitude());

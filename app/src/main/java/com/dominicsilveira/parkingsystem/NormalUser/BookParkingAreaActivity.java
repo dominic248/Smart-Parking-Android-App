@@ -2,11 +2,13 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -32,6 +34,15 @@ import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,7 +58,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
@@ -63,6 +76,14 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
+
+    SupportMapFragment supportMapFragment;
+    FusedLocationProviderClient client;
+
+    GoogleMap gMap;
+
+    LatLng globalLatLng=null;
+    MarkerOptions options;
 
     List<Integer> numberPlateWheeler = new ArrayList<Integer>();
     List<String> numberPlateNumber = new ArrayList<String>();
@@ -107,7 +128,20 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         Log.e("BookParkingAreaActivity",parkingArea.name+" "+UUID);
 
         placeText.setText(parkingArea.name);
-        String coord=String.valueOf(parkingArea.latitude)+", "+String.valueOf(parkingArea.longitude);
+        globalLatLng=new LatLng(parkingArea.latitude,parkingArea.longitude);
+        options=new MarkerOptions().position(globalLatLng)
+                .title(parkingArea.name);
+        supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.google_map);
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                gMap=googleMap;
+                gMap.clear();
+                gMap.addMarker(options);
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
+            }
+        });
 
 
         endDate.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +201,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
+
 
 
     private void setAddValues(ParkingArea parkingArea,String placeID) {
