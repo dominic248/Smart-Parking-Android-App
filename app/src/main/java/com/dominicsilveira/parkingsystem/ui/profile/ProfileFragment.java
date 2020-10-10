@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileFragment extends Fragment {
 
-    LinearLayout personalDetailsBtn,changePasswordBtn,aboutMeBtn,logoutBtn;
+    LinearLayout personalDetailsBtn,changePasswordBtn,aboutMeBtn,logoutBtn,upiDetailsBtn;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +29,8 @@ public class ProfileFragment extends Fragment {
         personalDetailsBtn = root.findViewById(R.id.personalDetailsBtn);
         changePasswordBtn = root.findViewById(R.id.changePasswordBtn);
         aboutMeBtn = root.findViewById(R.id.aboutMeBtn);
+        upiDetailsBtn = root.findViewById(R.id.upiDetailsBtn);
+
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +49,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), PersonalDetailsActivity.class));
+            }
+        });
+
+        upiDetailsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), UpiDetailsActivity.class));
             }
         });
 

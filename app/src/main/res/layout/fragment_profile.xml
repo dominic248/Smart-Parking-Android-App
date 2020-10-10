@@ -133,6 +133,7 @@
                         android:background="@color/grey_5" />
 
                     <LinearLayout
+                        android:id="@+id/upiDetailsBtn"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -145,7 +146,7 @@
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
                             android:tint="@color/deep_purple_500"
-                            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+                            app:srcCompat="@drawable/ic_upi" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -153,7 +154,7 @@
                             android:layout_marginLeft="@dimen/spacing_large"
                             android:layout_marginRight="@dimen/spacing_large"
                             android:layout_weight="1"
-                            android:text="Account Details"
+                            android:text="UPI Details"
                             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/grey_80"
                             app:fontFamily="sans-serif-medium" />

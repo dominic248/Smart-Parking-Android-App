@@ -18,7 +18,8 @@
         android:roundIcon="@drawable/logo_315x315"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.profile.AboutMeActivity"></activity>
+        <activity android:name=".ui.profile.UpiDetailsActivity"></activity>
+        <activity android:name=".ui.profile.AboutMeActivity" />
         <activity android:name=".ui.profile.ChangePasswordActivity" />
         <activity android:name=".ui.profile.PersonalDetailsActivity" />
         <activity android:name=".NormalUser.NearByAreaActivity" />
@@ -46,7 +47,8 @@
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.AddPositionActivity" />
         <activity android:name=".NormalUser.GPSMapActivity" />
-        <activity android:name=".RegisterLogin.ForgotPasswordActivity"
+        <activity
+            android:name=".RegisterLogin.ForgotPasswordActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".RegisterLogin.RegisterActivity"

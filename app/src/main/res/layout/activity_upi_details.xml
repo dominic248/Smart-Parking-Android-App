@@ -37,30 +37,22 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <ImageButton
-                            android:layout_width="@dimen/spacing_mxlarge"
-                            android:layout_height="@dimen/spacing_mxlarge"
-                            android:layout_marginTop="@dimen/spacing_mlarge"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_baseline_vpn_key_24" />
-
                         <View
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/oldPasswordLayout"
+                            android:id="@+id/upiIDLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/grey_40"
                             app:errorEnabled="true">
 
                             <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/oldPasswordText"
+                                android:id="@+id/upiIdText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Old-Password" />
+                                android:hint="UPI-ID" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,68 +67,22 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <ImageButton
-                            android:layout_width="@dimen/spacing_mxlarge"
-                            android:layout_height="@dimen/spacing_mxlarge"
-                            android:layout_marginTop="@dimen/spacing_mlarge"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_baseline_vpn_key_24" />
-
                         <View
                             android:layout_width="@dimen/spacing_large"
                             android:layout_height="match_parent" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/newPasswordLayout"
+                            android:id="@+id/upiNameLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/grey_40"
                             app:errorEnabled="true">
 
                             <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/newPasswordText"
+                                android:id="@+id/upiNameText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="New-Password" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:layout_width="@dimen/spacing_mxlarge"
-                            android:layout_height="@dimen/spacing_mxlarge"
-                            android:layout_marginTop="@dimen/spacing_mlarge"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_baseline_vpn_key_24" />
-
-                        <View
-                            android:layout_width="@dimen/spacing_large"
-                            android:layout_height="match_parent" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/confirmPasswordLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColorHint="@color/grey_40"
-                            app:errorEnabled="true">
-
-                            <androidx.appcompat.widget.AppCompatEditText
-                                android:id="@+id/confirmPasswordText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Confirm New-Password" />
+                                android:hint="UPI-Name" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 

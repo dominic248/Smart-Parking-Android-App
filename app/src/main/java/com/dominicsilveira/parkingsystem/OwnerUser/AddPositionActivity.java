@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
+import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -98,21 +99,33 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                 String amount3 = amount3Text.getText().toString();
                 String amount4 = amount4Text.getText().toString();
                 String totalSlots = totalSlotsText.getText().toString();
-                ParkingArea parkingArea = new ParkingArea(areaName,globalLatLng.latitude,globalLatLng.longitude,upiId,upiName,
+                final ParkingArea parkingArea = new ParkingArea(areaName,globalLatLng.latitude,globalLatLng.longitude,
                         auth.getCurrentUser().getUid(),Integer.parseInt(totalSlots),0,
                         Integer.parseInt(amount2),Integer.parseInt(amount3),Integer.parseInt(amount4),slotNos);
-                String key=db.getReference("ParkingAreas").push().getKey();
+                final UpiInfo upiInfo=new UpiInfo(upiId,upiName);
+                final String key=db.getReference("ParkingAreas").push().getKey();
                 db.getReference("ParkingAreas")
                         .child(key)
                         .setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(AddPositionActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(AddPositionActivity.this, MainOwnerActivity.class);
-                            intent.putExtra("FRAGMENT_NO", 0);
-                            startActivity(intent);
-                            finish();
+                            db.getReference("UpiInfo")
+                                    .child(auth.getCurrentUser().getUid())
+                                    .setValue(upiInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(AddPositionActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AddPositionActivity.this, MainOwnerActivity.class);
+                                        intent.putExtra("FRAGMENT_NO", 0);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(AddPositionActivity.this, "Failed to add UPI details", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         } else {
                             Toast.makeText(AddPositionActivity.this, "Failed to add extra details", Toast.LENGTH_SHORT).show();
                         }

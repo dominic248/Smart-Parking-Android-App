@@ -5,22 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingArea implements Serializable{
-    public String name,upiId,upiName,userID;
+    public String name,userID;
     public double latitude,longitude;
     public int totalSlots,occupiedSlots,availableSlots,amount2,amount3,amount4;
     public List<SlotNoInfo> slotNos = new ArrayList<>();
 
     public ParkingArea(){}
 
-    public ParkingArea(String name, double latitude,double longitude,
-                       String upiId,String upiName, String userID,
+    public ParkingArea(String name, double latitude,double longitude, String userID,
                        int totalSlots,int occupiedSlots,
                        int amount2,int amount3,int amount4,List<SlotNoInfo> slotNos){
         this.name=name;
         this.latitude=latitude;
         this.longitude=longitude;
-        this.upiId=upiId;
-        this.upiName=upiName;
         this.userID=userID;
         this.totalSlots=totalSlots;
         this.occupiedSlots=occupiedSlots;
