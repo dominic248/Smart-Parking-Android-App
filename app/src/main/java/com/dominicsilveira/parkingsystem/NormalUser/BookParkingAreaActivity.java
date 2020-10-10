@@ -323,7 +323,12 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     numberPlateText= numberPlateNumber.get(position);
                     wheelerTypeText= numberPlateWheeler.get(position);
                     long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    long diffHour = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    long diffMin = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS)-diffHour*60;
+                    if(diffMin>0){
+                        diffHour+=1;
+                    }
+                    Log.i("diffHourMin",diffHour+" "+diffMin);
                     int wheelerAmount;
                     if(wheelerTypeText==2)
                         wheelerAmount=parkingArea.amount2;
@@ -331,7 +336,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         wheelerAmount=parkingArea.amount3;
                     else
                         wheelerAmount=parkingArea.amount4;
-                    int amount=(int)diff*wheelerAmount;
+                    int amount=(int)diffHour*wheelerAmount;
                     String amountStr=String.valueOf(amount);
                     String wheelerTypeStr=String.valueOf(wheelerTypeText);
                     amountText.setText(amountStr);
