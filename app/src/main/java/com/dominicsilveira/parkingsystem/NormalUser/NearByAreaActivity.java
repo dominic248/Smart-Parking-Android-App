@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
@@ -51,6 +53,12 @@ public class NearByAreaActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
+        if(auth.getCurrentUser()==null){
+            Intent intent=new Intent(NearByAreaActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         recyclerView = (RecyclerView) findViewById(R.id.closest_location_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(NearByAreaActivity.this);
@@ -58,8 +66,6 @@ public class NearByAreaActivity extends AppCompatActivity {
 
         client= LocationServices.getFusedLocationProviderClient(NearByAreaActivity.this);
         getPreCurrentLocation();
-
-
     }
 
     private void getPreCurrentLocation() {

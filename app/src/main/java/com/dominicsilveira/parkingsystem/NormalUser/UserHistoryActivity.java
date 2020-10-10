@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
@@ -41,6 +43,12 @@ public class UserHistoryActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        if(auth.getCurrentUser()==null){
+            Intent intent=new Intent(UserHistoryActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);
         recyclerView.setHasFixedSize(true);

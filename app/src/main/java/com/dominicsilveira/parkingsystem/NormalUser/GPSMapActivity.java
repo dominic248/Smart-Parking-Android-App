@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
@@ -51,10 +52,8 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private FirebaseAuth auth;
     private FirebaseDatabase db;
 
-
     LatLng globalLatLngIntent=null;
     MarkerOptions optionsIntent;
-
 
     HashMap<String, ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
 
@@ -86,6 +85,15 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_g_p_s_map);
 
+        auth=FirebaseAuth.getInstance();
+        db=FirebaseDatabase.getInstance();
+
+        if(auth.getCurrentUser()==null){
+            Intent intent=new Intent(GPSMapActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         Intent intent=getIntent();
         String nameIntent=intent.getStringExtra("LOCATION_NAME");
         double latitudeIntent=intent.getDoubleExtra("LOCATION_LATITUDE",-1);
@@ -97,8 +105,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     .title(nameIntent);
         }
 
-        auth=FirebaseAuth.getInstance();
-        db=FirebaseDatabase.getInstance();
 
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);

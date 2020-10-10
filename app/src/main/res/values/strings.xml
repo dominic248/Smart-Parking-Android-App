@@ -12,5 +12,7 @@
     <string name="notification_channel_id_1">channeldID1</string>
     <string name="notification_group_name_1">Group 1</string>
     <string name="notification_channel_name_1">Channel name</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
