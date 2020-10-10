@@ -10,14 +10,19 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -27,6 +32,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
+import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
@@ -53,9 +60,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -70,7 +79,7 @@ import retrofit2.Retrofit;
 
 public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener {
     Bitmap upload;
-
+    Spinner numberPlateSpinner;
     TextView slotNoText,numberPlate,amountText,wheelerText;
     TextView endDateText,endTimeText;
     LinearLayout endDate,endTime,scanBtn;
@@ -91,6 +100,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             android.Manifest.permission.INTERNET,
     };
 
+    List<Integer> numberPlateWheeler = new ArrayList<Integer>();
+    List<String> numberPlateNumber = new ArrayList<String>();
+    String numberPlateText;
+    int wheelerTypeText;
+    String userID;
+    User userObj;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_add, container, false);
@@ -101,7 +117,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         scanBtn=root.findViewById(R.id.scanBtn);
         placeText = root.findViewById(R.id.placeText);
         slotNoText = root.findViewById(R.id.slotNoText);
-        numberPlate = root.findViewById(R.id.numberPlate);
+//        numberPlate = root.findViewById(R.id.numberPlate);
         endDate = root.findViewById(R.id.endDate);
         endTime = root.findViewById(R.id.endTime);
         endDateText = root.findViewById(R.id.endDateText);
@@ -112,6 +128,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         amountText=root.findViewById(R.id.amountText);
         wheelerText=root.findViewById(R.id.wheelerText);
         emailText=root.findViewById(R.id.emailText);
+        numberPlateSpinner = root.findViewById(R.id.vehicleSelect);
 
         calendar=new GregorianCalendar();
         startDateTime=endDateTime=calendar.getTime();
@@ -133,13 +150,22 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             }
         });
 
+        numberPlateWheeler.add(0);
+        numberPlateNumber.add("Select a vehicle");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, numberPlateNumber);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        numberPlateSpinner.setAdapter(dataAdapter);
 
-        scanBtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                askCameraPermission();
-                Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
-            }
-        });
+        addItemsOnSpinner();
+        addListenerOnSpinnerItemSelection();
+
+//        scanBtn.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View v){
+//                askCameraPermission();
+//                Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         bookBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -182,6 +208,85 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
         return root;
+    }
+
+    private void addItemsOnSpinner() {
+        emailText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+            @Override
+            public void afterTextChanged(Editable et) {
+                String emailStr=et.toString();
+                db.getReference().child("Users").orderByChild("email").equalTo(emailStr).limitToFirst(1)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists()){
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        userID = dataSnapshot.getKey();
+                                        userObj=dataSnapshot.getValue(User.class);
+                                        Log.i("UserOnType",userID);
+                                        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(userID)
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                            Log.i("UserOnType",dataSnapshot.getKey());
+                                                            NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
+                                                            if(numberPlate.isDeleted==0){
+                                                                numberPlateWheeler.add(numberPlate.wheelerType);
+                                                                numberPlateNumber.add(numberPlate.numberPlate);
+                                                            }
+                                                        }
+                                                    }
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {}
+                                                });
+                                    }
+                                }else{
+                                    numberPlateWheeler.clear();
+                                    numberPlateWheeler.add(0);
+                                    numberPlateNumber.clear();
+                                    numberPlateNumber.add("Select a vehicle");
+                                    Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+            }
+        });
+    }
+
+    public void addListenerOnSpinnerItemSelection() {
+        numberPlateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position!=0){
+                    numberPlateText= numberPlateNumber.get(position);
+                    wheelerTypeText= numberPlateWheeler.get(position);
+                    long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
+                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                    int wheelerAmount;
+                    if(wheelerTypeText==2)
+                        wheelerAmount=parkingArea.amount2;
+                    else if(wheelerTypeText==3)
+                        wheelerAmount=parkingArea.amount3;
+                    else
+                        wheelerAmount=parkingArea.amount4;
+                    int amount=(int)diff*wheelerAmount;
+                    String amountStr=String.valueOf(amount);
+                    String wheelerTypeStr=String.valueOf(wheelerTypeText);
+                    amountText.setText(amountStr);
+                    wheelerText.setText(wheelerTypeStr);
+                    Toast.makeText(getActivity(), String.valueOf(numberPlateSpinner.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
     }
 
     private void setAddValues(ParkingArea parkingArea,String placeID) {
@@ -230,6 +335,64 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         timePickerDialog.show();
     }
 
+    private void saveData() {
+        final int amountInt=Integer.parseInt(amountText.getText().toString());
+        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
+//        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,"xfbhjk".toString(),4,startDateTime,endDateTime,0,1,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
+        final String key=db.getReference("BookedSlots").push().getKey();
+        if(parkingArea.availableSlots>0){
+            parkingArea.availableSlots-=1;
+            parkingArea.occupiedSlots+=1;
+            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                                    File file = new File(Environment.getExternalStorageDirectory()
+                                                                    + File.separator + "invoice.pdf");
+                                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                                    invoiceGenerator.create();
+
+//                                Intent target = new Intent(Intent.ACTION_VIEW);
+//                                target.setDataAndType(Uri.fromFile(file),"application/pdf");
+//                                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//
+//                                Intent intent = Intent.createChooser(target, "Open File");
+//                                try {
+//                                    startActivity(intent);
+//                                } catch (ActivityNotFoundException e) {
+//                                    // Instruct the user to install a PDF reader here, or something
+//                                }
+
+//                                Intent share = new Intent(Intent.ACTION_SEND);
+//                                if(file.exists()) {
+//                                    share.setType("application/pdf");
+//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+//                                    share.putExtra(Intent.EXTRA_SUBJECT,
+//                                            "Sharing File...");
+//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+//                                    startActivity(Intent.createChooser(share, "Share File"));
+//                                }
+                                }else{
+                                    Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                                    parkingArea.availableSlots+=1;
+                                    parkingArea.occupiedSlots-=1;
+                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }else {
+            Toast.makeText(getActivity(),"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public static boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
@@ -247,15 +410,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         }else{
             openCamera();
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if(requestCode==AppConstants.SCAN_PERMISSION_ALL){
-//            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//                openCamera();
-//            }
-//        }
     }
 
     private void openCamera() {
@@ -336,91 +490,12 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     wheelerAmount=parkingArea.amount4;
                 int amount=(int)diff*wheelerAmount;
                 String amountStr=String.valueOf(amount);
-                numberPlate.setText(vehicleNumber);
+//                numberPlate.setText(vehicleNumber);
                 amountText.setText(amountStr);
                 wheelerText.setText(wheelerTypeStr);
             }else if (resultCode == Activity.RESULT_CANCELED) {
                 //Do Something in case not recieved the data
             }
         }
-
     }
-
-    private void saveData() {
-//        final int wheelerInt=Integer.parseInt(wheelerText.getText().toString()),amountInt=Integer.parseInt(amountText.getText().toString());
-        db.getReference().child("Users").orderByChild("email").equalTo(emailText.getText().toString()).limitToFirst(1)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                String userID = dataSnapshot.getKey();
-                                final User userObj=dataSnapshot.getValue(User.class);
-//                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlate.getText().toString(),wheelerInt,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
-                                final BookedSlots bookingSlot=new BookedSlots(userID,placeID,"xfbhjk".toString(),4,
-                                        startDateTime,endDateTime,0,1,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
-                                auth = FirebaseAuth.getInstance();
-                                db = FirebaseDatabase.getInstance();
-                                final String key=db.getReference("BookedSlots").push().getKey();
-                                if(parkingArea.availableSlots>0){
-                                    parkingArea.availableSlots-=1;
-                                    parkingArea.occupiedSlots+=1;
-                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if(task.isSuccessful()){
-                                                            Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                                                            File file = new File(Environment.getExternalStorageDirectory()
-                                                                    + File.separator + "invoice.pdf");
-                                                            InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
-                                                            invoiceGenerator.create();
-                                                        }else{
-                                                            Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
-                                                            parkingArea.availableSlots+=1;
-                                                            parkingArea.occupiedSlots-=1;
-                                                            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                }else {
-                                    Toast.makeText(getActivity(),"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
-                                }
-
-//                                Intent target = new Intent(Intent.ACTION_VIEW);
-//                                target.setDataAndType(Uri.fromFile(file),"application/pdf");
-//                                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//
-//                                Intent intent = Intent.createChooser(target, "Open File");
-//                                try {
-//                                    startActivity(intent);
-//                                } catch (ActivityNotFoundException e) {
-//                                    // Instruct the user to install a PDF reader here, or something
-//                                }
-
-//                                Intent share = new Intent(Intent.ACTION_SEND);
-//                                if(file.exists()) {
-//                                    share.setType("application/pdf");
-//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-//                                    share.putExtra(Intent.EXTRA_SUBJECT,
-//                                            "Sharing File...");
-//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-//                                    startActivity(Intent.createChooser(share, "Share File"));
-//                                }
-                            }
-                        }else{
-                            Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {}
-                });
-    }
-
 }

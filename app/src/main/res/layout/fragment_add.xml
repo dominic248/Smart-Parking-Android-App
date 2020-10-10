@@ -132,13 +132,13 @@
                     <View
                         android:layout_width="@dimen/spacing_large"
                         android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/numberPlate"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/vehicleSelect"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Plate Number"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                        android:textColor="@color/grey_80" />
+                        android:layout_weight="1"
+                        app:layout_constraintTop_toBottomOf="@+id/slotNoText"
+                        />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

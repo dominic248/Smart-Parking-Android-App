@@ -107,7 +107,7 @@ public class InvoiceGenerator {
 
         paint.setColor(Color.BLACK);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.BOLD));
-        canvas.drawText("Total",550,615,paint);
+        canvas.drawText("Total Cost (Rs.)",550,615,paint);
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(String.valueOf(bookingSlot.amount),970,615,paint);
 
