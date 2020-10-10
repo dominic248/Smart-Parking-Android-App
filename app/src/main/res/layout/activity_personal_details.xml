@@ -55,6 +55,7 @@
                             android:textColorHint="@color/grey_40">
 
                             <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/nameText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="Name" />
@@ -96,6 +97,7 @@
                                 android:textColorHint="@color/grey_40">
 
                                 <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/phoneText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="Phone Number" />
@@ -103,19 +105,6 @@
                             </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
-
-                        <Button
-                            android:id="@+id/spn_phone_type"
-                            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_weight="2"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="Phone Type"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/grey_40" />
 
                     </LinearLayout>
 
@@ -152,6 +141,7 @@
                                 android:textColorHint="@color/grey_40">
 
                                 <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/emailText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:hint="Email" />
@@ -160,59 +150,19 @@
 
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/spn_email_type"
-                            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_weight="2"
-                            android:maxLines="1"
-                            android:singleLine="true"
-                            android:text="Email Type"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/grey_40" />
-
                     </LinearLayout>
 
-                    <View
+                    <Button
+                        android:id="@+id/bt_submit"
+                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/imageButton2"
-                            android:layout_width="@dimen/spacing_mxlarge"
-                            android:layout_height="@dimen/spacing_mxlarge"
-                            android:layout_marginTop="@dimen/spacing_mlarge"
-                            android:background="@android:color/transparent"
-                            android:tint="@color/grey_60"
-                            app:srcCompat="@drawable/ic_baseline_location_on_24" />
-
-                        <View
-                            android:layout_width="@dimen/spacing_large"
-                            android:layout_height="match_parent" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColorHint="@color/grey_40">
-
-                            <androidx.appcompat.widget.AppCompatEditText
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Address" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_large" />
+                        android:layout_height="45dp"
+                        android:layout_marginTop="@dimen/spacing_mlarge"
+                        android:background="@color/colorAccent"
+                        android:text="UPDATE"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:textColor="@android:color/black" />
 
                 </LinearLayout>
 

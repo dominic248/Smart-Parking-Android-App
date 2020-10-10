@@ -34,6 +34,7 @@ public class UpiDetailsActivity extends AppCompatActivity {
     AppCompatEditText upiIdText,upiNameText;
     Button bt_submit;
 
+    UpiInfo upiInfo;
     User userObj;
     String userID;
 
@@ -51,7 +52,7 @@ public class UpiDetailsActivity extends AppCompatActivity {
         userID=auth.getCurrentUser().getUid();
 
         userObj=globalClass.getUserObj();
-        
+
         upiIdText=findViewById(R.id.upiIdText);
         upiNameText=findViewById(R.id.upiNameText);
         bt_submit=findViewById(R.id.bt_submit);
@@ -59,7 +60,7 @@ public class UpiDetailsActivity extends AppCompatActivity {
         db.getReference().child("UpiInfo").child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                UpiInfo upiInfo=snapshot.getValue(UpiInfo.class);
+                upiInfo=snapshot.getValue(UpiInfo.class);
                 upiIdText.setText(upiInfo.upiId);
                 upiNameText.setText(upiInfo.upiName);
             }
@@ -74,7 +75,7 @@ public class UpiDetailsActivity extends AppCompatActivity {
                 String upiId = upiIdText.getText().toString();
                 String upiName = upiNameText.getText().toString();
 
-                UpiInfo upiInfo=new UpiInfo(upiId,upiName);
+                upiInfo=new UpiInfo(upiId,upiName);
                 db.getReference("UpiInfo")
                         .child(userID)
                         .setValue(upiInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
