@@ -60,34 +60,30 @@ import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
     Spinner numberPlateSpinner;
-    TextView placeText,wheelerText,amountText;
-    TextView endDateText,endTimeText;
+    TextView placeText,wheelerText,amountText,endDateText,endTimeText;
     FloatingActionButton bookBtn;
     LinearLayout endDate,endTime;
-
-    Date startDateTime,endDateTime;
-    String placeID;
-    ParkingArea parkingArea;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
 
     SupportMapFragment supportMapFragment;
-    FusedLocationProviderClient client;
-
     GoogleMap gMap;
-
     LatLng globalLatLng=null;
     MarkerOptions options;
 
     List<Integer> numberPlateWheeler = new ArrayList<Integer>();
     List<String> numberPlateNumber = new ArrayList<String>();
-    String numberPlateText;
-    int wheelerTypeText;
-    final int UPI_PAYMENT = 0;
 
-    private NotificationHelper mNotificationHelper;
+    final int UPI_PAYMENT = 0;
     Calendar calendar;
+
+    BookedSlots bookingSlot=new BookedSlots();
+    ParkingArea parkingArea;
+    User userObj;
+    NotificationHelper mNotificationHelper;
+    AppConstants globalClass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +92,9 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        globalClass=(AppConstants)getApplicationContext();
+        userObj=globalClass.getUserObj();
 
         placeText = findViewById(R.id.placeText);
         numberPlateSpinner = findViewById(R.id.vehicleSelect);
@@ -111,11 +110,15 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         mNotificationHelper=new NotificationHelper(this);
 
         calendar=new GregorianCalendar();
-        startDateTime=endDateTime=calendar.getTime();
+        bookingSlot.startTime=bookingSlot.endTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-        endTimeText.setText(simpleDateFormat.format(startDateTime));
+        endTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
-        endDateText.setText(simpleDateFormat.format(startDateTime));
+        endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
+        bookingSlot.readNotification=0;
+        bookingSlot.hasPaid=1;
+        bookingSlot.userID=auth.getCurrentUser().getUid();
+
 
         Bundle bundle = getIntent().getExtras();
         String UUID=bundle.getString("UUID");
@@ -159,7 +162,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                String amount = "1";
-//                String note ="Payment for ".concat(placeID).concat(" and number ").concat(numberPlateText);
+//                String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
 //                String name = "Michael Silveira";
 //                String upiId = "micsilveira111@oksbi";
 //                payUsingUpi(amount, upiId, name, note);
@@ -200,25 +203,18 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
 
     private void setAddValues(ParkingArea parkingArea,String placeID) {
-        this.placeID=placeID;
+        bookingSlot.placeID=placeID;
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
     }
 
     private void saveData() {
-        final AppConstants globalClass=(AppConstants)getApplicationContext();
-        final User userObj=globalClass.getUserObj();
-        final int amountInt=Integer.parseInt(amountText.getText().toString());
-        String userID = auth.getCurrentUser().getUid();
-        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,1,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
+        bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
-//        bookingSlot.saveToFirebase(BookParkingAreaActivity.this,parkingArea);
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance();
         if(parkingArea.availableSlots>0){
             parkingArea.availableSlots-=1;
             parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
@@ -239,7 +235,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
                                     parkingArea.occupiedSlots-=1;
-                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }
                         });
@@ -260,7 +256,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 calendar.set(Calendar.DAY_OF_MONTH,date);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
                 button.setText(simpleDateFormat.format(calendar.getTime()));
-                endDateTime = calendar.getTime();
+                bookingSlot.endTime = calendar.getTime();
+                calcRefreshAmount();
             }
         };
         DatePickerDialog datePickerDialog=new DatePickerDialog(BookParkingAreaActivity.this,dateSetListener,calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
@@ -276,12 +273,13 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE,minute);
                 calendar.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-                endDateTime = calendar.getTime();
-                if(endDateTime.after(startDateTime)){
+                bookingSlot.endTime = calendar.getTime();
+                if(bookingSlot.endTime.after(bookingSlot.startTime)){
                     button.setText(simpleDateFormat.format(calendar.getTime()));
-                    endDateTime = calendar.getTime();
+                    bookingSlot.endTime = calendar.getTime();
+                    calcRefreshAmount();
                 }else{
-                    endDateTime = startDateTime;
+                    bookingSlot.endTime = bookingSlot.startTime;
                     Toast.makeText(BookParkingAreaActivity.this,
                             "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }
@@ -320,26 +318,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position!=0){
-                    numberPlateText= numberPlateNumber.get(position);
-                    wheelerTypeText= numberPlateWheeler.get(position);
-                    long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-                    long diffHour = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    long diffMin = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS)-diffHour*60;
-                    if(diffMin>0){
-                        diffHour+=1;
-                    }
-                    Log.i("diffHourMin",diffHour+" "+diffMin);
-                    int wheelerAmount;
-                    if(wheelerTypeText==2)
-                        wheelerAmount=parkingArea.amount2;
-                    else if(wheelerTypeText==3)
-                        wheelerAmount=parkingArea.amount3;
-                    else
-                        wheelerAmount=parkingArea.amount4;
-                    int amount=(int)diffHour*wheelerAmount;
-                    String amountStr=String.valueOf(amount);
-                    String wheelerTypeStr=String.valueOf(wheelerTypeText);
-                    amountText.setText(amountStr);
+                    bookingSlot.numberPlate= numberPlateNumber.get(position);
+                    bookingSlot.wheelerType= numberPlateWheeler.get(position);
+                    calcRefreshAmount();
+                    String wheelerTypeStr=String.valueOf(bookingSlot.wheelerType);
                     wheelerText.setText(wheelerTypeStr);
                     Toast.makeText(BookParkingAreaActivity.this, String.valueOf(numberPlateSpinner.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
                 }
@@ -347,6 +329,11 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+    }
+    private void calcRefreshAmount() {
+        bookingSlot.calcAmount(parkingArea);
+        String amountStr=String.valueOf(bookingSlot.amount);
+        amountText.setText(amountStr);
     }
 
     void payUsingUpi(String amount, String upiId, String name, String note) {

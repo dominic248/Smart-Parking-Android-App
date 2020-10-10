@@ -80,32 +80,26 @@ import retrofit2.Retrofit;
 public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlatePopUpListener {
     Bitmap upload;
     Spinner numberPlateSpinner;
-    TextView slotNoText,numberPlate,amountText,wheelerText;
-    TextView endDateText,endTimeText;
+    TextView slotNoText,amountText,wheelerText,endDateText,endTimeText,placeText;
     LinearLayout endDate,endTime,scanBtn;
     Button bookBtn;
     EditText emailText;
-    TextView placeText;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
-
-    Date startDateTime,endDateTime;
-    String placeID;
-    ParkingArea parkingArea;
     Calendar calendar;
+
+    List<Integer> numberPlateWheeler = new ArrayList<Integer>();
+    List<String> numberPlateNumber = new ArrayList<String>();
+    User userObj;
+    ParkingArea parkingArea;
+    BookedSlots bookingSlot=new BookedSlots();
+
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.INTERNET,
     };
-
-    List<Integer> numberPlateWheeler = new ArrayList<Integer>();
-    List<String> numberPlateNumber = new ArrayList<String>();
-    String numberPlateText;
-    int wheelerTypeText;
-    String userID;
-    User userObj;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -131,11 +125,14 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         numberPlateSpinner = root.findViewById(R.id.vehicleSelect);
 
         calendar=new GregorianCalendar();
-        startDateTime=endDateTime=calendar.getTime();
+        bookingSlot.startTime=bookingSlot.endTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-        endTimeText.setText(simpleDateFormat.format(startDateTime));
+        endTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
-        endDateText.setText(simpleDateFormat.format(startDateTime));
+        endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
+        bookingSlot.readNotification=0;
+        bookingSlot.hasPaid=0;
+
 
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +147,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             }
         });
 
-        numberPlateWheeler.add(0);
-        numberPlateNumber.add("Select a vehicle");
+        defaultSpinneritems();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, numberPlateNumber);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -210,6 +206,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         return root;
     }
 
+    private void defaultSpinneritems() {
+        numberPlateWheeler.clear();
+        numberPlateWheeler.add(0);
+        numberPlateNumber.clear();
+        numberPlateNumber.add("Select a vehicle");
+    }
+
     private void addItemsOnSpinner() {
         emailText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -225,10 +228,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()){
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        userID = dataSnapshot.getKey();
+                                        bookingSlot.userID=dataSnapshot.getKey();
                                         userObj=dataSnapshot.getValue(User.class);
-                                        Log.i("UserOnType",userID);
-                                        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(userID)
+                                        Log.i("UserOnType",bookingSlot.userID);
+                                        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
                                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -246,10 +249,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                                 });
                                     }
                                 }else{
-                                    numberPlateWheeler.clear();
-                                    numberPlateWheeler.add(0);
-                                    numberPlateNumber.clear();
-                                    numberPlateNumber.add("Select a vehicle");
+                                    defaultSpinneritems();
                                     Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -265,26 +265,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position!=0){
-                    numberPlateText= numberPlateNumber.get(position);
-                    wheelerTypeText= numberPlateWheeler.get(position);
-                    long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-                    long diffHour = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    long diffMin = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS)-diffHour*60;
-                    if(diffMin>0){
-                        diffHour+=1;
-                    }
-                    Log.i("diffHourMin",diffHour+" "+diffMin);
-                    int wheelerAmount;
-                    if(wheelerTypeText==2)
-                        wheelerAmount=parkingArea.amount2;
-                    else if(wheelerTypeText==3)
-                        wheelerAmount=parkingArea.amount3;
-                    else
-                        wheelerAmount=parkingArea.amount4;
-                    int amount=(int)diffHour*wheelerAmount;
-                    String amountStr=String.valueOf(amount);
-                    String wheelerTypeStr=String.valueOf(wheelerTypeText);
-                    amountText.setText(amountStr);
+                    bookingSlot.numberPlate=numberPlateNumber.get(position);
+                    bookingSlot.wheelerType=numberPlateWheeler.get(position);
+                    calcRefreshAmount();
+                    String wheelerTypeStr=String.valueOf(bookingSlot.wheelerType);
                     wheelerText.setText(wheelerTypeStr);
                     Toast.makeText(getActivity(), String.valueOf(numberPlateSpinner.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
                 }
@@ -294,8 +278,14 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         });
     }
 
+    private void calcRefreshAmount() {
+        bookingSlot.calcAmount(parkingArea);
+        String amountStr=String.valueOf(bookingSlot.amount);
+        amountText.setText(amountStr);
+    }
+
     private void setAddValues(ParkingArea parkingArea,String placeID) {
-        this.placeID=placeID;
+        this.bookingSlot.placeID=placeID;
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
     }
@@ -309,7 +299,8 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 calendar.set(Calendar.DAY_OF_MONTH,date);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
                 button.setText(simpleDateFormat.format(calendar.getTime()));
-                endDateTime = calendar.getTime();
+                bookingSlot.endTime = calendar.getTime();
+                calcRefreshAmount();
             }
         };
         DatePickerDialog datePickerDialog=new DatePickerDialog(getActivity(),dateSetListener,calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
@@ -325,12 +316,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 calendar.set(Calendar.MINUTE,minute);
                 calendar.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-                endDateTime = calendar.getTime();
-                if(endDateTime.after(startDateTime)){
+                bookingSlot.endTime = calendar.getTime();
+                if(bookingSlot.endTime.after(bookingSlot.startTime)){
                     button.setText(simpleDateFormat.format(calendar.getTime()));
-                    endDateTime = calendar.getTime();
+                    bookingSlot.endTime = calendar.getTime();
+                    calcRefreshAmount();
                 }else{
-                    endDateTime = startDateTime;
+                    bookingSlot.endTime = bookingSlot.startTime;
                     Toast.makeText(getActivity(),
                             "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }
@@ -341,14 +333,12 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     }
 
     private void saveData() {
-        final int amountInt=Integer.parseInt(amountText.getText().toString());
-        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,numberPlateText,wheelerTypeText,startDateTime,endDateTime,0,amountInt,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
-//        final BookedSlots bookingSlot=new BookedSlots(userID,placeID,"xfbhjk".toString(),4,startDateTime,endDateTime,0,1,Math.abs((int)Calendar.getInstance().getTimeInMillis()),0);
+        bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
         if(parkingArea.availableSlots>0){
             parkingArea.availableSlots-=1;
             parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
@@ -386,7 +376,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                     Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
                                     parkingArea.occupiedSlots-=1;
-                                    db.getReference("ParkingAreas").child(placeID).setValue(parkingArea);
+                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }
                         });
@@ -481,22 +471,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
 
         if(requestCode==AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE){
             if(resultCode == Activity.RESULT_OK){
-                int wheelerType=data.getIntExtra("wheelerType",4);
-                String vehicleNumber=data.getStringExtra("vehicleNumber");
-                String wheelerTypeStr=String.valueOf(wheelerType);
-                long diffInMillies = Math.abs(endDateTime.getTime() - startDateTime.getTime());
-                long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                int wheelerAmount;
-                if(wheelerType==2)
-                    wheelerAmount=parkingArea.amount2;
-                else if(wheelerType==3)
-                    wheelerAmount=parkingArea.amount3;
-                else
-                    wheelerAmount=parkingArea.amount4;
-                int amount=(int)diff*wheelerAmount;
-                String amountStr=String.valueOf(amount);
-//                numberPlate.setText(vehicleNumber);
-                amountText.setText(amountStr);
+                bookingSlot.numberPlate=data.getStringExtra("vehicleNumber");
+                bookingSlot.wheelerType=data.getIntExtra("wheelerType",4);
+                calcRefreshAmount();
+                String wheelerTypeStr=String.valueOf(bookingSlot.wheelerType);
                 wheelerText.setText(wheelerTypeStr);
             }else if (resultCode == Activity.RESULT_CANCELED) {
                 //Do Something in case not recieved the data
