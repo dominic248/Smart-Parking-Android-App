@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.common;
+package com.dominicsilveira.parkingsystem.OwnerUser;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

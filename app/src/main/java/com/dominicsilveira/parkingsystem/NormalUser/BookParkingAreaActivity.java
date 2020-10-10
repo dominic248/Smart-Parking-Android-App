@@ -2,25 +2,21 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -29,23 +25,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
-import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
-import com.dominicsilveira.parkingsystem.utils.InvoiceGenerator;
+import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,9 +55,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
@@ -310,8 +300,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
-                            numberPlateWheeler.add(numberPlate.wheelerType);
-                            numberPlateNumber.add(numberPlate.numberPlate);
+                            if(numberPlate.isDeleted==0){
+                                numberPlateWheeler.add(numberPlate.wheelerType);
+                                numberPlateNumber.add(numberPlate.numberPlate);
+                            }
                         }
                         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(BookParkingAreaActivity.this,
                                 android.R.layout.simple_spinner_item, numberPlateNumber);

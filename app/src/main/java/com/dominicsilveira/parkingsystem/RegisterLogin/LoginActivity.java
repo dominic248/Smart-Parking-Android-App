@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +14,8 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
-import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;

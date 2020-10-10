@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.common;
+package com.dominicsilveira.parkingsystem.NormalUser;
 
 import android.app.ActivityManager;
 import android.content.Context;

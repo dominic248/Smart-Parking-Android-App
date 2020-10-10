@@ -30,7 +30,7 @@
             android:value="@string/map_key" />
 
         <activity
-            android:name=".common.SplashScreen"
+            android:name=".RegisterLogin.SplashScreen"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,9 +38,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".common.MainOwnerActivity" />
+        <activity android:name=".OwnerUser.MainOwnerActivity" />
         <activity
-            android:name=".common.MainNormalActivity"
+            android:name=".NormalUser.MainNormalActivity"
             android:launchMode="singleTop" /> <!-- for no stacking due to notification -->
         <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />

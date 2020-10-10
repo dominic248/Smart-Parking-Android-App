@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.common.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 
 public class NotificationHelper extends ContextWrapper {
     private NotificationManager mManager;

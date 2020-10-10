@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
-import com.dominicsilveira.parkingsystem.common.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;

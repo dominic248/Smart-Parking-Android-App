@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +38,7 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle mArgs = getArguments();
-        String numberPlate = mArgs.getString("numberPlate");
+        String numberPlate = mArgs.getString("numberPlate").toUpperCase();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_plate_popup_layout, null);
@@ -61,6 +64,7 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
         vehicleNumber = view.findViewById(R.id.vehicleNumber);
         vehicleNumber.setText(numberPlate);
         vehicleWheeler = view.findViewById(R.id.vehicleWheeler);
+        vehicleNumber.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         addItemsOnSpinner();
         addListenerOnSpinnerItemSelection();
         return builder.create();
@@ -105,7 +109,6 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
                     default:
                         wheelerType=4;
                 }
-//                Toast.makeText(getActivity(), String.valueOf(vehicleWheeler.getSelectedItem())+String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {}

@@ -125,17 +125,24 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
         fab_cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toggleFabMode(fab_add);
                 askCameraPermission();
                 Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
-                toggleFabMode(fab_add);
+
             }
         });
 
         fab_textBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Text clicked", Toast.LENGTH_SHORT).show();
                 toggleFabMode(fab_add);
+                Bundle args = new Bundle();
+                args.putString("numberPlate", "");
+                NumberPlatePopUp numberPlateDialog = new NumberPlatePopUp();
+                numberPlateDialog.setTargetFragment(ScanFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
+                numberPlateDialog.setArguments(args);
+                numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
+                Toast.makeText(getActivity(), "Text clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -183,7 +190,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                                     mAdapter.notifyItemRemoved(position);
                                     db.getReference().child("NumberPlates").child(data).child("userID_isDeletedQuery")
                                             .setValue(auth.getCurrentUser().getUid()+"_1");
-                                    db.getReference().child("NumberPlates").child(data).child("isDeletedQuery")
+                                    db.getReference().child("NumberPlates").child(data).child("isDeleted")
                                             .setValue(1);
                                 }
                             };

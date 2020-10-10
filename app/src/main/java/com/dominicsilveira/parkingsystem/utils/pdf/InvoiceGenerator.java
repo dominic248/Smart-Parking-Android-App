@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.utils;
+package com.dominicsilveira.parkingsystem.utils.pdf;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
