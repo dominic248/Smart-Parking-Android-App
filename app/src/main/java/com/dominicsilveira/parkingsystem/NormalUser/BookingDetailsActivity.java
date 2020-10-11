@@ -3,6 +3,7 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.app.DatePickerDialog;
@@ -33,6 +34,8 @@ import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -54,18 +57,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+
 
 public class BookingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
     TextView placeText,wheelerText,amountText,endDateText,endTimeText,startDateText,startTimeText,numberPlateSpinner;
     FloatingActionButton checkoutBtn;
-    LinearLayout openInvoicePdf;
-    ImageView shareInvoicePdf;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -131,10 +127,16 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         numberPlateSpinner.setText(bookingSlot.numberPlate);
         wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
         amountText.setText(String.valueOf(bookingSlot.amount));
+        if(bookingSlot.checkout!=0){
+//            checkoutBtn.setEnabled(false);
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) checkoutBtn.getLayoutParams();
+            params.setBehavior(null);
+            checkoutBtn.requestLayout();
+            checkoutBtn.setVisibility(View.GONE);
+        }
 
         findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
         findViewById(R.id.shareInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
-//implement you java class with View.OnClickListener interface and override onClick method
 
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,7 +193,6 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     }
 
     private void setAddValues(ParkingArea parkingArea,String placeID) {
-        bookingSlot.placeID=placeID;
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
         globalLatLng=new LatLng(parkingArea.latitude,parkingArea.longitude);
@@ -211,32 +212,28 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     }
 
     private void saveData() {
-        bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
-        final String key=db.getReference("BookedSlots").push().getKey();
-        if(parkingArea.availableSlots>0){
-            parkingArea.availableSlots-=1;
-            parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+        bookingSlot.checkout=1;
+        parkingArea.availableSlots+=1;
+        parkingArea.occupiedSlots-=1;
+        db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        db.getReference("BookedSlots").child(UUID).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(BookingDetailsActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                                    File file = new File(Environment.getExternalStorageDirectory()
-                                            + File.separator + "invoice.pdf");
-                                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
-                                    invoiceGenerator.create();
+                                    Intent notifyIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                                    AlarmUtils.cancelAlarm(BookingDetailsActivity.this,notifyIntent,bookingSlot.notificationID);
                                     Intent intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
                                     intent.putExtra("FRAGMENT_NO", 0);
                                     startActivity(intent);
                                     finish();
                                 }else{
                                     Toast.makeText(BookingDetailsActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                                    parkingArea.availableSlots+=1;
-                                    parkingArea.occupiedSlots-=1;
+                                    parkingArea.availableSlots-=1;
+                                    parkingArea.occupiedSlots+=1;
                                     db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }
@@ -244,9 +241,6 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     }
                 }
             });
-        }else {
-            Toast.makeText(BookingDetailsActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
-        }
     }
 
 

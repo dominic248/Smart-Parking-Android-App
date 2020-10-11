@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -132,16 +136,31 @@ public class RegisterActivity extends AppCompatActivity {
                                             intent = new Intent(RegisterActivity.this, MainNormalActivity.class);
                                         }
                                         intent.putExtra("FRAGMENT_NO", 0);
-//                                        intent.putExtra("User", user);
                                         startActivity(intent);
                                         finish();
                                     }else{
-                                        Toast.makeText(RegisterActivity.this,"Failed to add extra details",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(RegisterActivity.this,"Failed to add User Details!",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         }else{
-                            Toast.makeText(RegisterActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+                            try{
+                                throw task.getException();
+                            }// if user enters wrong email.
+                            catch (FirebaseAuthWeakPasswordException weakPassword) {
+                                Toast.makeText(RegisterActivity.this, "Too Weak Password!", Toast.LENGTH_SHORT).show();
+                                Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: weak_password");
+                            }// if user enters wrong password.
+                            catch (FirebaseAuthInvalidCredentialsException malformedEmail) {
+                                Toast.makeText(RegisterActivity.this, "Malformed_email!", Toast.LENGTH_SHORT).show();
+                                Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: malformed_email");
+                            } catch (FirebaseAuthUserCollisionException existEmail) {
+                                Toast.makeText(RegisterActivity.this, "Email already exists!", Toast.LENGTH_SHORT).show();
+                                Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: exist_email");
+                            } catch (Exception e) {
+                                Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: " + e.getMessage());
+                                // TODO: some work
+                            }
                         }
                     }
                 });

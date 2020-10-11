@@ -83,7 +83,7 @@ public class MyParkingService extends Service {
 
     private void updateBookedSlots(DataSnapshot snapshot,BookedSlots bookedSlots) {
         if(auth.getCurrentUser()!=null){
-            if(bookedSlots.readNotification==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())) {
+            if((bookedSlots.readNotification==0 && bookedSlots.checkout==0) && bookedSlots.userID.equals(auth.getCurrentUser().getUid())) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(bookedSlots.endTime);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");

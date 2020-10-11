@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BookedSlots implements Serializable {
     public String userID,placeID,numberPlate;
-    public int hasPaid,amount,wheelerType,notificationID,readNotification;
+    public int hasPaid,amount,wheelerType,notificationID,readNotification,checkout;
     public Date startTime, endTime;
 
     public BookedSlots(){}
