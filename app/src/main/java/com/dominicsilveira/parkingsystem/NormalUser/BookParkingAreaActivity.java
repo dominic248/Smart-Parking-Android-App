@@ -122,7 +122,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         calendar=new GregorianCalendar();
         bookingSlot.startTime=bookingSlot.endTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-        endTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
+        endTimeText.setText(simpleDateFormat.format(bookingSlot.endTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;

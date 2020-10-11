@@ -18,17 +18,22 @@
         android:roundIcon="@drawable/logo_315x315"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".utils.widgets.ParkingOwnerUserWidget" android:label="Smart Parking (Owner User)">
+        <activity android:name=".NormalUser.BookingDetailsActivity"></activity>
+
+        <receiver
+            android:name=".utils.widgets.ParkingOwnerUserWidget"
+            android:label="Smart Parking (Owner User)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
-
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_owner_user_widget_info" />
         </receiver>
-        <receiver android:name=".utils.widgets.ParkingNormalUserWidget" android:label="Smart Parking (Normal User)">
+        <receiver
+            android:name=".utils.widgets.ParkingNormalUserWidget"
+            android:label="Smart Parking (Normal User)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -63,7 +68,6 @@
         <activity
             android:name=".NormalUser.MainNormalActivity"
             android:launchMode="singleTop" /> <!-- for no stacking due to notification -->
-        <activity android:name=".NormalUser.BookingPaymentActivity" />
         <activity android:name=".NormalUser.BookParkingAreaActivity" />
         <activity android:name=".OwnerUser.AddPositionActivity" />
         <activity android:name=".NormalUser.GPSMapActivity" />

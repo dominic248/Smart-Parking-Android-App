@@ -196,14 +196,9 @@ public class InvoiceGenerator {
         }
     }
 
-    public void downloadFile(String userID, String bookingKey, final Context context) {
+    public void downloadFile(String userID, String bookingKey) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference invoiceRef = storage.getReference().child("invoice/".concat(userID).concat("/").concat(bookingKey).concat(".pdf"));
-
-//        File rootPath = new File(Environment.getExternalStorageDirectory(), "file_name");
-//        if(!rootPath.exists()) {
-////            rootPath.mkdirs();
-////        }
 
         final File localFile = new File(Environment.getExternalStorageDirectory()
                 + File.separator + "invoice.pdf");
@@ -211,25 +206,6 @@ public class InvoiceGenerator {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 Log.e("firebase ",";local tem file created  created " +localFile.toString());
-                Intent target = new Intent(Intent.ACTION_VIEW);
-                target.setDataAndType(Uri.fromFile(localFile),"application/pdf");
-                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                Intent intent = Intent.createChooser(target, "Open File");
-                try {
-                    context.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                }
-
-//                                Intent share = new Intent(Intent.ACTION_SEND);
-//                                if(file.exists()) {
-//                                    share.setType("application/pdf");
-//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-//                                    share.putExtra(Intent.EXTRA_SUBJECT,
-//                                            "Sharing File...");
-//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-//                                    startActivity(Intent.createChooser(share, "Share File"));
-//                                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -237,5 +213,32 @@ public class InvoiceGenerator {
                 Log.e("firebase ",";local tem file not created  created " +exception.toString());
             }
         });
+    }
+
+    public void openFile(Context context) {
+        final File localFile = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "invoice.pdf");
+        Intent target = new Intent(Intent.ACTION_VIEW);
+        target.setDataAndType(Uri.fromFile(localFile),"application/pdf");
+        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        Intent intent = Intent.createChooser(target, "Open File");
+        try {
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Instruct the user to install a PDF reader here, or something
+        }
+    }
+
+    public void shareFile(Context context) {
+        final File localFile = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "invoice.pdf");
+        Intent share = new Intent(Intent.ACTION_SEND);
+        if(localFile.exists()) {
+            share.setType("application/pdf");
+            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(localFile));
+            share.putExtra(Intent.EXTRA_SUBJECT, "Sharing File...");
+            share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+            context.startActivity(Intent.createChooser(share, "Share File"));
+        }
     }
 }

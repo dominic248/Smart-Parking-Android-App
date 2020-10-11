@@ -13,11 +13,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class BookedSlots {
+public class BookedSlots implements Serializable {
     public String userID,placeID,numberPlate;
     public int hasPaid,amount,wheelerType,notificationID,readNotification;
     public Date startTime, endTime;

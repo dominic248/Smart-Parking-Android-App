@@ -2,6 +2,7 @@ package com.dominicsilveira.parkingsystem.utils.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
@@ -84,8 +87,10 @@ public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.
         holder.userHistoryCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InvoiceGenerator invoiceGenerator=new InvoiceGenerator();
-                invoiceGenerator.downloadFile(bookedSlot.userID,bookedSlotKey.key,context);
+                Intent intent=new Intent(context, BookingDetailsActivity.class);
+                intent.putExtra("UUID", bookedSlotKey.key);
+                intent.putExtra("BookedSlot", bookedSlot);
+                context.startActivity(intent);
             }
         });
 
