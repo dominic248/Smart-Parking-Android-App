@@ -354,27 +354,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
                                     invoiceGenerator.create();
                                     invoiceGenerator.uploadFile(getActivity());
-
-//                                Intent target = new Intent(Intent.ACTION_VIEW);
-//                                target.setDataAndType(Uri.fromFile(file),"application/pdf");
-//                                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//
-//                                Intent intent = Intent.createChooser(target, "Open File");
-//                                try {
-//                                    startActivity(intent);
-//                                } catch (ActivityNotFoundException e) {
-//                                    // Instruct the user to install a PDF reader here, or something
-//                                }
-
-//                                Intent share = new Intent(Intent.ACTION_SEND);
-//                                if(file.exists()) {
-//                                    share.setType("application/pdf");
-//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-//                                    share.putExtra(Intent.EXTRA_SUBJECT,
-//                                            "Sharing File...");
-//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-//                                    startActivity(Intent.createChooser(share, "Share File"));
-//                                }
                                 }else{
                                     Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;

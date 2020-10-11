@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
+import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
@@ -34,7 +35,7 @@ public class UserHistoryActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    List<BookedSlots> bookedSlotsList=new ArrayList<BookedSlots>();
+    List<BookedSlotKey> bookedSlotKeyList=new ArrayList<BookedSlotKey>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +63,10 @@ public class UserHistoryActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             BookedSlots bookedSlot = dataSnapshot.getValue(BookedSlots.class);
-                            bookedSlotsList.add(bookedSlot);
+                            BookedSlotKey bookedSlotKey=new BookedSlotKey(bookedSlot,dataSnapshot.getKey());
+                            bookedSlotKeyList.add(bookedSlotKey);
                         }
-                        mAdapter = new UserHistoryAdapter(bookedSlotsList);
+                        mAdapter = new UserHistoryAdapter(bookedSlotKeyList);
                         recyclerView.setAdapter(mAdapter);
                     }
                     @Override

@@ -1,15 +1,20 @@
 package com.dominicsilveira.parkingsystem.utils.adapters;
 
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 
+import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,24 +26,23 @@ import java.util.Date;
 import java.util.List;
 
 public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.MyViewHolder>{
-
-    List<BookedSlots> bookedSlotsList = new ArrayList<BookedSlots>();
+    Context context;
+    List<BookedSlotKey> bookedSlotKeyList = new ArrayList<BookedSlotKey>();
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    public UserHistoryAdapter(List<BookedSlots> bookedSlotsList){
-        this.bookedSlotsList = bookedSlotsList;
-        Collections.sort(bookedSlotsList, BookedSlots.DateComparator);
-        Log.d("distParkingArea", String.valueOf(bookedSlotsList));
+    public UserHistoryAdapter(List<BookedSlotKey> bookedSlotKeyList){
+        this.bookedSlotKeyList = bookedSlotKeyList;
+        Log.d("distParkingArea", String.valueOf(bookedSlotKeyList));
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        MaterialCardView closeLocationCard;
+        MaterialCardView userHistoryCard;
         TextView mainText,dateText;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            closeLocationCard = (MaterialCardView)itemView.findViewById(R.id.closeLocationCard);
+            userHistoryCard = (MaterialCardView)itemView.findViewById(R.id.userHistoryCard);
             mainText = (TextView)itemView.findViewById(R.id.mainText);
             dateText = (TextView)itemView.findViewById(R.id.dateText);
         }
@@ -47,6 +51,7 @@ public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        context = recyclerView.getContext();
     }
 
     // Create new views (invoked by the layout manager)
@@ -63,24 +68,32 @@ public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.
     public void onBindViewHolder(final UserHistoryAdapter.MyViewHolder holder, int position) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
-        BookedSlots bookedSlot=bookedSlotsList.get(position);
+        BookedSlotKey bookedSlotKey=bookedSlotKeyList.get(position);
 //        final String id = (String) closestDistance.key;
 //        final ParkingArea parkingArea = (ParkingArea) closestDistance.parkingArea;
-        setDatas(holder,bookedSlot);
+        setDatas(holder,bookedSlotKey);
     }
 
-    public void setDatas(UserHistoryAdapter.MyViewHolder holder, final BookedSlots bookedSlot){
+    public void setDatas(UserHistoryAdapter.MyViewHolder holder, final BookedSlotKey bookedSlotKey){
+        final BookedSlots bookedSlot=bookedSlotKey.bookedSlots;
         holder.mainText.setText(bookedSlot.placeID);
         Date date=bookedSlot.startTime;
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm a");
         String dateStr= simpleDateFormat.format(date);
         holder.dateText.setText(dateStr);
+        holder.userHistoryCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InvoiceGenerator invoiceGenerator=new InvoiceGenerator();
+                invoiceGenerator.downloadFile(bookedSlot.userID,bookedSlotKey.key,context);
+            }
+        });
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return bookedSlotsList.size();
+        return bookedSlotKeyList.size();
     }
 }

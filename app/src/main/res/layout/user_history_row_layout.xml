@@ -9,7 +9,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/numberPlateCard"
+        android:id="@+id/userHistoryCard"
         app:cardCornerRadius="3dp"
         app:cardElevation="0dp"
         app:cardMaxElevation="0dp"

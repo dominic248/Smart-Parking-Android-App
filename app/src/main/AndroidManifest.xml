@@ -18,6 +18,15 @@
         android:roundIcon="@drawable/logo_315x315"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <receiver android:name=".utils.widgets.ParkingOwnerUserWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/parking_owner_user_widget_info" />
+        </receiver>
         <receiver android:name=".utils.widgets.ParkingNormalUserWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

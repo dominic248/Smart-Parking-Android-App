@@ -1,7 +1,9 @@
 package com.dominicsilveira.parkingsystem.utils.pdf;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +21,7 @@ import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -35,6 +39,8 @@ public class InvoiceGenerator {
     String bookingKey;
     User userObj;
     File file;
+
+    public InvoiceGenerator(){}
 
     public InvoiceGenerator(BookedSlots bookingSlot,ParkingArea parkingArea,String key,User userObj,File file){
         this.bookingSlot=bookingSlot;
@@ -149,8 +155,8 @@ public class InvoiceGenerator {
 
             FirebaseStorage storage=FirebaseStorage.getInstance();
 
-            StorageReference riversRef = storage.getReference().child("invoice/".concat(bookingSlot.userID).concat("/").concat(bookingKey).concat(".pdf"));
-            riversRef.putFile(filePath)
+            StorageReference invoiceRef = storage.getReference().child("invoice/".concat(bookingSlot.userID).concat("/").concat(bookingKey).concat(".pdf"));
+            invoiceRef.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -188,5 +194,48 @@ public class InvoiceGenerator {
         else {
             //you can display an error toast
         }
+    }
+
+    public void downloadFile(String userID, String bookingKey, final Context context) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference invoiceRef = storage.getReference().child("invoice/".concat(userID).concat("/").concat(bookingKey).concat(".pdf"));
+
+//        File rootPath = new File(Environment.getExternalStorageDirectory(), "file_name");
+//        if(!rootPath.exists()) {
+////            rootPath.mkdirs();
+////        }
+
+        final File localFile = new File(Environment.getExternalStorageDirectory()
+                + File.separator + "invoice.pdf");
+        invoiceRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                Intent target = new Intent(Intent.ACTION_VIEW);
+                target.setDataAndType(Uri.fromFile(localFile),"application/pdf");
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                Intent intent = Intent.createChooser(target, "Open File");
+                try {
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                }
+
+//                                Intent share = new Intent(Intent.ACTION_SEND);
+//                                if(file.exists()) {
+//                                    share.setType("application/pdf");
+//                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+//                                    share.putExtra(Intent.EXTRA_SUBJECT,
+//                                            "Sharing File...");
+//                                    share.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+//                                    startActivity(Intent.createChooser(share, "Share File"));
+//                                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.e("firebase ",";local tem file not created  created " +exception.toString());
+            }
+        });
     }
 }
