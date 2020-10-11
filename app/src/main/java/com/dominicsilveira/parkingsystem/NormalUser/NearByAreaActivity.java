@@ -60,29 +60,6 @@ public class NearByAreaActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        if(auth.getCurrentUser()==null){
-            Intent intent=new Intent(NearByAreaActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }else{
-            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userObj = snapshot.getValue(User.class);
-                    Log.e("userTyp", String.valueOf(userObj.userType));
-                    globalClass.setUserObj(userObj);
-                    if (userObj.userType == 2){
-                        Intent intent=new Intent(NearByAreaActivity.this, MainOwnerActivity.class);
-                        intent.putExtra("FRAGMENT_NO", 0);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-        }
 
         recyclerView = (RecyclerView) findViewById(R.id.closest_location_recycler_view);
         recyclerView.setHasFixedSize(true);

@@ -13,7 +13,9 @@ import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.AreaHistoryActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.SplashScreen;
 import com.dominicsilveira.parkingsystem.ui.dashboard.owner.DashboardOwnerFragment;
+import com.dominicsilveira.parkingsystem.ui.scan.ScanFragment;
 
 /**
  * Implementation of App Widget functionality.
@@ -23,11 +25,15 @@ public class ParkingOwnerUserWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.parking_owner_user_widget);
-        Intent dashboardIntent = new Intent(context, MainOwnerActivity.class);
-        dashboardIntent.putExtra("FRAGMENT_NO", 0);
+
+        Intent dashboardIntent=new Intent(context, SplashScreen.class);
+        dashboardIntent.putExtra("ACTIVITY_NO", 21);
         PendingIntent dashboardPendingIntent = PendingIntent.getActivity(context, 1003, dashboardIntent, 0);
-        Intent historyIntent = new Intent(context, AreaHistoryActivity.class);
-        PendingIntent historyPendingIntent = PendingIntent.getActivity(context, 1005, historyIntent, 0);
+
+        Intent historyIntent=new Intent(context, SplashScreen.class);
+        historyIntent.putExtra("ACTIVITY_NO", 22);
+        PendingIntent historyPendingIntent = PendingIntent.getActivity(context, 1004, historyIntent, 0);
+
         views.setOnClickPendingIntent(R.id.dashboardBtn, dashboardPendingIntent);
         views.setOnClickPendingIntent(R.id.historyBtn, historyPendingIntent);
         // Instruct the widget manager to update the widget

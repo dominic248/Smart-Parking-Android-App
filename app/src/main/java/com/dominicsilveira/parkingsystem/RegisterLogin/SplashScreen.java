@@ -8,7 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.AreaHistoryActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
@@ -23,6 +27,7 @@ public class SplashScreen extends AppCompatActivity {
 
     boolean isGPS;
     FirebaseAuth auth;
+    int activityInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void startApp() {
+        Intent parentIntent=getIntent();
+        activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
         Log.e("location","enabled");
         isGPS = true; // flag maintain before get location
         if(auth.getCurrentUser()==null){
@@ -66,10 +73,30 @@ public class SplashScreen extends AppCompatActivity {
                     Log.e("userTyp",String.valueOf(userObj.userType));
                     globalClass.setUserObj(userObj);
                     Intent intent;
-                    if (userObj.userType==2)
-                        intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
-                    else
-                        intent=new Intent(SplashScreen.this, MainNormalActivity.class);
+                    if(activityInt==0){
+                        if (userObj.userType==2)
+                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                        else
+                            intent=new Intent(SplashScreen.this, MainNormalActivity.class);
+                    }else{
+                        if(activityInt==21 && userObj.userType==2){
+                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                        }else if(activityInt==22 && userObj.userType==2){
+                            intent=new Intent(SplashScreen.this, AreaHistoryActivity.class);
+                        }else if(activityInt==31 && userObj.userType==3){
+                            intent=new Intent(SplashScreen.this, GPSMapActivity.class);
+                        }else if(activityInt==32 && userObj.userType==3){
+                            intent=new Intent(SplashScreen.this, NearByAreaActivity.class);
+                        }else if(activityInt==33 && userObj.userType==3){
+                            intent=new Intent(SplashScreen.this, UserHistoryActivity.class);
+                        }else if(userObj.userType==2){
+                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                        }else if(userObj.userType==3){
+                            intent=new Intent(SplashScreen.this, MainNormalActivity.class);
+                        }else{
+                            intent=new Intent(SplashScreen.this, LoginActivity.class);
+                        }
+                    }
                     startActivity(intent);
                     finish();
                 }

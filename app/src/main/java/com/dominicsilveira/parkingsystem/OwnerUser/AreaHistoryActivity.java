@@ -51,29 +51,7 @@ public class AreaHistoryActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-        if(auth.getCurrentUser()==null){
-            Intent intent=new Intent(AreaHistoryActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }else{
-            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userObj = snapshot.getValue(User.class);
-                    Log.e("userTyp", String.valueOf(userObj.userType));
-                    globalClass.setUserObj(userObj);
-                    if (userObj.userType == 3){
-                        Intent intent=new Intent(AreaHistoryActivity.this, MainNormalActivity.class);
-                        intent.putExtra("FRAGMENT_NO", 0);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-        }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.area_history_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -89,7 +67,6 @@ public class AreaHistoryActivity extends AppCompatActivity {
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                                 BookedSlots bookedSlot = dataSnapshot.getValue(BookedSlots.class);
                                                 bookedSlotsList.add(bookedSlot);

@@ -48,12 +48,6 @@ public class MainOwnerActivity extends AppCompatActivity {
         db=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
 
-        if(auth.getCurrentUser()==null){
-            Intent intent=new Intent(MainOwnerActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
         db.getReference().child("ParkingAreas")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

@@ -94,29 +94,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
 
-        if(auth.getCurrentUser()==null){
-            Intent intent=new Intent(GPSMapActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }else{
-            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userObj = snapshot.getValue(User.class);
-                    Log.e("userTyp", String.valueOf(userObj.userType));
-                    globalClass.setUserObj(userObj);
-                    if (userObj.userType == 2){
-                        Intent intent=new Intent(GPSMapActivity.this, MainOwnerActivity.class);
-                        intent.putExtra("FRAGMENT_NO", 0);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                }
-            });
-        }
 
         Intent intent=getIntent();
         String nameIntent=intent.getStringExtra("LOCATION_NAME");
