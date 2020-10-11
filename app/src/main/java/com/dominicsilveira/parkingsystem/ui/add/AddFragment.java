@@ -108,6 +108,8 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
+        askCameraFilePermission();
+
         scanBtn=root.findViewById(R.id.scanBtn);
         placeText = root.findViewById(R.id.placeText);
         slotNoText = root.findViewById(R.id.slotNoText);
@@ -351,6 +353,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                                                     + File.separator + "invoice.pdf");
                                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
                                     invoiceGenerator.create();
+                                    invoiceGenerator.uploadFile(getActivity());
 
 //                                Intent target = new Intent(Intent.ACTION_VIEW);
 //                                target.setDataAndType(Uri.fromFile(file),"application/pdf");
@@ -399,11 +402,11 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         return true;
     }
 
-    private void askCameraPermission() {
+    private void askCameraFilePermission() {
         if (!hasPermissions(getActivity(), PERMISSIONS)) {
             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
         }else{
-            openCamera();
+//            openCamera();
         }
     }
 

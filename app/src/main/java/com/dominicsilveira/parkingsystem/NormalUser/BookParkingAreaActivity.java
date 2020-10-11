@@ -3,11 +3,13 @@ package com.dominicsilveira.parkingsystem.NormalUser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -84,6 +86,12 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
+    String[] PERMISSIONS = {
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.INTERNET,
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +100,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        askCameraFilePermission();
 
         globalClass=(AppConstants)getApplicationContext();
         userObj=globalClass.getUserObj();
@@ -334,6 +344,25 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookingSlot.calcAmount(parkingArea);
         String amountStr=String.valueOf(bookingSlot.amount);
         amountText.setText(amountStr);
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void askCameraFilePermission() {
+        if (!hasPermissions(BookParkingAreaActivity.this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(BookParkingAreaActivity.this, PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
+        }else{
+//            openCamera();
+        }
     }
 
     void payUsingUpi(String amount, String upiId, String name, String note) {

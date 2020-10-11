@@ -1,15 +1,27 @@
 package com.dominicsilveira.parkingsystem.utils.pdf;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Environment;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,14 +32,14 @@ import java.util.Date;
 public class InvoiceGenerator {
     BookedSlots bookingSlot;
     ParkingArea parkingArea;
-    String key;
+    String bookingKey;
     User userObj;
     File file;
 
     public InvoiceGenerator(BookedSlots bookingSlot,ParkingArea parkingArea,String key,User userObj,File file){
         this.bookingSlot=bookingSlot;
         this.parkingArea=parkingArea;
-        this.key=key;
+        this.bookingKey=key;
         this.userObj=userObj;
         this.file=file;
     }
@@ -52,7 +64,7 @@ public class InvoiceGenerator {
 
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText("Invoice no",canvas.getWidth()-40,40,paint);
-        canvas.drawText(key,canvas.getWidth()-40,80,paint);
+        canvas.drawText(bookingKey,canvas.getWidth()-40,80,paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.rgb(150,150,150));
@@ -63,28 +75,32 @@ public class InvoiceGenerator {
         canvas.drawText(dateFormatter.format(bookingSlot.startTime),250,170,paint);
         canvas.drawText("Time: ",620,170,paint);
         paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(timeFormatter.format(bookingSlot.startTime),canvas.getWidth()-40,170,paint);
+        canvas.drawText(timeFormatter.format(bookingSlot.startTime),canvas.getWidth()-50,170,paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.rgb(150,150,150));
-        canvas.drawRect(30,220,canvas.getWidth()-40,270,paint);
+        canvas.drawRect(30,220,canvas.getWidth()-30,270,paint);
 
         paint.setColor(Color.WHITE);
         canvas.drawText("Bill To: ",50,255,paint);
+        canvas.drawText("User ID: ",450,255,paint);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(bookingSlot.userID,canvas.getWidth()-50,255,paint);
 
+        paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.BLACK);
-        canvas.drawText("Customer Name: ",30,320,paint);
+        canvas.drawText("Customer Name: ",50,320,paint);
         canvas.drawText(userObj.name,250,320,paint);
         canvas.drawText("Phone No: ",620,320,paint);
         paint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(userObj.contact_no,canvas.getWidth()-40,320,paint);
+        canvas.drawText(userObj.contact_no,canvas.getWidth()-50,320,paint);
 
         paint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("Email ID: ",30,365,paint);
+        canvas.drawText("Email ID: ",50,365,paint);
         canvas.drawText(userObj.email,250,365,paint);
 
         paint.setColor(Color.rgb(150,150,150));
-        canvas.drawRect(30,415,canvas.getWidth()-40,465,paint);
+        canvas.drawRect(30,415,canvas.getWidth()-30,465,paint);
 
         paint.setColor(Color.WHITE);
         canvas.drawText("Plate-Number",50,450,paint);
@@ -118,5 +134,59 @@ public class InvoiceGenerator {
             e.printStackTrace();
         }
         pdfDocument.close();
+    }
+
+
+    //this method will upload the file
+    public void uploadFile(final Context context) {
+        //if there is a file to upload
+        Uri filePath=Uri.fromFile(file);
+        if (filePath != null) {
+            //displaying a progress dialog while upload is going on
+            final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setTitle("Uploading");
+            progressDialog.show();
+
+            FirebaseStorage storage=FirebaseStorage.getInstance();
+
+            StorageReference riversRef = storage.getReference().child("invoice/".concat(bookingSlot.userID).concat("/").concat(bookingKey).concat(".pdf"));
+            riversRef.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //if the upload is successfull
+                            //hiding the progress dialog
+                            progressDialog.dismiss();
+
+                            //and displaying a success toast
+                            Toast.makeText(context, "File Uploaded ", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //if the upload is not successfull
+                            //hiding the progress dialog
+                            progressDialog.dismiss();
+
+                            //and displaying error message
+                            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            //calculating progress percentage
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+
+                            //displaying percentage in progress dialog
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                        }
+                    });
+        }
+        //if there is not any file
+        else {
+            //you can display an error toast
+        }
     }
 }
