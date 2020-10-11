@@ -16,9 +16,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Button;
 
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -57,6 +59,8 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     HashMap<String, ParkingArea> parkingAreasList = new HashMap<String,ParkingArea>();
 
+    AppConstants globalClass;
+
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Runnable mToastRunnable = new Runnable() {
@@ -85,6 +89,8 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_g_p_s_map);
 
+        globalClass=(AppConstants)getApplicationContext();
+
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
 
@@ -92,6 +98,24 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
             Intent intent=new Intent(GPSMapActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        }else{
+            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User userObj = snapshot.getValue(User.class);
+                    Log.e("userTyp", String.valueOf(userObj.userType));
+                    globalClass.setUserObj(userObj);
+                    if (userObj.userType == 2){
+                        Intent intent=new Intent(GPSMapActivity.this, MainOwnerActivity.class);
+                        intent.putExtra("FRAGMENT_NO", 0);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }
 
         Intent intent=getIntent();

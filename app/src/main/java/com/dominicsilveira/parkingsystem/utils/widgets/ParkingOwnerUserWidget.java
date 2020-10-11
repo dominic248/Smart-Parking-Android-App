@@ -1,11 +1,19 @@
 package com.dominicsilveira.parkingsystem.utils.widgets;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
+import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.AreaHistoryActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.ui.dashboard.owner.DashboardOwnerFragment;
 
 /**
  * Implementation of App Widget functionality.
@@ -14,12 +22,14 @@ public class ParkingOwnerUserWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
-        // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.parking_owner_user_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-
+        Intent dashboardIntent = new Intent(context, MainOwnerActivity.class);
+        dashboardIntent.putExtra("FRAGMENT_NO", 0);
+        PendingIntent dashboardPendingIntent = PendingIntent.getActivity(context, 1003, dashboardIntent, 0);
+        Intent historyIntent = new Intent(context, AreaHistoryActivity.class);
+        PendingIntent historyPendingIntent = PendingIntent.getActivity(context, 1005, historyIntent, 0);
+        views.setOnClickPendingIntent(R.id.dashboardBtn, dashboardPendingIntent);
+        views.setOnClickPendingIntent(R.id.historyBtn, historyPendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

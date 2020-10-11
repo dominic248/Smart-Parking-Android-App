@@ -9,12 +9,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
+import com.dominicsilveira.parkingsystem.RegisterLogin.SplashScreen;
 import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
 import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,10 +41,14 @@ public class UserHistoryActivity extends AppCompatActivity {
 
     List<BookedSlotKey> bookedSlotKeyList=new ArrayList<BookedSlotKey>();
 
+    AppConstants globalClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_history);
+
+        globalClass=(AppConstants)getApplicationContext();
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
@@ -49,6 +57,24 @@ public class UserHistoryActivity extends AppCompatActivity {
             Intent intent=new Intent(UserHistoryActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        }else{
+            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User userObj = snapshot.getValue(User.class);
+                    Log.e("userTyp", String.valueOf(userObj.userType));
+                    globalClass.setUserObj(userObj);
+                    if (userObj.userType == 2){
+                        Intent intent=new Intent(UserHistoryActivity.this, MainOwnerActivity.class);
+                        intent.putExtra("FRAGMENT_NO", 0);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);

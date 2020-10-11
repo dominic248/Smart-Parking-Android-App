@@ -28,7 +28,8 @@
 
             <ImageView
                 style="@style/WidgetButtonImage"
-                android:src="@drawable/ic_notifications_black_24dp" />
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_location_black_24" />
             <TextView
                 style="@style/WidgetButtonText"
                 android:text="Maps" />

@@ -1,21 +1,65 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="@drawable/background"
+    android:gravity="center"
+    android:orientation="vertical"
     android:padding="@dimen/widget_margin">
 
+    <TextView style="@style/WidgetButtonVerticalSpace" />
     <TextView
-        android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        style="@style/WidgetTextView"
+        android:text="Smart Parking (Owner User)" />
 
-</RelativeLayout>
+    <TextView style="@style/WidgetButtonVerticalSpace" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView style="@style/WidgetButtonHorizontalSpace" />
+
+        <LinearLayout
+            android:id="@+id/dashboardBtn"
+            style="@style/WidgetBeverageButton" >
+
+            <ImageView
+                style="@style/WidgetButtonImage"
+                android:src="@drawable/ic_dashboard_black_24" />
+
+            <TextView
+                style="@style/WidgetButtonText"
+
+                android:text="Dashboard" />
+
+        </LinearLayout>
+
+        <TextView style="@style/WidgetButtonHorizontalSpace" />
+
+        <LinearLayout
+            android:id="@+id/historyBtn"
+            style="@style/WidgetBeverageButton" >
+
+            <ImageView
+                style="@style/WidgetButtonImage"
+                android:src="@drawable/ic_history_black_24" />
+            <TextView
+                style="@style/WidgetButtonText"
+                android:text="History" />
+
+        </LinearLayout>
+
+        <TextView style="@style/WidgetButtonHorizontalSpace" />
+
+    </LinearLayout>
+
+    <TextView style="@style/WidgetButtonVerticalSpace" />
+
+    <TextView
+        android:id="@+id/coffee_quote"
+        style="@style/WidgetQuote" />
+
+</LinearLayout>

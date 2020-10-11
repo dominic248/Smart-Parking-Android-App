@@ -30,7 +30,7 @@
 
     <dimen name="widget_background_corner_radius">10dp</dimen>
     <dimen name="widget_button_background_corner_radius">36dp</dimen>
-    <dimen name="beverage_button_height">67dp</dimen>
+    <dimen name="beverage_button_height">74dp</dimen>
     <dimen name="widget_button_image_size">24dp</dimen>
     <dimen name="widget_text_size_big">28sp</dimen>
     <dimen name="widget_button_text_size">12sp</dimen>

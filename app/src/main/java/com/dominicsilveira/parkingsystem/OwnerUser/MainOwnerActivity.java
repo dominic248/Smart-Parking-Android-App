@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +33,8 @@ public class MainOwnerActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseDatabase db;
 
+    AppConstants globalClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +43,16 @@ public class MainOwnerActivity extends AppCompatActivity {
             MainOwnerActivity.this.startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
         startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
 
+        globalClass=(AppConstants)getApplicationContext();
+
         db=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
+
+        if(auth.getCurrentUser()==null){
+            Intent intent=new Intent(MainOwnerActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         db.getReference().child("ParkingAreas")
                 .addListenerForSingleValueEvent(new ValueEventListener() {

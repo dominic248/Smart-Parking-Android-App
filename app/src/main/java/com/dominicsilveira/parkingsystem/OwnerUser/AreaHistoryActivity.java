@@ -5,13 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.adapters.AreaHistoryAdapter;
 import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,13 +39,41 @@ public class AreaHistoryActivity extends AppCompatActivity {
 
     List<BookedSlots> bookedSlotsList=new ArrayList<BookedSlots>();
 
+    AppConstants globalClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_area_history);
 
+        globalClass=(AppConstants)getApplicationContext();
+
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        if(auth.getCurrentUser()==null){
+            Intent intent=new Intent(AreaHistoryActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User userObj = snapshot.getValue(User.class);
+                    Log.e("userTyp", String.valueOf(userObj.userType));
+                    globalClass.setUserObj(userObj);
+                    if (userObj.userType == 3){
+                        Intent intent=new Intent(AreaHistoryActivity.this, MainNormalActivity.class);
+                        intent.putExtra("FRAGMENT_NO", 0);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.area_history_recycler_view);
         recyclerView.setHasFixedSize(true);
