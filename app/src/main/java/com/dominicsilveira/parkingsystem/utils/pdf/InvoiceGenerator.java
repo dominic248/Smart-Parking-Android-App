@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
@@ -196,12 +197,11 @@ public class InvoiceGenerator {
         }
     }
 
-    public void downloadFile(String userID, String bookingKey) {
+    public void downloadFile(String userID, String bookingKey,Context context) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference invoiceRef = storage.getReference().child("invoice/".concat(userID).concat("/").concat(bookingKey).concat(".pdf"));
 
-        final File localFile = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "invoice.pdf");
+        final File localFile = new File(context.getExternalCacheDir(), File.separator + "invoice.pdf");
         invoiceRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -216,8 +216,7 @@ public class InvoiceGenerator {
     }
 
     public void openFile(Context context) {
-        final File localFile = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "invoice.pdf");
+        final File localFile = new File(context.getExternalCacheDir(), File.separator + "invoice.pdf");
         Intent target = new Intent(Intent.ACTION_VIEW);
         target.setDataAndType(Uri.fromFile(localFile),"application/pdf");
         target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

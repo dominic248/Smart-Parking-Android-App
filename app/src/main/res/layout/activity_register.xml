@@ -78,7 +78,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:theme="@style/EditText.Grey"
-                    android:inputType="textPassword"
                     android:textColor="@color/blue_grey_300"
                     />
 
@@ -111,11 +110,11 @@
                     android:id="@+id/contactNoField"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:inputType="number"
                     android:maxLength="50"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:theme="@style/EditText.Grey"
-                    android:inputType="textPassword"
                     android:textColor="@color/blue_grey_300"
                     />
 
@@ -151,7 +150,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:theme="@style/EditText.Grey"
-                    android:inputType="textPassword"
                     android:textColor="@color/blue_grey_300"
                     />
 

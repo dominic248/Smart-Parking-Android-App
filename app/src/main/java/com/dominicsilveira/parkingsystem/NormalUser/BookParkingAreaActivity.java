@@ -235,10 +235,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                                    File file = new File(Environment.getExternalStorageDirectory()
-                                            + File.separator + "invoice.pdf");
+                                    File file = new File(BookParkingAreaActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
                                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
                                     invoiceGenerator.create();
+                                    invoiceGenerator.uploadFile(BookParkingAreaActivity.this);
                                     Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
                                     intent.putExtra("FRAGMENT_NO", 0);
                                     startActivity(intent);

@@ -78,7 +78,6 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:theme="@style/EditText.Grey"
-                    android:inputType="textPassword"
                     android:textColor="@color/blue_grey_300"
                     />
 

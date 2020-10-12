@@ -109,6 +109,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         attachListeners();
 
         defaultSpinnerItems();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, numberPlateNumber);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        numberPlateSpinner.setAdapter(dataAdapter);
         addItemsOnSpinner();
         addListenerOnSpinnerItemSelection();
 
@@ -144,10 +148,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
         bookingSlot.hasPaid=0;
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, numberPlateNumber);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        numberPlateSpinner.setAdapter(dataAdapter);
     }
 
     private void attachListeners() {
@@ -268,9 +268,11 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     }
 
     public void addListenerOnSpinnerItemSelection() {
+
         numberPlateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(getActivity(), "Spinner", Toast.LENGTH_SHORT).show();
                 if(position!=0){
                     bookingSlot.numberPlate=numberPlateNumber.get(position);
                     bookingSlot.wheelerType=numberPlateWheeler.get(position);
@@ -354,8 +356,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                                    File file = new File(Environment.getExternalStorageDirectory()
-                                                                    + File.separator + "invoice.pdf");
+                                    File file = new File(getActivity().getExternalCacheDir(), File.separator + "invoice.pdf");
                                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
                                     invoiceGenerator.create();
                                     invoiceGenerator.uploadFile(getActivity());
