@@ -56,8 +56,11 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         bt_submit=findViewById(R.id.bt_submit);
 
         nameText.setText(userObj.name);
+        nameText.setSelection(nameText.getText().length());
         phoneText.setText(userObj.contact_no);
+        phoneText.setSelection(phoneText.getText().length());
         emailText.setText(userObj.email);
+        emailText.setSelection(emailText.getText().length());
 
         bt_submit.setOnClickListener(new View.OnClickListener() {
             @Override
