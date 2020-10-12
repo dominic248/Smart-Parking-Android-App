@@ -109,6 +109,7 @@ public class InvoiceGenerator {
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(bookingSlot.slotNo,canvas.getWidth()-50,365,paint);
 
+        paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.rgb(150,150,150));
         canvas.drawRect(30,415,canvas.getWidth()-30,465,paint);
 
