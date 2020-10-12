@@ -91,7 +91,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_booking_details);
 
         initComponents();
-        attachListener();
+        attachListeners();
 
         askCameraFilePermission();
     }
@@ -135,7 +135,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
         findViewById(R.id.shareInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
 

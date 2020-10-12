@@ -91,8 +91,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_g_p_s_map);
 
         initComponents();
-        attachListener();
-
+        attachListeners();
 
         getPreCurrentLocation();
     }
@@ -122,7 +121,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         getLocationBtn=findViewById(R.id.getLocationBtn);
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         db.getReference().child("ParkingAreas")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

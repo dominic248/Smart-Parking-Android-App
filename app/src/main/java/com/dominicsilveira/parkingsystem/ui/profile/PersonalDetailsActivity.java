@@ -42,6 +42,11 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_details);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         auth= FirebaseAuth.getInstance();
         db= FirebaseDatabase.getInstance();
 
@@ -61,7 +66,9 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         phoneText.setSelection(phoneText.getText().length());
         emailText.setText(userObj.email);
         emailText.setSelection(emailText.getText().length());
+    }
 
+    private void attachListeners() {
         bt_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +98,5 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
 }

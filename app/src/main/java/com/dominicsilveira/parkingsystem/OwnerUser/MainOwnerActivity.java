@@ -43,11 +43,18 @@ public class MainOwnerActivity extends AppCompatActivity {
             MainOwnerActivity.this.startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
         startService(new Intent(MainOwnerActivity.this, MyParkingService.class));
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         db=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
+    }
 
+    private void attachListeners() {
         db.getReference().child("ParkingAreas")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -88,6 +95,7 @@ public class MainOwnerActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) MainOwnerActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

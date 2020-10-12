@@ -25,13 +25,21 @@ public class ProfileFragment extends Fragment {
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        initComponents(root);
+        attachListeners();
+
+        return root;
+    }
+
+    private void initComponents(View root) {
         logoutBtn = root.findViewById(R.id.logoutBtn);
         personalDetailsBtn = root.findViewById(R.id.personalDetailsBtn);
         changePasswordBtn = root.findViewById(R.id.changePasswordBtn);
         aboutMeBtn = root.findViewById(R.id.aboutMeBtn);
         upiDetailsBtn = root.findViewById(R.id.upiDetailsBtn);
+    }
 
-
+    private void attachListeners() {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +51,6 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
 
         personalDetailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +79,5 @@ public class ProfileFragment extends Fragment {
                 startActivity(new Intent(getActivity(), AboutMeActivity.class));
             }
         });
-
-        return root;
     }
 }

@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#3F51B5</color>-->
-<!--    <color name="colorPrimaryDark">#303F9F</color>-->
-<!--    <color name="colorAccent">#FF4081</color>-->
-    <color name="dark_blue">#3023AE</color>
-    <color name="white">#ffffff</color>
-    <color name="grey">#d3d3d3</color>
-
     <color name="colorPrimary">#1976D2</color>
     <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorPrimaryLight">#1E88E5</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorAccentDark">#F50057</color>
     <color name="colorAccentLight">#FF80AB</color>
+
+    <color name="dark_blue">#3023AE</color>
+    <color name="white">#ffffff</color>
+    <color name="grey">#d3d3d3</color>
+
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>
@@ -47,7 +45,6 @@
 
 
     <!--Material color list from https://material.io/guidelines/style/color.html-->
-
     <color name="red_50">#FFEBEE</color>
     <color name="red_100">#FFCDD2</color>
     <color name="red_200">#EF9A9A</color>
@@ -325,7 +322,6 @@
     <color name="grey_900">#212121</color>
     <color name="grey_1000">#1a1a1a</color>
 
-
     <!--for random color generator -->
     <array name="mdcolor_random">
         <item type="color">#e91e63</item>
@@ -343,5 +339,4 @@
         <item type="color">#607d8b</item>
         <item type="color">#ff9800</item>
     </array>
-
 </resources>

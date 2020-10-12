@@ -44,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initComponents();
-        attachListener();
+        attachListeners();
     }
 
     private void initComponents() {
@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
         db=FirebaseDatabase.getInstance();
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         registerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

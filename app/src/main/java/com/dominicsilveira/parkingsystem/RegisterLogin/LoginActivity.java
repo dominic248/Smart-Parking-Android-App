@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initComponents();
-        attachListener();
+        attachListeners();
     }
 
     private void initComponents() {
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

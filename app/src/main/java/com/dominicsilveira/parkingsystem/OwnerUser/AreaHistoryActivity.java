@@ -47,7 +47,7 @@ public class AreaHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_area_history);
 
         initComponents();
-        attachListener();
+        attachListeners();
     }
 
     private void initComponents() {
@@ -63,7 +63,7 @@ public class AreaHistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

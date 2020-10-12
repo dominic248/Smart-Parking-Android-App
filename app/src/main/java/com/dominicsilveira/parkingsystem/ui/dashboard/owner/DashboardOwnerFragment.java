@@ -56,6 +56,16 @@ public class DashboardOwnerFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard_owner, container, false);
 
+        initComponents(root);
+        attachListeners();
+
+        if(!auth.getCurrentUser().isEmailVerified()){
+            alertVerifyEmail();
+        }
+        return root;
+    }
+
+    private void initComponents(View root) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
@@ -66,7 +76,9 @@ public class DashboardOwnerFragment extends Fragment {
         price3Text = expandCard.findViewById(R.id.price3Text);
         price4Text = expandCard.findViewById(R.id.price4Text);
         platforms_chart = expandCard.findViewById(R.id.platforms_chart);
+    }
 
+    private void attachListeners() {
 
 //        historyBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -109,10 +121,6 @@ public class DashboardOwnerFragment extends Fragment {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-        if(!auth.getCurrentUser().isEmailVerified()){
-            alertVerifyEmail();
-        }
-        return root;
     }
 
     private void setDashboardValues(ParkingArea parkingArea) {

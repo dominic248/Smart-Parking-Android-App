@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">Smart Parking</string>
     <string name="splash_screen">Splash Screen</string>
+
     <string name="map_key">AIzaSyDn1u_2ALiD_tDnxZozLkVw6_NZYnB25Xw</string>
+
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_scan">Scan</string>
-    <string name="title_profile">Profile</string>
     <string name="title_activity_main_owner">MainActivity</string>
-    <string name="title_add">Add</string>
+
+    <string name="title_dashboard_fragment">Dashboard</string>
+    <string name="title_scan_fragment">Scan</string>
+    <string name="title_profile_fragment">Profile</string>
+    <string name="title_add_fragment">Add</string>
+
     <string name="notification_group_id_1">check_booking</string>
     <string name="notification_channel_id_1">channeldID1</string>
     <string name="notification_group_name_1">Group 1</string>
     <string name="notification_channel_name_1">Channel name</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-
 </resources>

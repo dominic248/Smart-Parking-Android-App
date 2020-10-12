@@ -15,34 +15,10 @@
         android:allowBackup="true"
         android:icon="@drawable/logo_no_name"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo_315x315"
+        android:roundIcon="@drawable/logo_with_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NormalUser.BookingDetailsActivity"></activity>
-
-        <receiver
-            android:name=".utils.widgets.ParkingOwnerUserWidget"
-            android:label="Smart Parking (Owner User)">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/parking_owner_user_widget_info" />
-        </receiver>
-        <receiver
-            android:name=".utils.widgets.ParkingNormalUserWidget"
-            android:label="Smart Parking (Normal User)">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/parking_normal_user_widget_info" />
-        </receiver>
-
+        <activity android:name=".NormalUser.BookingDetailsActivity" />
         <activity android:name=".ui.profile.UpiDetailsActivity" />
         <activity android:name=".ui.profile.AboutMeActivity" />
         <activity android:name=".ui.profile.ChangePasswordActivity" />
@@ -50,11 +26,6 @@
         <activity android:name=".NormalUser.NearByAreaActivity" />
         <activity android:name=".OwnerUser.AreaHistoryActivity" />
         <activity android:name=".NormalUser.UserHistoryActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" />
-
         <activity
             android:name=".RegisterLogin.SplashScreen"
             android:theme="@style/SplashTheme">
@@ -87,15 +58,49 @@
             </intent-filter>
         </activity>
 
+        <!--Google Maps API key-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
+
+        <!--Notification receiver Start-->
         <receiver
             android:name=".utils.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver android:name=".utils.notifications.NotificationActionReceiver" />
+        <!--Notification receiver End-->
 
+        <!--Home Screen Widget Start-->
+        <receiver
+            android:name=".utils.widgets.ParkingOwnerUserWidget"
+            android:label="Smart Parking (Owner User)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/parking_owner_user_widget_info" />
+        </receiver>
+        <receiver
+            android:name=".utils.widgets.ParkingNormalUserWidget"
+            android:label="Smart Parking (Normal User)">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/parking_normal_user_widget_info" />
+        </receiver>
+        <!--Home Screen Widget End-->
+
+        <!--Background service Start-->
         <service
             android:name=".utils.services.MyParkingService"
             android:foregroundServiceType="dataSync" />
+        <!--Background service End-->
     </application>
 
 </manifest>

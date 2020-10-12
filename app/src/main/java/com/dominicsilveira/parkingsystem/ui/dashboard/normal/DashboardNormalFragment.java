@@ -41,6 +41,16 @@ public class DashboardNormalFragment extends Fragment {
             ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard_normal, container, false);
 
+        initComponents(root);
+        attachListeners();
+
+        if(!auth.getCurrentUser().isEmailVerified()){
+            alertVerifyEmail();
+        }
+        return root;
+    }
+
+    private void initComponents(View root) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
@@ -48,7 +58,9 @@ public class DashboardNormalFragment extends Fragment {
         myBookingsBtn = root.findViewById(R.id.myBookingsBtn);
         checkService = root.findViewById(R.id.checkService);
         nearByBtn = root.findViewById(R.id.nearByBtn);
+    }
 
+    private void attachListeners() {
 //        startService.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -95,12 +107,6 @@ public class DashboardNormalFragment extends Fragment {
                 startActivity(new Intent(getActivity(), GPSMapActivity.class));
             }
         });
-
-
-        if(!auth.getCurrentUser().isEmailVerified()){
-            alertVerifyEmail();
-        }
-        return root;
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

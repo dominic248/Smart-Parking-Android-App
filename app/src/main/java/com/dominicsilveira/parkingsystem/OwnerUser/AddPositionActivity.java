@@ -63,7 +63,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_add_position);
 
         initComponents();
-        attachListener();
+        attachListeners();
 
         getPreCurrentLocation();
     }
@@ -91,7 +91,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         nachoTextView.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

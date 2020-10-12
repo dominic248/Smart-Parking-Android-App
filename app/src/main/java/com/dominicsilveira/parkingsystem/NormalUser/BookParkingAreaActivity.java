@@ -101,7 +101,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_parking_area);
 
         initComponents();
-        attachListener();
+        attachListeners();
         addItemsOnSpinner();
         addListenerOnSpinnerItemSelection();
         askCameraFilePermission();
@@ -159,7 +159,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         });
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

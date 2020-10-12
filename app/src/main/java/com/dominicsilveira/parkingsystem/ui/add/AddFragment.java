@@ -105,10 +105,20 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_add, container, false);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseDatabase.getInstance();
+        initComponents(root);
+        attachListeners();
+
+        defaultSpinnerItems();
+        addItemsOnSpinner();
+        addListenerOnSpinnerItemSelection();
 
         askCameraFilePermission();
+        return root;
+    }
+
+    private void initComponents(View root) {
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
 
         scanBtn=root.findViewById(R.id.scanBtn);
         placeText = root.findViewById(R.id.placeText);
@@ -134,8 +144,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
         bookingSlot.hasPaid=0;
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, numberPlateNumber);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        numberPlateSpinner.setAdapter(dataAdapter);
+    }
 
-
+    private void attachListeners() {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -148,15 +163,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 showTimePicker(endTimeText);
             }
         });
-
-        defaultSpinneritems();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, numberPlateNumber);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        numberPlateSpinner.setAdapter(dataAdapter);
-
-        addItemsOnSpinner();
-        addListenerOnSpinnerItemSelection();
 
 //        scanBtn.setOnClickListener(new View.OnClickListener(){
 //            public void onClick(View v){
@@ -205,10 +211,9 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-        return root;
     }
 
-    private void defaultSpinneritems() {
+    private void defaultSpinnerItems() {
         numberPlateWheeler.clear();
         numberPlateWheeler.add(0);
         numberPlateNumber.clear();
@@ -251,7 +256,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                                 });
                                     }
                                 }else{
-                                    defaultSpinneritems();
+                                    defaultSpinnerItems();
                                     Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
                                 }
                             }

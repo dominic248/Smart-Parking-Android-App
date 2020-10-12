@@ -49,7 +49,7 @@ public class UserHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_history);
 
         initComponents();
-        attachListener();
+        attachListeners();
     }
 
     private void initComponents() {
@@ -64,7 +64,7 @@ public class UserHistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
-    private void attachListener() {
+    private void attachListeners() {
         db.getReference().child("BookedSlots").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

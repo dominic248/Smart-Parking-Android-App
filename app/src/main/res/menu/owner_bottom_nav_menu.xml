@@ -4,16 +4,16 @@
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/ic_baseline_dashboard_24"
-        android:title="@string/title_dashboard" />
+        android:title="@string/title_dashboard_fragment" />
 
     <item
         android:id="@+id/navigation_add"
         android:icon="@drawable/ic_baseline_add_circle_outline_24"
-        android:title="@string/title_add" />
+        android:title="@string/title_add_fragment" />
 
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_baseline_account_circle_24"
-        android:title="@string/title_profile" />
+        android:title="@string/title_profile_fragment" />
 
 </menu>

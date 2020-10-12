@@ -23,12 +23,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
     AppCompatEditText oldPasswordText,newPasswordText,confirmPasswordText;
     Button bt_submit;
     TextInputLayout oldPasswordLayout,newPasswordLayout,confirmPasswordLayout;
+    FirebaseUser user;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         oldPasswordText=findViewById(R.id.oldPasswordText);
         newPasswordText=findViewById(R.id.newPasswordText);
         confirmPasswordText=findViewById(R.id.confirmPasswordText);
@@ -36,9 +43,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
         newPasswordLayout=findViewById(R.id.newPasswordLayout);
         confirmPasswordLayout=findViewById(R.id.confirmPasswordLayout);
         bt_submit=findViewById(R.id.bt_submit);
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final String email=user.getEmail();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        email=user.getEmail();
+    }
 
+    private void attachListeners() {
         confirmPasswordText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 

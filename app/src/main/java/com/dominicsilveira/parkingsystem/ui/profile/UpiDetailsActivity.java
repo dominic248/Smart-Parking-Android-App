@@ -45,6 +45,11 @@ public class UpiDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upi_details);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         auth= FirebaseAuth.getInstance();
         db= FirebaseDatabase.getInstance();
 
@@ -56,7 +61,9 @@ public class UpiDetailsActivity extends AppCompatActivity {
         upiIdText=findViewById(R.id.upiIdText);
         upiNameText=findViewById(R.id.upiNameText);
         bt_submit=findViewById(R.id.bt_submit);
+    }
 
+    private void attachListeners() {
         db.getReference().child("UpiInfo").child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -101,4 +108,5 @@ public class UpiDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
 }

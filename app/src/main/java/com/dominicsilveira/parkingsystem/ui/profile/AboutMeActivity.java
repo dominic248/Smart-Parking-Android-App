@@ -19,10 +19,17 @@ public class AboutMeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_me);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         dominicBtn=findViewById(R.id.dominicBtn);
         joelBtn=findViewById(R.id.joelBtn);
         leninBtn=findViewById(R.id.leninBtn);
+    }
 
+    private void attachListeners() {
         dominicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

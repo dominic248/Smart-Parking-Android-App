@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.dominicsilveira.parkingsystem.ui.dashboard.normal.DashboardNormalFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_dashboard_fragment"
         tools:layout="@layout/fragment_dashboard_normal" />
 
     <fragment
         android:id="@+id/navigation_scan"
         android:name="com.dominicsilveira.parkingsystem.ui.scan.ScanFragment"
-        android:label="@string/title_scan"
+        android:label="@string/title_scan_fragment"
         tools:layout="@layout/fragment_scan" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.dominicsilveira.parkingsystem.ui.profile.ProfileFragment"
-        android:label="@string/title_profile"
+        android:label="@string/title_profile_fragment"
         tools:layout="@layout/fragment_profile" />
 </navigation>

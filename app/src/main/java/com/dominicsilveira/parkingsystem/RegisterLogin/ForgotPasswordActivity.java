@@ -24,9 +24,16 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
         sendMailBtn=findViewById(R.id.sendMailBtn);
         email=findViewById(R.id.emailField);
+    }
 
+    private void attachListeners() {
         sendMailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
