@@ -162,6 +162,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: exist_email");
                             } catch (Exception e) {
                                 Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: " + e.getMessage());
+                                e.printStackTrace();
                                 // TODO: some work
                             }
                         }

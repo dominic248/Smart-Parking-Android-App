@@ -62,18 +62,27 @@
                 android:textColor="@color/blue_grey_800"
                 android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/emailField"
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-12dp"
                 android:layout_marginLeft="-4dp"
                 android:layout_marginRight="-4dp"
-                android:inputType="textEmailAddress"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/blue_grey_300"
-                android:theme="@style/EditText.Grey" />
+                android:textColorHint="@color/grey_40" >
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/emailField"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:theme="@style/EditText.Grey"
+                    android:inputType="textPassword"
+                    android:textColor="@color/blue_grey_300"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <View
                 android:layout_width="0dp"
@@ -88,18 +97,29 @@
                 android:textColor="@color/blue_grey_800"
                 android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/passwordField"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-12dp"
                 android:layout_marginLeft="-4dp"
                 android:layout_marginRight="-4dp"
-                android:inputType="textPassword"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/blue_grey_300"
-                android:theme="@style/EditText.Grey" />
+                android:textColorHint="@color/grey_40"
+                app:passwordToggleEnabled="true" >
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/passwordField"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:theme="@style/EditText.Grey"
+                    android:inputType="textPassword"
+                    android:textColor="@color/blue_grey_300"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <View
                 android:layout_width="0dp"
