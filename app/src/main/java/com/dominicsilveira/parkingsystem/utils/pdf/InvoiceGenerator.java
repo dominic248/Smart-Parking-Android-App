@@ -94,8 +94,8 @@ public class InvoiceGenerator {
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText(bookingSlot.userID,canvas.getWidth()-50,255,paint);
 
-        paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.LEFT);
         canvas.drawText("Customer Name: ",50,320,paint);
         canvas.drawText(userObj.name,250,320,paint);
         canvas.drawText("Phone No: ",620,320,paint);
@@ -105,6 +105,9 @@ public class InvoiceGenerator {
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.drawText("Email ID: ",50,365,paint);
         canvas.drawText(userObj.email,250,365,paint);
+        canvas.drawText("Slot No: ",620,365,paint);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText(bookingSlot.slotNo,canvas.getWidth()-50,365,paint);
 
         paint.setColor(Color.rgb(150,150,150));
         canvas.drawRect(30,415,canvas.getWidth()-30,465,paint);
@@ -163,8 +166,11 @@ public class InvoiceGenerator {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             //if the upload is successfull
                             //hiding the progress dialog
-                            progressDialog.dismiss();
-
+                            try{
+                                progressDialog.dismiss();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                             //and displaying a success toast
                             Toast.makeText(context, "File Uploaded ", Toast.LENGTH_LONG).show();
                         }
@@ -174,7 +180,11 @@ public class InvoiceGenerator {
                         public void onFailure(@NonNull Exception exception) {
                             //if the upload is not successfull
                             //hiding the progress dialog
-                            progressDialog.dismiss();
+                            try{
+                                progressDialog.dismiss();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
 
                             //and displaying error message
                             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();

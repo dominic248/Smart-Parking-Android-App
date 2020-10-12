@@ -118,9 +118,11 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
-                        setDatas(holder,id,parkingArea);
-                        Log.e("updateView", snapshot.getKey()+" "+snapshot.getValue(int.class)+" "+parkingArea.occupiedSlots);
+                        if(snapshot.getKey().equals("availableSlots") || snapshot.getKey().equals("occupiedSlots") || snapshot.getKey().equals("totalSlots")){
+                            parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                            setDatas(holder,id,parkingArea);
+                            Log.e("updateView", snapshot.getKey()+" "+snapshot.getValue(int.class)+" "+parkingArea.occupiedSlots);
+                        }
                     }
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot snapshot) {}

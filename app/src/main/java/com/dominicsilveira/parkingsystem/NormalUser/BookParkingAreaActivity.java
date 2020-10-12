@@ -86,7 +86,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
-    String UUID;
 
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
@@ -190,8 +189,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
-                        Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                        if(snapshot.getKey().equals("availableSlots") || snapshot.getKey().equals("occupiedSlots") || snapshot.getKey().equals("totalSlots")){
+                            parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                            Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                        }
                     }
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
@@ -223,7 +224,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     private void saveData() {
         bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
-        if(parkingArea.availableSlots>0){
+        bookingSlot.slotNo=parkingArea.allocateSlot();
+        if(parkingArea.availableSlots>0 && bookingSlot.slotNo!=null){
             parkingArea.availableSlots-=1;
             parkingArea.occupiedSlots+=1;
             db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -247,6 +249,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
                                     parkingArea.occupiedSlots-=1;
+                                    parkingArea.deallocateSlot(bookingSlot.slotNo);
                                     db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }

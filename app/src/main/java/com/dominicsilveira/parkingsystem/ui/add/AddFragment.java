@@ -95,6 +95,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     ParkingArea parkingArea;
     BookedSlots bookingSlot=new BookedSlots();
 
+
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -344,7 +345,8 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     private void saveData() {
         bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
-        if(parkingArea.availableSlots>0){
+        bookingSlot.slotNo=parkingArea.allocateSlot();
+        if(parkingArea.availableSlots>0 && bookingSlot.slotNo!=null){
             parkingArea.availableSlots-=1;
             parkingArea.occupiedSlots+=1;
             db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -364,6 +366,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                     Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
                                     parkingArea.availableSlots+=1;
                                     parkingArea.occupiedSlots-=1;
+                                    parkingArea.deallocateSlot(bookingSlot.slotNo);
                                     db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }

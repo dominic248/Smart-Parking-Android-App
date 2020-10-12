@@ -152,8 +152,10 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
-                        Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                        if(snapshot.getKey().equals("availableSlots") || snapshot.getKey().equals("occupiedSlots") || snapshot.getKey().equals("totalSlots")){
+                            parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                            Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                        }
                     }
                     @Override
                     public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
@@ -217,6 +219,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         bookingSlot.checkout=1;
         parkingArea.availableSlots+=1;
         parkingArea.occupiedSlots-=1;
+        parkingArea.deallocateSlot(bookingSlot.slotNo);
         db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

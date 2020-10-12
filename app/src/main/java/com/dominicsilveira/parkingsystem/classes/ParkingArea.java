@@ -36,6 +36,32 @@ public class ParkingArea implements Serializable{
         if(varName.equals("totalSlots"))
             this.totalSlots=varData;
     }
+
+    public boolean deallocateSlot(String slotName){
+        SlotNoInfo slotNoInfo;
+        for (int i = 0; i < slotNos.size(); i++){
+            slotNoInfo=slotNos.get(i);
+            if(slotNoInfo.name.equals(slotName)){
+                slotNoInfo.isFull=false;
+                this.slotNos.set(i,slotNoInfo);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String allocateSlot(){
+        SlotNoInfo slotNoInfo;
+        for (int i = 0; i < this.slotNos.size(); i++){
+            slotNoInfo=this.slotNos.get(i);
+            if(!slotNoInfo.isFull){
+                slotNoInfo.isFull=true;
+                this.slotNos.set(i,slotNoInfo);
+                return slotNoInfo.name;
+            }
+        }
+        return null;
+    }
 }
 
 
