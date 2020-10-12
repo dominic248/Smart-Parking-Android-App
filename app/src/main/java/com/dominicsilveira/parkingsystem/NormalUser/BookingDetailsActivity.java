@@ -63,13 +63,9 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     TextView placeText,wheelerText,amountText,endDateText,endTimeText,startDateText,startTimeText,numberPlateSpinner;
     FloatingActionButton checkoutBtn;
 
-    FirebaseAuth auth;
-    FirebaseDatabase db;
-
     SupportMapFragment supportMapFragment;
     GoogleMap gMap;
     LatLng globalLatLng=null;
-    String UUID;
     MarkerOptions options;
 
     BookedSlots bookingSlot;
@@ -77,6 +73,10 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
+    FirebaseAuth auth;
+    FirebaseDatabase db;
+
+    String UUID;
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -85,21 +85,24 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
 
     ParkingArea parkingArea;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_details);
 
+        initComponents();
+        attachListener();
+
+        askCameraFilePermission();
+    }
+
+    private void initComponents() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
         Bundle bundle = getIntent().getExtras();
         UUID=bundle.getString("UUID");
         bookingSlot = (BookedSlots) getIntent().getSerializableExtra("BookedSlot");
-
-        askCameraFilePermission();
-
         globalClass=(AppConstants)getApplicationContext();
         userObj=globalClass.getUserObj();
 
@@ -109,13 +112,9 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         endTimeText = findViewById(R.id.endTimeText);
         startDateText = findViewById(R.id.startDateText);
         startTimeText = findViewById(R.id.startTimeText);
-//        openInvoicePdf = findViewById(R.id.openInvoicePdf);
-//        shareInvoicePdf = findViewById(R.id.shareInvoicePdf);
-
         checkoutBtn = findViewById(R.id.checkoutBtn);
         wheelerText = findViewById(R.id.wheelerText);
         amountText = findViewById(R.id.amountText);
-
         mNotificationHelper=new NotificationHelper(this);
 
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
@@ -127,14 +126,16 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         numberPlateSpinner.setText(bookingSlot.numberPlate);
         wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
         amountText.setText(String.valueOf(bookingSlot.amount));
+
         if(bookingSlot.checkout!=0){
-//            checkoutBtn.setEnabled(false);
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) checkoutBtn.getLayoutParams();
             params.setBehavior(null);
             checkoutBtn.requestLayout();
             checkoutBtn.setVisibility(View.GONE);
         }
+    }
 
+    private void attachListener() {
         findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
         findViewById(R.id.shareInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
 
@@ -167,13 +168,14 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
-                        setAddValues(parkingArea,snapshot.getKey());
+                        setAddValues(parkingArea);
                         Log.e("CalledTwice", String.valueOf(snapshot.getKey()));
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
+
 
     @Override
     public void onClick(View view) {
@@ -192,7 +194,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         }
     }
 
-    private void setAddValues(ParkingArea parkingArea,String placeID) {
+    private void setAddValues(ParkingArea parkingArea) {
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
         globalLatLng=new LatLng(parkingArea.latitude,parkingArea.longitude);

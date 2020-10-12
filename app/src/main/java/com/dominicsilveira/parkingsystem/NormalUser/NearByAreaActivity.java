@@ -55,19 +55,22 @@ public class NearByAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_near_by_area);
 
+        initComponents();
+        getPreCurrentLocation();
+    }
+
+    private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
-
 
         recyclerView = (RecyclerView) findViewById(R.id.closest_location_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(NearByAreaActivity.this);
         recyclerView.setLayoutManager(layoutManager);
 
-        client= LocationServices.getFusedLocationProviderClient(NearByAreaActivity.this);
-        getPreCurrentLocation();
+        client=LocationServices.getFusedLocationProviderClient(NearByAreaActivity.this);
     }
 
     private void getPreCurrentLocation() {

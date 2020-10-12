@@ -78,7 +78,7 @@ public class SplashScreen extends AppCompatActivity {
                             intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
                         else
                             intent=new Intent(SplashScreen.this, MainNormalActivity.class);
-                    }else{
+                    }else{      // For Home Screen Widgets
                         if(activityInt==21 && userObj.userType==2){
                             intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
                         }else if(activityInt==22 && userObj.userType==2){

@@ -90,6 +90,8 @@
                     <LinearLayout
                         android:id="@+id/personalDetailsBtn"
                         android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -134,6 +136,9 @@
 
                     <LinearLayout
                         android:id="@+id/upiDetailsBtn"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -142,6 +147,7 @@
                         android:paddingRight="@dimen/spacing_large">
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -149,6 +155,7 @@
                             app:srcCompat="@drawable/ic_upi" />
 
                         <TextView
+                            android:clickable="false"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_large"
@@ -160,6 +167,7 @@
                             app:fontFamily="sans-serif-medium" />
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -170,6 +178,8 @@
                     <LinearLayout
                         android:id="@+id/changePasswordBtn"
                         android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -179,6 +189,7 @@
 
                         <ImageButton
                             android:clickable="false"
+
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -246,12 +257,16 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/spacing_large"
                         android:paddingRight="@dimen/spacing_large">
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -259,6 +274,7 @@
                             app:srcCompat="@drawable/ic_baseline_notifications_24" />
 
                         <TextView
+                            android:clickable="false"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/spacing_large"
@@ -270,6 +286,7 @@
                             app:fontFamily="sans-serif-medium" />
 
                         <ImageButton
+                            android:clickable="false"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
@@ -286,6 +303,8 @@
                     <LinearLayout
                         android:id="@+id/aboutMeBtn"
                         android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"
@@ -330,6 +349,8 @@
                     <LinearLayout
                         android:id="@+id/logoutBtn"
                         android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:gravity="center_vertical"

@@ -38,7 +38,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        initComponents();
+        attachListener();
+    }
 
+    private void initComponents() {
         email=findViewById(R.id.emailField);
         password=findViewById(R.id.passwordField);
         loginBtn=findViewById(R.id.loginBtn);
@@ -46,7 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         forgotPasswordText=findViewById(R.id.forgotPasswordText);
 
         auth=FirebaseAuth.getInstance();
+    }
 
+    private void attachListener() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,8 +76,8 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
             }
         });
-
     }
+
 
     private void loginUser(String email, String password) {
         final AppConstants globalClass=(AppConstants)getApplicationContext();
@@ -95,9 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
+                    public void onCancelled(@NonNull DatabaseError error) {}
                 });
 
             }

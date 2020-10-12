@@ -46,18 +46,24 @@ public class AreaHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_area_history);
 
+        initComponents();
+        attachListener();
+    }
+
+    private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
 
-
         recyclerView = (RecyclerView) findViewById(R.id.area_history_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(AreaHistoryActivity.this);
         recyclerView.setLayoutManager(layoutManager);
+    }
 
+    private void attachListener() {
         db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

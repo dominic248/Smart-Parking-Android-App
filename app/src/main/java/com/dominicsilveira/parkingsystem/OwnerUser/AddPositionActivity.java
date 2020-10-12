@@ -62,6 +62,13 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_position);
 
+        initComponents();
+        attachListener();
+
+        getPreCurrentLocation();
+    }
+
+    private void initComponents() {
         supportMapFragment=(SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
@@ -82,9 +89,9 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         slotNoString.add("Slot-01");
         nachoTextView.setText(slotNoString);
         nachoTextView.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
+    }
 
-        getPreCurrentLocation();
-
+    private void attachListener() {
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

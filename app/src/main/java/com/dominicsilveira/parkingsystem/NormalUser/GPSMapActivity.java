@@ -47,6 +47,7 @@ import java.util.Map;
 public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallback{
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
+    Button getLocationBtn;
 
     GoogleMap gMap;
     LatLng globalLatLng;
@@ -89,11 +90,18 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_g_p_s_map);
 
+        initComponents();
+        attachListener();
+
+
+        getPreCurrentLocation();
+    }
+
+    private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
-
 
         Intent intent=getIntent();
         String nameIntent=intent.getStringExtra("LOCATION_NAME");
@@ -101,20 +109,21 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         double longitudeIntent= intent.getDoubleExtra("LOCATION_LONGITUDE",-1);
 
         if(latitudeIntent != -1){
-             globalLatLngIntent=new LatLng(latitudeIntent,longitudeIntent);
-             optionsIntent=new MarkerOptions().position(globalLatLngIntent)
+            globalLatLngIntent=new LatLng(latitudeIntent,longitudeIntent);
+            optionsIntent=new MarkerOptions().position(globalLatLngIntent)
                     .title(nameIntent);
         }
-
 
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.google_map);
         supportMapFragment.getMapAsync(this);
         client=LocationServices.getFusedLocationProviderClient(GPSMapActivity.this);
 
-        Button getLocationBtn=findViewById(R.id.getLocationBtn);
+        getLocationBtn=findViewById(R.id.getLocationBtn);
+    }
 
-        FirebaseDatabase.getInstance().getReference().child("ParkingAreas")
+    private void attachListener() {
+        db.getReference().child("ParkingAreas")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -128,8 +137,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-
-        getPreCurrentLocation();
     }
 
     private void getPreCurrentLocation() {

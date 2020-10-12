@@ -30,34 +30,37 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText email,name,contactNo;
-    private EditText password;
-    private Button registerBtn;
-    private TextView loginSwitchText;
+    EditText email,name,contactNo,password;
+    Button registerBtn;
+    TextView loginSwitchText;
+    RadioGroup userTypes;
 
-    private FirebaseAuth auth;
-    private FirebaseDatabase db;
-
-    private RadioGroup userTypes;
-
+    FirebaseAuth auth;
+    FirebaseDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        initComponents();
+        attachListener();
+    }
+
+    private void initComponents() {
         name=findViewById(R.id.nameField);
         contactNo=findViewById(R.id.contactNoField);
         email=findViewById(R.id.emailField);
         password=findViewById(R.id.passwordField);
         registerBtn=findViewById(R.id.registerBtn);
         loginSwitchText=findViewById(R.id.loginSwitchText);
-
         userTypes=findViewById(R.id.userTypes);
 
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
+    }
 
+    private void attachListener() {
         registerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -86,6 +89,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+
+    // User Type Radio Button
     private int findRadioButton(int checkedId) {
         int user;
         switch(checkedId){
@@ -145,13 +150,11 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                         }else{
                             try{
-                                throw task.getException();
-                            }// if user enters wrong email.
-                            catch (FirebaseAuthWeakPasswordException weakPassword) {
+                                throw task.getException(); // if user enters wrong email.
+                            } catch (FirebaseAuthWeakPasswordException weakPassword) {
                                 Toast.makeText(RegisterActivity.this, "Too Weak Password!", Toast.LENGTH_SHORT).show();
                                 Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: weak_password");
-                            }// if user enters wrong password.
-                            catch (FirebaseAuthInvalidCredentialsException malformedEmail) {
+                            } catch (FirebaseAuthInvalidCredentialsException malformedEmail) {
                                 Toast.makeText(RegisterActivity.this, "Malformed_email!", Toast.LENGTH_SHORT).show();
                                 Log.d(String.valueOf(RegisterActivity.this.getClass()), "onComplete: malformed_email");
                             } catch (FirebaseAuthUserCollisionException existEmail) {

@@ -48,18 +48,23 @@ public class UserHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_history);
 
+        initComponents();
+        attachListener();
+    }
+
+    private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
-
         recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(UserHistoryActivity.this);
         recyclerView.setLayoutManager(layoutManager);
+    }
 
-
+    private void attachListener() {
         db.getReference().child("BookedSlots").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -76,4 +81,5 @@ public class UserHistoryActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
     }
+
 }

@@ -86,6 +86,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
+    String UUID;
+
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -98,10 +100,16 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_parking_area);
 
+        initComponents();
+        attachListener();
+        addItemsOnSpinner();
+        addListenerOnSpinnerItemSelection();
+        askCameraFilePermission();
+    }
+
+    private void initComponents() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
-
-        askCameraFilePermission();
 
         globalClass=(AppConstants)getApplicationContext();
         userObj=globalClass.getUserObj();
@@ -129,11 +137,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookingSlot.hasPaid=1;
         bookingSlot.userID=auth.getCurrentUser().getUid();
 
-
         Bundle bundle = getIntent().getExtras();
-        String UUID=bundle.getString("UUID");
+        bookingSlot.placeID=bundle.getString("UUID");
         final ParkingArea parkingArea = (ParkingArea) getIntent().getSerializableExtra("ParkingArea");
-        Log.e("BookParkingAreaActivity",parkingArea.name+" "+UUID);
+        Log.e("BookParkingAreaActivity",parkingArea.name+" "+bookingSlot.placeID);
 
         placeText.setText(parkingArea.name);
         globalLatLng=new LatLng(parkingArea.latitude,parkingArea.longitude);
@@ -150,8 +157,9 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
             }
         });
+    }
 
-
+    private void attachListener() {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,10 +172,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 showTimePicker(endTimeText);
             }
         });
-
-        addItemsOnSpinner();
-        addListenerOnSpinnerItemSelection();
-
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,7 +184,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             }
         });
 
-        db.getReference().child("ParkingAreas").child(UUID)
+        db.getReference().child("ParkingAreas").child(bookingSlot.placeID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
@@ -197,12 +201,12 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
 
-        db.getReference().child("ParkingAreas").child(UUID)
+        db.getReference().child("ParkingAreas").child(bookingSlot.placeID)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
-                        setAddValues(parkingArea,snapshot.getKey());
+                        setAddValues(parkingArea);
                         Log.e("CalledTwice", String.valueOf(snapshot.getKey()));
                     }
                     @Override
@@ -211,9 +215,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     }
 
 
-
-    private void setAddValues(ParkingArea parkingArea,String placeID) {
-        bookingSlot.placeID=placeID;
+    private void setAddValues(ParkingArea parkingArea) {
         this.parkingArea=parkingArea;
         placeText.setText(parkingArea.name);
     }
@@ -340,6 +342,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {}
         });
     }
+
     private void calcRefreshAmount() {
         bookingSlot.calcAmount(parkingArea);
         String amountStr=String.valueOf(bookingSlot.amount);
