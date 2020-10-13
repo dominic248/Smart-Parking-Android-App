@@ -6,13 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
+import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +24,9 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProfileFragment extends Fragment {
 
     LinearLayout personalDetailsBtn,changePasswordBtn,aboutMeBtn,logoutBtn,upiDetailsBtn;
+    TextView nameText;
+    User userObj;
+    AppConstants globalClass;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -32,11 +39,16 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initComponents(View root) {
+        globalClass=(AppConstants)getActivity().getApplicationContext();
+        userObj=globalClass.getUserObj();
         logoutBtn = root.findViewById(R.id.logoutBtn);
+        nameText = root.findViewById(R.id.nameText);
         personalDetailsBtn = root.findViewById(R.id.personalDetailsBtn);
         changePasswordBtn = root.findViewById(R.id.changePasswordBtn);
         aboutMeBtn = root.findViewById(R.id.aboutMeBtn);
         upiDetailsBtn = root.findViewById(R.id.upiDetailsBtn);
+        nameText.setText(userObj.name);
+
     }
 
     private void attachListeners() {
