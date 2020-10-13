@@ -68,10 +68,12 @@ public class UpiDetailsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 upiInfo=snapshot.getValue(UpiInfo.class);
-                upiIdText.setText(upiInfo.upiId);
-                upiIdText.setSelection(upiIdText.getText().length());
-                upiNameText.setText(upiInfo.upiName);
-                upiNameText.setSelection(upiNameText.getText().length());
+                if(upiInfo!=null){
+                    upiIdText.setText(upiInfo.upiId);
+                    upiIdText.setSelection(upiIdText.getText().length());
+                    upiNameText.setText(upiInfo.upiName);
+                    upiNameText.setSelection(upiNameText.getText().length());
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}

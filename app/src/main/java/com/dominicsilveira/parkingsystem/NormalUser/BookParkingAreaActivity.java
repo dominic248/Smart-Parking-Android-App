@@ -30,6 +30,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
@@ -86,6 +87,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
+    UpiInfo upiInfo;
 
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
@@ -174,13 +176,19 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String amount = "1";
 //                String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
-//                String name = "Michael Silveira";
-//                String upiId = "micsilveira111@oksbi";
-//                payUsingUpi(amount, upiId, name, note);
+//                payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note);
                 saveData();
             }
+        });
+
+        db.getReference().child("UpiInfo").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                upiInfo=snapshot.getValue(UpiInfo.class);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
 
         db.getReference().child("ParkingAreas").child(bookingSlot.placeID)

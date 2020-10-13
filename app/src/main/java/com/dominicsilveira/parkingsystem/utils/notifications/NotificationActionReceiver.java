@@ -47,6 +47,7 @@ public class NotificationActionReceiver extends BroadcastReceiver {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceive(Context context, Intent intent) {
         auth=FirebaseAuth.getInstance();
