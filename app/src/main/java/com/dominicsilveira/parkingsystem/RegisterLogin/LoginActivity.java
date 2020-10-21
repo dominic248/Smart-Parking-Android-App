@@ -18,6 +18,7 @@ import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
+import com.dominicsilveira.parkingsystem.utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     ProgressDialog progressDialog;
+
+    Utils utils=new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +69,17 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String txt_email=email.getText().toString();
                 String txt_password=password.getText().toString();
-                progressDialog = new ProgressDialog(LoginActivity.this);
-                progressDialog.setMessage("Signing-in...");
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                loginUser(txt_email,txt_password);
+                if(utils.isNetworkAvailable(getApplication())){
+                    progressDialog = new ProgressDialog(LoginActivity.this);
+                    progressDialog.setMessage("Signing-in...");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    loginUser(txt_email,txt_password);
+                }else{
+                    Toast.makeText(LoginActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
