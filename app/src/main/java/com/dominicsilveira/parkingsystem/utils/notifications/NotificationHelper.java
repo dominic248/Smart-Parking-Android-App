@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.RegisterLogin.SplashScreen;
 
 public class NotificationHelper extends ContextWrapper {
     private NotificationManager mManager;
@@ -58,8 +59,8 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationCompat.Builder getChannelNotification(String title, String message,String readID,int notificationID){
         Log.i("NotificationSet",title+":"+message);
 
-        Intent resultIntent=new Intent(this, MainNormalActivity.class);
-        PendingIntent pendingIntent=PendingIntent.getActivity(this,1,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent openIntent=new Intent(this, SplashScreen.class);
+        PendingIntent pendingIntent=PendingIntent.getActivity(this,1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         //This is the intent of PendingIntent
         Intent intentAction = new Intent(this, NotificationActionReceiver.class);

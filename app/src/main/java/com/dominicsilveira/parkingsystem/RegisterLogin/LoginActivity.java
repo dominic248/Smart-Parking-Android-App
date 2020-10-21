@@ -3,6 +3,7 @@ package com.dominicsilveira.parkingsystem.RegisterLogin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgotPasswordText,registerSwitchText;
 
     private FirebaseAuth auth;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String txt_email=email.getText().toString();
                 String txt_password=password.getText().toString();
+                progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setMessage("Signing-in...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 loginUser(txt_email,txt_password);
             }
         });
@@ -103,6 +110,11 @@ public class LoginActivity extends AppCompatActivity {
                             else
                                 intent=new Intent(LoginActivity.this, MainNormalActivity.class);
                             intent.putExtra("FRAGMENT_NO", 0);
+                            try{
+                                progressDialog.dismiss();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                             startActivity(intent);
                             finish();
                         }
@@ -111,6 +123,11 @@ public class LoginActivity extends AppCompatActivity {
                         public void onCancelled(@NonNull DatabaseError error) {}
                     });
                 }else{
+                    try{
+                        progressDialog.dismiss();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     try {
                         throw task.getException(); // if user enters wrong email.
                     }catch (FirebaseAuthInvalidCredentialsException invalid) {
