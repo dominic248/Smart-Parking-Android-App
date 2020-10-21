@@ -1,16 +1,21 @@
 package com.dominicsilveira.parkingsystem.ui.profile;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
@@ -19,7 +24,13 @@ import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
@@ -27,6 +38,7 @@ public class ProfileFragment extends Fragment {
     TextView nameText;
     User userObj;
     AppConstants globalClass;
+    FirebaseAuth auth;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -92,4 +104,5 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
 }

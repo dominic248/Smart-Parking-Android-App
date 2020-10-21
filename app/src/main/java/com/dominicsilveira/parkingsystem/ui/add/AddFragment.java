@@ -236,25 +236,27 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()){
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        bookingSlot.userID=dataSnapshot.getKey();
                                         userObj=dataSnapshot.getValue(User.class);
-                                        Log.i("UserOnType",bookingSlot.userID);
-                                        db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
-                                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                                            Log.i("UserOnType",dataSnapshot.getKey());
-                                                            NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
-                                                            if(numberPlate.isDeleted==0){
-                                                                numberPlateWheeler.add(numberPlate.wheelerType);
-                                                                numberPlateNumber.add(numberPlate.numberPlate);
+                                        if(userObj.isVerified==1){
+                                            bookingSlot.userID=dataSnapshot.getKey();
+                                            Log.i("UserOnType",bookingSlot.userID);
+                                            db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                                Log.i("UserOnType",dataSnapshot.getKey());
+                                                                NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
+                                                                if(numberPlate.isDeleted==0){
+                                                                    numberPlateWheeler.add(numberPlate.wheelerType);
+                                                                    numberPlateNumber.add(numberPlate.numberPlate);
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {}
-                                                });
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {}
+                                                    });
+                                        }
                                     }
                                 }else{
                                     defaultSpinnerItems();

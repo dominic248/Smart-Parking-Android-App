@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            final User userObj=new User(name,email,contact_no,userType);
+                            final User userObj=new User(name,email,contact_no,userType,0);
                             globalClass.setUserObj(userObj);
                             db.getReference("Users")
                                     .child(auth.getCurrentUser().getUid())
