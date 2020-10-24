@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -23,7 +24,18 @@ public class AboutMeActivity extends AppCompatActivity {
         attachListeners();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
+        getSupportActionBar().setTitle("About Me");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         dominicBtn=findViewById(R.id.dominicBtn);
         joelBtn=findViewById(R.id.joelBtn);
         leninBtn=findViewById(R.id.leninBtn);

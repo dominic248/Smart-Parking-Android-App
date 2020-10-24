@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -50,7 +51,19 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         attachListeners();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
+        getSupportActionBar().setTitle("Personal Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         auth= FirebaseAuth.getInstance();
         db= FirebaseDatabase.getInstance();
 

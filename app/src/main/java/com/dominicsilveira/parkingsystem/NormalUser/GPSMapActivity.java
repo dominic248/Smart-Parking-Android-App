@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
@@ -96,8 +97,20 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         getPreCurrentLocation();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
+
+        getSupportActionBar().setTitle("GPS Maps");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();

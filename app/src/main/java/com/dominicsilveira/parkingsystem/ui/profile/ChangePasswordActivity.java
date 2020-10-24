@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -35,7 +36,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
         attachListeners();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
+        getSupportActionBar().setTitle("Change Password");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         oldPasswordText=findViewById(R.id.oldPasswordText);
         newPasswordText=findViewById(R.id.newPasswordText);
         confirmPasswordText=findViewById(R.id.confirmPasswordText);

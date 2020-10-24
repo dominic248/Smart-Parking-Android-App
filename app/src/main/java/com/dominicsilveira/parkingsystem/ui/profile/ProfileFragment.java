@@ -60,7 +60,6 @@ public class ProfileFragment extends Fragment {
         aboutMeBtn = root.findViewById(R.id.aboutMeBtn);
         upiDetailsBtn = root.findViewById(R.id.upiDetailsBtn);
         nameText.setText(userObj.name);
-
     }
 
     private void attachListeners() {

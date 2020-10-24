@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
@@ -59,8 +60,20 @@ public class NearByAreaActivity extends AppCompatActivity {
         getPreCurrentLocation();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
+
+        getSupportActionBar().setTitle("Near-by Areas");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();

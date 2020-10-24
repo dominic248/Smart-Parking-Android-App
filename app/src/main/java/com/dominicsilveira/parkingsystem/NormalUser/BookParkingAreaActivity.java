@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -108,9 +109,21 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         askCameraFilePermission();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        getSupportActionBar().setTitle("Book Area");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         globalClass=(AppConstants)getApplicationContext();
         userObj=globalClass.getUserObj();

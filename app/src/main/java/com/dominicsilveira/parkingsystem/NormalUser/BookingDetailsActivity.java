@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
@@ -96,6 +99,14 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         askCameraFilePermission();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
@@ -103,6 +114,11 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         Bundle bundle = getIntent().getExtras();
         UUID=bundle.getString("UUID");
         bookingSlot = (BookedSlots) getIntent().getSerializableExtra("BookedSlot");
+
+        getSupportActionBar().setTitle(UUID);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         globalClass=(AppConstants)getApplicationContext();
         userObj=globalClass.getUserObj();
 

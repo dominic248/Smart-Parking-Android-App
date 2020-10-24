@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
@@ -52,11 +53,23 @@ public class UserHistoryActivity extends AppCompatActivity {
         attachListeners();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void initComponents() {
         globalClass=(AppConstants)getApplicationContext();
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
+        getSupportActionBar().setTitle("Booking History");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);
         recyclerView.setHasFixedSize(true);
