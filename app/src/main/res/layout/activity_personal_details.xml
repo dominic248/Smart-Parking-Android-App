@@ -26,7 +26,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/lyt_form"
+                    android:id="@+id/normal_form"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -58,6 +58,8 @@
                                 android:id="@+id/nameText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:singleLine="true"
                                 android:hint="Name" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -100,6 +102,8 @@
                                     android:id="@+id/phoneText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="Phone Number" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -124,7 +128,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/lyt_form"
+                    android:id="@+id/email_form"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -162,6 +166,8 @@
                                     android:id="@+id/emailText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="Current Email ID" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -206,6 +212,8 @@
                                     android:id="@+id/newEmailText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="New Email ID" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -244,21 +252,21 @@
                             <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColorHint="@color/grey_40">
+                                android:textColorHint="@color/grey_40"
+                                app:passwordToggleEnabled="true">
 
                                 <androidx.appcompat.widget.AppCompatEditText
                                     android:id="@+id/currentPasswordText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:inputType="textPassword"
                                     android:hint="Current Password" />
 
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
-
                     </LinearLayout>
-
 
 
                     <Button

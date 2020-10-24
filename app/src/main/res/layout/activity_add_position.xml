@@ -82,6 +82,8 @@
                                 android:id="@+id/areaNameText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:singleLine="true"
                                 android:hint="Area Name" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -141,6 +143,8 @@
                                     android:id="@+id/upiIdText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="UPI ID*"
                                      />
                             </com.google.android.material.textfield.TextInputLayout>
@@ -154,6 +158,8 @@
                                     android:id="@+id/upiNameText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="UPI Name*"
                              />
                             </com.google.android.material.textfield.TextInputLayout>
@@ -166,6 +172,8 @@
                                     android:id="@+id/totalSlotsText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
                                     android:hint="Slots*"
                                     android:inputType="number" />
                             </com.google.android.material.textfield.TextInputLayout>
@@ -255,6 +263,8 @@
                                         android:id="@+id/amount2Text"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:maxLines="1"
+                                        android:singleLine="true"
                                         android:hint="2-wheeler*"
                                         android:inputType="number" />
                                 </com.google.android.material.textfield.TextInputLayout>
@@ -267,6 +277,8 @@
                                         android:id="@+id/amount3Text"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:maxLines="1"
+                                        android:singleLine="true"
                                         android:hint="3-wheeler*"
                                         android:inputType="number" />
                                 </com.google.android.material.textfield.TextInputLayout>
@@ -279,6 +291,8 @@
                                         android:id="@+id/amount4Text"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:maxLines="1"
+                                        android:singleLine="true"
                                         android:hint="4-wheeler*"
                                         android:inputType="number" />
                                 </com.google.android.material.textfield.TextInputLayout>
