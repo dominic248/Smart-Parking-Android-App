@@ -237,7 +237,6 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             gMap=googleMap;
-                            gMap.clear();
                             gpsLatLng=new LatLng(location.getLatitude(),
                                         location.getLongitude());
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gpsLatLng,30));

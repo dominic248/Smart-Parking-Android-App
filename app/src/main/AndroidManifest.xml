@@ -57,22 +57,16 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-
-        <!--Google Maps API key-->
+        </activity> <!-- Google Maps API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" />
-
-        <!--Notification receiver Start-->
+            android:value="@string/map_key" /> <!-- Notification receiver Start -->
         <receiver
             android:name=".utils.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-        <receiver android:name=".utils.notifications.NotificationActionReceiver" />
-        <!--Notification receiver End-->
-
-        <!--Home Screen Widget Start-->
+        <receiver android:name=".utils.notifications.NotificationActionReceiver" /> <!-- Notification receiver End -->
+        <!-- Home Screen Widget Start -->
         <receiver
             android:name=".utils.widgets.ParkingOwnerUserWidget"
             android:label="Smart Parking (Owner User)">
@@ -94,14 +88,11 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_normal_user_widget_info" />
-        </receiver>
-        <!--Home Screen Widget End-->
-
-        <!--Background service Start-->
+        </receiver> <!-- Home Screen Widget End -->
+        <!-- Background service Start -->
         <service
             android:name=".utils.services.MyParkingService"
             android:foregroundServiceType="dataSync" />
-        <!--Background service End-->
     </application>
 
 </manifest>

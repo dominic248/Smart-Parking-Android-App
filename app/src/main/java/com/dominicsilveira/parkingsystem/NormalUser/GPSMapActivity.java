@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
@@ -39,6 +40,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.snapshot.BooleanNode;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,28 +65,9 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     AppConstants globalClass;
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    String nameIntent;
+    double latitudeIntent,longitudeIntent;
 
-    private Runnable mToastRunnable = new Runnable() {
-        @Override
-        public void run() {
-            getCurrentLocation();
-            Log.i("GPS","Getting new Location after every 5 seconds");
-            mHandler.postDelayed(this, 5000);
-        }
-    };
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(mToastRunnable);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mHandler.postDelayed(mToastRunnable, 5000);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -116,9 +99,9 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         db=FirebaseDatabase.getInstance();
 
         Intent intent=getIntent();
-        String nameIntent=intent.getStringExtra("LOCATION_NAME");
-        double latitudeIntent=intent.getDoubleExtra("LOCATION_LATITUDE",-1);
-        double longitudeIntent= intent.getDoubleExtra("LOCATION_LONGITUDE",-1);
+        nameIntent=intent.getStringExtra("LOCATION_NAME");
+        latitudeIntent=intent.getDoubleExtra("LOCATION_LATITUDE",-1);
+        longitudeIntent= intent.getDoubleExtra("LOCATION_LONGITUDE",-1);
 
         if(latitudeIntent != -1){
             globalLatLngIntent=new LatLng(latitudeIntent,longitudeIntent);
@@ -144,24 +127,66 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                             parkingAreasList.put(dataSnapshot.getKey(),parkingArea);
                             Log.d("GPS Map",parkingArea.name);
                         }
+                        attachMarkerOnMap();
                         Log.d("GPS Map", String.valueOf(parkingAreasList));
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
+        getLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        gMap = googleMap;
+                        gMap.clear();
+                        getPreCurrentLocation();
+                        attachMarkerOnMap();
+                    }
+                });
+            }
+        });
+    }
+
+    private void attachMarkerOnMap() {
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                gMap=googleMap;
+                if(globalLatLngIntent != null){
+                    MarkerOptions options=new MarkerOptions().position(globalLatLngIntent)
+                                .title(nameIntent);
+                    gMap.addMarker(options);
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLngIntent,30));
+                }else{
+                    for (Map.Entry<String, ParkingArea> stringParkingAreaEntry : parkingAreasList.entrySet()) {
+                        Map.Entry mapElement = (Map.Entry) stringParkingAreaEntry;
+                        ParkingArea parking = (ParkingArea) mapElement.getValue();
+                        Log.e("GPSMAPTEST",parking.name);
+                        LatLng latLngParking = new LatLng(parking.latitude,
+                                parking.longitude);
+                        MarkerOptions option = new MarkerOptions().position(latLngParking)
+                                .title(mapElement.getKey().toString())
+                                .snippet(parking.name);
+                        gMap.addMarker(option);
+                    }
+                }
+            }
+        });
     }
 
     private void getPreCurrentLocation() {
         if(ActivityCompat.checkSelfPermission(GPSMapActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
-            mToastRunnable.run(); //To avoid double looping because of onRequestPermissionsResult
+            getCurrentLocation(true);
         }else{
             ActivityCompat.requestPermissions(GPSMapActivity.this,new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
         }
     }
 
-    private void getCurrentLocation() {
+    private void getCurrentLocation(final Boolean zoom) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION},AppConstants.LOCATION_REQUEST_CODE);
@@ -175,35 +200,11 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             gMap=googleMap;
-                            gMap.clear();
-                            MarkerOptions options;
-                            if(globalLatLng==null){
-                                globalLatLng=new LatLng(location.getLatitude(),
+                            globalLatLng=new LatLng(location.getLatitude(),
                                         location.getLongitude());
-                                options=new MarkerOptions().position(globalLatLng)
-                                        .title("I am here");
-                                if(globalLatLngIntent != null)
-                                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLngIntent,30));
-                                else
-                                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
-                            }else{
-                                globalLatLng=new LatLng(location.getLatitude(),
-                                        location.getLongitude());
-                                options=new MarkerOptions().position(globalLatLng)
-                                        .title("I am here");
-                            }
-                            googleMap.addMarker(options);
-
-                            Iterator hmIterator = parkingAreasList.entrySet().iterator();
-                            while (hmIterator.hasNext()) {
-                                Map.Entry mapElement = (Map.Entry)hmIterator.next();
-                                ParkingArea parking = (ParkingArea)mapElement.getValue();
-                                LatLng latLngParking=new LatLng(parking.latitude,
-                                        parking.longitude);
-                                MarkerOptions option=new MarkerOptions().position(latLngParking)
-                                        .title(mapElement.getKey().toString())
-                                        .snippet(parking.name);
-                                gMap.addMarker(option);
+                            googleMap.addMarker(new MarkerOptions().position(globalLatLng).title("I am here"));
+                            if(zoom){
+                                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(globalLatLng,30));
                             }
                         }
                     });
@@ -216,7 +217,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode== AppConstants.LOCATION_REQUEST_CODE){
             if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                mToastRunnable.run();
+                getCurrentLocation(true);
             }
         }
     }
@@ -255,33 +256,6 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
             }
         });
-
-//        //Method 2 - No Opts
-//        public boolean doubleBackToExitPressedOnce = false;
-//        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                if (doubleBackToExitPressedOnce) {
-//                    String UUID = marker.getTitle();
-//                    ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
-//                    doubleBackToExitPressedOnce = false;
-//                    Intent intent = new Intent(GPSMapActivity.this, BookParkingAreaActivity.class);
-//                    intent.putExtra("UUID", UUID);
-//                    intent.putExtra("ParkingArea", val);
-//                    startActivity(intent);
-//                } else {
-//                    doubleBackToExitPressedOnce = true;
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            doubleBackToExitPressedOnce = false;
-//                        }
-//                    }, 500);
-//                    Log.d("double", String.valueOf(1));
-//                }
-//                return false;
-//            }
-//        });
 
     }
 }
