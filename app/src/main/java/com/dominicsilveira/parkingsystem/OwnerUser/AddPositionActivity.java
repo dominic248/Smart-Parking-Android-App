@@ -1,16 +1,23 @@
 package com.dominicsilveira.parkingsystem.OwnerUser;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -36,8 +43,16 @@ import com.hootsuite.nachos.NachoTextView;
 import com.hootsuite.nachos.chip.Chip;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -47,6 +62,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
     GoogleMap gMap;
     FloatingActionButton addLocationBtn;
     AppCompatEditText areaNameText,upiIdText,upiNameText,amount2Text,amount3Text,amount4Text,totalSlotsText;
+    Button loadFromFile;
     NachoTextView nachoTextView;
 
     LatLng gpsLatLng=null;
@@ -86,12 +102,22 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
         amount4Text=findViewById(R.id.amount4Text);
         addLocationBtn=findViewById(R.id.addLocationBtn);
         nachoTextView = findViewById(R.id.et_tag);
+        loadFromFile = findViewById(R.id.loadFromFile);
+
         slotNoString.add("Slot-01");
         nachoTextView.setText(slotNoString);
         nachoTextView.addChipTerminator('\n', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_ALL);
     }
 
     private void attachListeners() {
+        loadFromFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myFileIntent=new Intent(Intent.ACTION_GET_CONTENT);
+                myFileIntent.setType("text/plain");
+                startActivityForResult(myFileIntent,3000);
+            }
+        });
         addLocationBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -140,6 +166,34 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                 });
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3000) {
+            if (resultCode == RESULT_OK) {
+                slotNoString.clear();
+                Uri uri = data.getData();
+                BufferedReader br;
+                FileOutputStream os;
+                try {
+                    br = new BufferedReader(new InputStreamReader(getContentResolver().openInputStream(uri)));
+                    os = openFileOutput("newFileName", Context.MODE_PRIVATE);
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        os.write(line.getBytes());
+                        slotNoString.add(line);
+                        Log.w("FileLineDebug",line);
+                    }
+                    nachoTextView.setText(slotNoString);
+                    br.close();
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

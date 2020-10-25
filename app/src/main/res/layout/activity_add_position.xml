@@ -197,17 +197,31 @@
                             android:layout_height="wrap_content"
                             android:text="Slot No(s)"
                             android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-                        <com.hootsuite.nachos.NachoTextView
-                            android:id="@+id/et_tag"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_middle"
-                            android:background="@android:color/transparent">
+                            android:orientation="horizontal">
+                            <com.hootsuite.nachos.NachoTextView
+                                android:id="@+id/et_tag"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_middle"
+                                android:background="@android:color/transparent"
+                                android:layout_width="0dp">
+                            </com.hootsuite.nachos.NachoTextView>
 
-<!--                            <requestFocus />-->
+                            <Button
+                                android:layout_weight="0.4"
+                                android:id="@+id/loadFromFile"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_middle"
+                                android:background="@drawable/btn_purple_a400"
+                                android:text="Load file"
+                                android:textAllCaps="false"
+                                android:textColor="@android:color/white"
+                                android:layout_width="0dp" />
 
-                        </com.hootsuite.nachos.NachoTextView>
+                        </LinearLayout>
 
                     </LinearLayout>
 
