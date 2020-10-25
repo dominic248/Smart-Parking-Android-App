@@ -12,7 +12,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import androidx.appcompat.widget.SearchView;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
@@ -43,7 +45,7 @@ public class NearByAreaActivity extends AppCompatActivity {
     FusedLocationProviderClient client;
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private CloseLocationAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     List<ClosestDistance> closestDistanceList=new ArrayList<ClosestDistance>();
@@ -69,6 +71,7 @@ public class NearByAreaActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
+
         globalClass=(AppConstants)getApplicationContext();
 
         getSupportActionBar().setTitle("Near-by Areas");
@@ -85,6 +88,7 @@ public class NearByAreaActivity extends AppCompatActivity {
 
         client=LocationServices.getFusedLocationProviderClient(NearByAreaActivity.this);
     }
+
 
     private void getPreCurrentLocation() {
         if(ActivityCompat.checkSelfPermission(NearByAreaActivity.this,
@@ -128,6 +132,7 @@ public class NearByAreaActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
@@ -156,5 +161,27 @@ public class NearByAreaActivity extends AppCompatActivity {
                 getCurrentLocation();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.nearby_menu,menu);
+        MenuItem item=menu.findItem(R.id.action_search);
+        SearchView searchView=(SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(mAdapter!=null){
+                    mAdapter.getFilter().filter(newText);
+                }
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

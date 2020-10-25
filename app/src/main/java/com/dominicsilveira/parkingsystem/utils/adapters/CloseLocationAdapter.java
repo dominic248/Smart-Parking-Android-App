@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,12 +45,14 @@ import java.util.Map;
 
 public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdapter.MyViewHolder>{
 
-    List<ClosestDistance> closestDistances = new ArrayList<ClosestDistance>();
+    List<ClosestDistance> closestDistances;
+    List<ClosestDistance> arrayListFiltered;
     FirebaseAuth auth;
     FirebaseDatabase db;
 
     public CloseLocationAdapter(List<ClosestDistance> closestDistances){
         this.closestDistances = closestDistances;
+        this.arrayListFiltered = new ArrayList<>(closestDistances);
         Collections.sort(closestDistances, ClosestDistance.ClosestDistComparator);
         Log.d("distParkingArea", String.valueOf(closestDistances));
     }
@@ -189,5 +193,39 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     public int getItemCount() {
         return closestDistances.size();
     }
+
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+
+    private Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<ClosestDistance> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(arrayListFiltered);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (ClosestDistance item : arrayListFiltered) {
+                    if (item.parkingArea.name.toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults results) {
+            closestDistances.clear();
+            closestDistances.addAll((Collection<? extends ClosestDistance>) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 }
