@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dominicsilveira.parkingsystem.NormalUser.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
@@ -28,6 +29,7 @@ public class SplashScreen extends AppCompatActivity {
     boolean isGPS;
     FirebaseAuth auth;
     int activityInt;
+    Intent parentIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void startApp() {
-        Intent parentIntent=getIntent();
+        parentIntent=getIntent();
         activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
         Log.e("location","enabled");
         isGPS = true; // flag maintain before get location
@@ -89,6 +91,9 @@ public class SplashScreen extends AppCompatActivity {
                             intent=new Intent(SplashScreen.this, NearByAreaActivity.class);
                         }else if(activityInt==33 && userObj.userType==3){
                             intent=new Intent(SplashScreen.this, UserHistoryActivity.class);
+                        }else if(activityInt==34 && userObj.userType==3){
+                            intent=new Intent(SplashScreen.this, BookingDetailsActivity.class);
+                            intent.putExtra("UUID",parentIntent.getStringExtra("ORDER_ID"));
                         }else if(userObj.userType==2){
                             intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
                         }else if(userObj.userType==3){

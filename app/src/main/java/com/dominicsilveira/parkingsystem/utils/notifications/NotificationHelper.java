@@ -56,33 +56,51 @@ public class NotificationHelper extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String title, String message,String readID,int notificationID){
+    public NotificationCompat.Builder setLaterChannelNotification(String title, String message,String readID,int notificationID){
         Log.i("NotificationSet",title+":"+message);
 
         Intent openIntent=new Intent(this, SplashScreen.class);
-        PendingIntent pendingIntent=PendingIntent.getActivity(this,1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        openIntent.putExtra("ACTIVITY_NO",34);
+        openIntent.putExtra("ORDER_NO",title);
+        PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //This is the intent of PendingIntent
         Intent intentAction = new Intent(this, NotificationActionReceiver.class);
-        //This is optional if you have more than one buttons and want to differentiate between two
         intentAction.putExtra("action","MarkAsRead");
         intentAction.putExtra("readID",readID);
         intentAction.putExtra("notificationID",notificationID);
-        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+1,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
-
-//        Intent intentAction2 = new Intent(this, NotificationActionReceiver.class);
-//        //This is optional if you have more than one buttons and want to differentiate between two
-//        intentAction2.putExtra("action","Calendar");
-//        PendingIntent pIntentlogin = PendingIntent.getBroadcast(this,notificationID+2,intentAction2,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
-                .setContentTitle(title)
+                .setContentTitle("Order ID: " + title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.ic_baseline_directions_car_24)
                 .setAutoCancel(true)
                 .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
-                .setContentIntent(pendingIntent)
+                .setContentIntent(openPendingIntent)
                 .addAction(0, "Mark As Read", pIntentMarkAsRead);
+    }
+
+    public NotificationCompat.Builder setNowChannelNotification(String title, String message,String readID,int notificationID){
+        Log.i("NotificationSet",title+":"+message);
+
+        Intent openIntent=new Intent(this, SplashScreen.class);
+        openIntent.putExtra("ACTIVITY_NO",34);
+        openIntent.putExtra("ORDER_ID",title);
+        PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+//        Intent intentAction = new Intent(this, NotificationActionReceiver.class);
+//        intentAction.putExtra("action","MarkAsRead");
+//        intentAction.putExtra("readID",readID);
+//        intentAction.putExtra("notificationID",notificationID);
+//        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
+                .setContentTitle("Order ID: " + title)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_baseline_directions_car_24)
+                .setAutoCancel(true)
+                .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
+                .setContentIntent(openPendingIntent);
     }
 
     public void cancelNotification(int id) {

@@ -62,7 +62,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BookParkingAreaActivity extends AppCompatActivity {
@@ -418,21 +420,25 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     if (data != null) {
                         String trxt = data.getStringExtra("response");
                         Log.d("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
+                        Map<String, String> myMap = new HashMap<String, String>();
+                        String[] pairs = trxt.split("&");
+                        for (String pair : pairs) {
+                            String[] keyValue = pair.split("=");
+                            myMap.put(keyValue[0].toLowerCase(), keyValue[1].toLowerCase());
+                        }
+                        paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
 
                     } else {
                         Log.d("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
+                        Map<String, String> myMap = new HashMap<String, String>();
+                        myMap.put("status", "-1");
+                        paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
                     }
                 } else {
                     Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
-                    ArrayList<String> dataList = new ArrayList<>();
-                    dataList.add("nothing");
-                    paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
+                    Map<String, String> myMap = new HashMap<String, String>();
+                    myMap.put("status", "-1");
+                    paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
                 }
                 if(paid){
                     bookingSlot.hasPaid=1;

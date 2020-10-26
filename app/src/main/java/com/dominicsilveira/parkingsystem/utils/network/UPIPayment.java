@@ -13,6 +13,8 @@ import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 public class UPIPayment {
     public Boolean payUsingUpi(String amount, String upiId, String name, String note, Context context) {
@@ -39,41 +41,26 @@ public class UPIPayment {
     }
 
 
-
-    public Boolean upiPaymentDataOperation(ArrayList<String> data, Context context) {
+    public Boolean upiPaymentDataOperation(Map<String, String> myMap, Context context) {
+//        https://stackoverflow.com/a/10514517
         if (isConnectionAvailable(context)) {
-            String str = data.get(0);
-            Log.d("UPIPAY", "upiPaymentDataOperation: "+str);
-            String paymentCancel = "";
-            if(str == null) str = "discard";
-            String status = "";
             String approvalRefNo = "";
-            String response[] = str.split("&");
-            for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
-                if(equalStr.length >= 2) {
-                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase()))
-                        status = equalStr[1].toLowerCase();
-                    else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase()))
-                        approvalRefNo = equalStr[1];
-                }
-                else {
-                    paymentCancel = "Payment cancelled by user-1.";
-                }
-            }
-            if (status.equals("success")) {
+            if (Objects.equals(myMap.get("status"), "success")) {
                 //Code to handle successful transaction here.
+                if(myMap.get("approvalrefno")!=null){
+                    approvalRefNo=myMap.get("approvalrefno");
+                }else if(myMap.get("txnref")!=null){
+                    approvalRefNo=myMap.get("txnref");
+                }else{
+                    approvalRefNo="";
+                }
                 Toast.makeText(context, "Transaction successful.", Toast.LENGTH_SHORT).show();
                 Log.d("UPIPay", "responseStr: "+approvalRefNo);
                 return true;
-            } else if("Payment cancelled by user.".equals(paymentCancel)){
-                Toast.makeText(context, "Payment cancelled by user-2.", Toast.LENGTH_SHORT).show();
-                return false;
             } else {
-                Toast.makeText(context, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Transaction failed. Please try again!", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
         } else {
             Toast.makeText(context, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
             return false;

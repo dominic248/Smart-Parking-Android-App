@@ -83,7 +83,7 @@ public class MyParkingService extends Service {
 
     private void updateBookedSlots(DataSnapshot snapshot,BookedSlots bookedSlots) {
         if(auth.getCurrentUser()!=null){
-            if((bookedSlots.readNotification==0 && bookedSlots.checkout==0) && bookedSlots.userID.equals(auth.getCurrentUser().getUid())) {
+            if((bookedSlots.readNotification==0 && bookedSlots.checkout==0 && bookedSlots.hasPaid==1) && bookedSlots.userID.equals(auth.getCurrentUser().getUid())) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(bookedSlots.endTime);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -98,13 +98,29 @@ public class MyParkingService extends Service {
 
                 Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
                 intent.putExtra("title", snapshot.getKey());
-                intent.putExtra("message", "Confirm your Booking");
+                intent.putExtra("message", "Check-out your Booking");
                 intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
                 intent.putExtra("readID", snapshot.getKey());
+                intent.putExtra("when", "later");
                 AlarmUtils.addAlarm(getApplicationContext(),
                         intent,
                         Math.abs(bookedSlots.notificationID)-1,
                         calendar);
+            }else if(bookedSlots.hasPaid==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
+                Calendar calendar = Calendar.getInstance();
+                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                intent.putExtra("title", snapshot.getKey());
+                intent.putExtra("message", "Confirm your Booking");
+                intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
+                intent.putExtra("readID", snapshot.getKey());
+                intent.putExtra("when", "now");
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), Math.abs(bookedSlots.notificationID)-1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
             }
         }
     }
