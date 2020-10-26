@@ -128,7 +128,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         scanBtn=root.findViewById(R.id.scanBtn);
         placeText = root.findViewById(R.id.placeText);
         slotNoText = root.findViewById(R.id.slotNoText);
-//        numberPlate = root.findViewById(R.id.numberPlate);
         endDate = root.findViewById(R.id.endDate);
         endTime = root.findViewById(R.id.endTime);
         endDateText = root.findViewById(R.id.endDateText);
@@ -164,13 +163,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 showTimePicker(endTimeText);
             }
         });
-
-//        scanBtn.setOnClickListener(new View.OnClickListener(){
-//            public void onClick(View v){
-//                askCameraPermission();
-//                Toast.makeText(getActivity(),"Camera Btn clicked",Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         bookBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -271,7 +263,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     }
 
     public void addListenerOnSpinnerItemSelection() {
-
         numberPlateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -347,32 +338,19 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     private void saveData() {
         bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
-        bookingSlot.slotNo=parkingArea.allocateSlot();
-        if(parkingArea.availableSlots>0 && bookingSlot.slotNo!=null){
-            parkingArea.availableSlots-=1;
-            parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
+        bookingSlot.slotNo="None";
+        if(parkingArea.availableSlots>0){
+            db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                                    File file = new File(getActivity().getExternalCacheDir(), File.separator + "invoice.pdf");
-                                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
-                                    invoiceGenerator.create();
-                                    invoiceGenerator.uploadFile(getActivity());
-                                }else{
-                                    Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
-                                    parkingArea.availableSlots+=1;
-                                    parkingArea.occupiedSlots-=1;
-                                    parkingArea.deallocateSlot(bookingSlot.slotNo);
-                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
-                                }
-                            }
-                        });
+                        Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                        File file = new File(getActivity().getExternalCacheDir(), File.separator + "invoice.pdf");
+                        InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                        invoiceGenerator.create();
+                        invoiceGenerator.uploadFile(getActivity());
+                    }else{
+                        Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
                     }
                 }
             });

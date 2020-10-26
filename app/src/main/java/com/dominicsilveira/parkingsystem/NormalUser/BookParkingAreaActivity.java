@@ -36,6 +36,7 @@ import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -81,7 +82,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     List<Integer> numberPlateWheeler = new ArrayList<Integer>();
     List<String> numberPlateNumber = new ArrayList<String>();
 
-    final int UPI_PAYMENT = 0;
     Calendar calendar;
 
     BookedSlots bookingSlot=new BookedSlots();
@@ -97,6 +97,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.INTERNET,
     };
+
+    UPIPayment upiPayment=new UPIPayment();
 
 
     @Override
@@ -150,7 +152,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
-        bookingSlot.hasPaid=1;
+        bookingSlot.hasPaid=0;
         bookingSlot.userID=auth.getCurrentUser().getUid();
 
         Bundle bundle = getIntent().getExtras();
@@ -199,9 +201,16 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
-//                                payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note);
-                                saveData();
+                                if(parkingArea.availableSlots>0) {
+                                    parkingArea.allocateSpace();
+                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
+//                                upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
+                                    Boolean upi=upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookParkingAreaActivity.this);
+//                                saveData();
+                                }else{
+                                    Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -216,14 +225,6 @@ public class BookParkingAreaActivity extends AppCompatActivity {
             }
         });
 
-        db.getReference().child("UpiInfo").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                upiInfo=snapshot.getValue(UpiInfo.class);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
 
         db.getReference().child("ParkingAreas").child(bookingSlot.placeID)
                 .addChildEventListener(new ChildEventListener() {
@@ -250,7 +251,14 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
                         setAddValues(parkingArea);
-                        Log.e("CalledTwice", String.valueOf(snapshot.getKey()));
+                        db.getReference().child("UpiInfo").child(parkingArea.userID).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                upiInfo=snapshot.getValue(UpiInfo.class);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
@@ -267,41 +275,28 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
         bookingSlot.slotNo=parkingArea.allocateSlot();
-        if(parkingArea.availableSlots>0 && bookingSlot.slotNo!=null){
-            parkingArea.availableSlots-=1;
-            parkingArea.occupiedSlots+=1;
-            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
-                                    File file = new File(BookParkingAreaActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
-                                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
-                                    invoiceGenerator.create();
-                                    invoiceGenerator.uploadFile(BookParkingAreaActivity.this);
-                                    Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
-                                    intent.putExtra("FRAGMENT_NO", 0);
-                                    startActivity(intent);
-                                    finish();
-                                }else{
-                                    Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                                    parkingArea.availableSlots+=1;
-                                    parkingArea.occupiedSlots-=1;
-                                    parkingArea.deallocateSlot(bookingSlot.slotNo);
-                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
-                                }
-                            }
-                        });
-                    }
+        db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                    Toast.makeText(BookParkingAreaActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                    File file = new File(BookParkingAreaActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
+                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                    invoiceGenerator.create();
+                    invoiceGenerator.uploadFile(BookParkingAreaActivity.this);
+                    Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
+                    intent.putExtra("FRAGMENT_NO", 0);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+                    parkingArea.deallocateSpace();
+                    parkingArea.deallocateSlot(bookingSlot.slotNo);
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                 }
-            });
-        }else {
-            Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
-        }
+            }
+        });
     }
 
     private void showDatePicker(final TextView button) {
@@ -413,98 +408,40 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         }
     }
 
-    void payUsingUpi(String amount, String upiId, String name, String note) {
-        Uri uri = Uri.parse("upi://pay").buildUpon()
-                .appendQueryParameter("pa", upiId)
-                .appendQueryParameter("pn", name)
-                .appendQueryParameter("tn", note)
-                .appendQueryParameter("am", amount)
-                .appendQueryParameter("cu", "INR")
-                .build();
-        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-        upiPayIntent.setData(uri);
-        // will always show a dialog to user to choose an app
-        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-        // check if intent resolves
-        if(null != chooser.resolveActivity(getPackageManager()))
-            startActivityForResult(chooser, UPI_PAYMENT);
-        else
-            Toast.makeText(BookParkingAreaActivity.this,"No UPI app found, please install one to continue",Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case UPI_PAYMENT:
+            case AppConstants.UPI_PAYMENT:
+                Boolean paid=false;
                 if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                     if (data != null) {
                         String trxt = data.getStringExtra("response");
                         Log.d("UPI", "onActivityResult: " + trxt);
                         ArrayList<String> dataList = new ArrayList<>();
                         dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
+                        paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
+
                     } else {
                         Log.d("UPI", "onActivityResult: " + "Return data is null");
                         ArrayList<String> dataList = new ArrayList<>();
                         dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
+                        paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
                     }
                 } else {
                     Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
                     ArrayList<String> dataList = new ArrayList<>();
                     dataList.add("nothing");
-                    upiPaymentDataOperation(dataList);
+                    paid=upiPayment.upiPaymentDataOperation(dataList,BookParkingAreaActivity.this);
+                }
+                if(paid){
+                    bookingSlot.hasPaid=1;
+                    saveData();
+                }else{
+                    parkingArea.deallocateSpace();
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                 }
                 break;
         }
-    }
-
-    private void upiPaymentDataOperation(ArrayList<String> data) {
-        if (isConnectionAvailable(BookParkingAreaActivity.this)) {
-            String str = data.get(0);
-            Log.d("UPIPAY", "upiPaymentDataOperation: "+str);
-            String paymentCancel = "";
-            if(str == null) str = "discard";
-            String status = "";
-            String approvalRefNo = "";
-            String response[] = str.split("&");
-            for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
-                if(equalStr.length >= 2) {
-                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase()))
-                        status = equalStr[1].toLowerCase();
-                    else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase()))
-                        approvalRefNo = equalStr[1];
-                }
-                else {
-                    paymentCancel = "Payment cancelled by user-1.";
-                }
-            }
-            if (status.equals("success")) {
-                //Code to handle successful transaction here.
-                Toast.makeText(BookParkingAreaActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
-                saveData();
-                Log.d("UPIPay", "responseStr: "+approvalRefNo);
-            } else if("Payment cancelled by user.".equals(paymentCancel))
-                Toast.makeText(BookParkingAreaActivity.this, "Payment cancelled by user-2.", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(BookParkingAreaActivity.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(BookParkingAreaActivity.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public static boolean isConnectionAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
-                    && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

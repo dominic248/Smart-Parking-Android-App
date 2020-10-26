@@ -22,6 +22,7 @@ public class AppConstants extends Application {
     public static final int RESTART_SERVICE_REQUEST_CODE = 107;
     public static final int NOTIFICATION_GROUP_REQUEST_CODE = 108;
     public static final int SCAN_PERMISSION_ALL = 109;
+    public static final int UPI_PAYMENT  = 110;
 
 
 

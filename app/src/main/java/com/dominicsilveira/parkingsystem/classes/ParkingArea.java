@@ -62,6 +62,19 @@ public class ParkingArea implements Serializable{
         }
         return null;
     }
+
+
+    public void allocateSpace(){
+        this.availableSlots -= 1;
+        this.occupiedSlots += 1;
+    }
+    public void deallocateSpace(){
+        this.availableSlots += 1;
+        this.occupiedSlots -= 1;
+    }
+
+
+
 }
 
 

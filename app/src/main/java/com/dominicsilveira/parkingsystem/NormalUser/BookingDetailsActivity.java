@@ -37,8 +37,10 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
@@ -62,11 +64,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class BookingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
     TextView placeText,wheelerText,amountText,endDateText,endTimeText,startDateText,startTimeText,numberPlateSpinner;
-    FloatingActionButton checkoutBtn;
+    FloatingActionButton checkoutBtn,payBtn;
 
     SupportMapFragment supportMapFragment;
     GoogleMap gMap;
@@ -82,6 +86,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     FirebaseDatabase db;
 
     String UUID;
+    Boolean run_once=false;
     String[] PERMISSIONS = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -89,6 +94,8 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     };
 
     ParkingArea parkingArea;
+
+    UPIPayment upiPayment=new UPIPayment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +122,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
 
         Bundle bundle = getIntent().getExtras();
         UUID=bundle.getString("UUID");
-        bookingSlot = (BookedSlots) getIntent().getSerializableExtra("BookedSlot");
+//        bookingSlot = (BookedSlots) getIntent().getSerializableExtra("BookedSlot");
 
         getSupportActionBar().setTitle(UUID);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -131,31 +138,63 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         startDateText = findViewById(R.id.startDateText);
         startTimeText = findViewById(R.id.startTimeText);
         checkoutBtn = findViewById(R.id.checkoutBtn);
+        payBtn = findViewById(R.id.payBtn);
         wheelerText = findViewById(R.id.wheelerText);
         amountText = findViewById(R.id.amountText);
         mNotificationHelper=new NotificationHelper(this);
-
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-        startTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
-        endTimeText.setText(simpleDateFormat.format(bookingSlot.endTime));
-        simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
-        startDateText.setText(simpleDateFormat.format(bookingSlot.startTime));
-        endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
-        numberPlateSpinner.setText(bookingSlot.numberPlate);
-        wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
-        amountText.setText(String.valueOf(bookingSlot.amount));
-
-        if(bookingSlot.checkout!=0){
-            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) checkoutBtn.getLayoutParams();
-            params.setBehavior(null);
-            checkoutBtn.requestLayout();
-            checkoutBtn.setVisibility(View.GONE);
-        }
     }
 
     private void attachListeners() {
-        findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
-        findViewById(R.id.shareInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
+        db.getReference().child("BookedSlots").child(UUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                bookingSlot=snapshot.getValue(BookedSlots.class);
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
+                startTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
+                endTimeText.setText(simpleDateFormat.format(bookingSlot.endTime));
+                simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
+                startDateText.setText(simpleDateFormat.format(bookingSlot.startTime));
+                endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
+                numberPlateSpinner.setText(bookingSlot.numberPlate);
+                wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
+                amountText.setText(String.valueOf(bookingSlot.amount));
+
+                updatePayCheckoutUI();
+
+                findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
+                findViewById(R.id.shareInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
+
+                if(!run_once){
+                    run_once=true;
+                    attachParkingListeners();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        db.getReference().child("BookedSlots").child(UUID).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if(snapshot.getKey().equals("hasPaid")){
+                    try{
+                        bookingSlot.hasPaid=snapshot.getValue(int.class);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                }
+            }
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
 
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +207,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                saveData();
+                                checkoutData();
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -182,6 +221,40 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
             }
         });
 
+        payBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(parkingArea.availableSlots>0) {
+                    parkingArea.allocateSpace();
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
+//                upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
+                    upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookingDetailsActivity.this);
+//                saveData();
+                }else{
+                    Toast.makeText(BookingDetailsActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void updatePayCheckoutUI() {
+        if(bookingSlot.hasPaid==1){
+            checkoutBtn.setVisibility(View.VISIBLE);
+            payBtn.setVisibility(View.GONE);
+        }else{
+            payBtn.setVisibility(View.VISIBLE);
+            checkoutBtn.setVisibility(View.GONE);
+        }
+        if(bookingSlot.checkout!=0){
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) checkoutBtn.getLayoutParams();
+            params.setBehavior(null);
+            checkoutBtn.requestLayout();
+            checkoutBtn.setVisibility(View.GONE);
+        }
+    }
+
+    private void attachParkingListeners(){
         db.getReference().child("ParkingAreas").child(bookingSlot.placeID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -189,7 +262,12 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         if(snapshot.getKey().equals("availableSlots") || snapshot.getKey().equals("occupiedSlots") || snapshot.getKey().equals("totalSlots")){
-                            parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                            try{
+                                parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
+                                updatePayCheckoutUI();
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
                             Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
                         }
                     }
@@ -251,7 +329,34 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         });
     }
 
-    private void saveData() {
+    private void payData() {
+        bookingSlot.notificationID=Math.abs((int) Calendar.getInstance().getTimeInMillis());
+        bookingSlot.slotNo=parkingArea.allocateSlot();
+        db.getReference("BookedSlots").child(UUID).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                    Toast.makeText(BookingDetailsActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                    File file = new File(BookingDetailsActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
+                    InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,UUID,userObj,file);
+                    invoiceGenerator.create();
+                    invoiceGenerator.uploadFile(BookingDetailsActivity.this);
+                    Intent intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
+                    intent.putExtra("FRAGMENT_NO", 0);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(BookingDetailsActivity.this,"Failed",Toast.LENGTH_SHORT).show();
+                    parkingArea.deallocateSpace();
+                    parkingArea.deallocateSlot(bookingSlot.slotNo);
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                }
+            }
+        });
+    }
+
+    private void checkoutData() {
         bookingSlot.checkout=1;
         parkingArea.availableSlots+=1;
         parkingArea.occupiedSlots-=1;
@@ -301,6 +406,43 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
             ActivityCompat.requestPermissions(BookingDetailsActivity.this, PERMISSIONS, AppConstants.SCAN_PERMISSION_ALL);
         }else{
 //            openCamera();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case AppConstants.UPI_PAYMENT:
+                Boolean paid=false;
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.d("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        paid=upiPayment.upiPaymentDataOperation(dataList,BookingDetailsActivity.this);
+
+                    } else {
+                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        paid=upiPayment.upiPaymentDataOperation(dataList,BookingDetailsActivity.this);
+                    }
+                } else {
+                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    paid=upiPayment.upiPaymentDataOperation(dataList,BookingDetailsActivity.this);
+                }
+                if(paid){
+                    bookingSlot.hasPaid=1;
+                    payData();
+                }else{
+                    parkingArea.deallocateSpace();
+                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                }
+                break;
         }
     }
 }
