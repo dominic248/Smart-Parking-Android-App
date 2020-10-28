@@ -83,8 +83,6 @@ public class DashboardOwnerFragment extends Fragment {
         slotStatus=root.findViewById(R.id.slotStatus);
         historyBtn=root.findViewById(R.id.historyBtn);
 
-
-
     }
 
     private void attachListeners(final LayoutInflater inflater) {

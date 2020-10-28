@@ -1,334 +1,401 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_5"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:background="@color/grey_5">
 
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested_scroll_view"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:scrollingCache="true">
+        android:background="@android:color/background_light">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"
+            android:layout_height="match_parent"
+            android:background="@color/grey_10"
             android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_large" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_middle"
-                android:paddingRight="@dimen/spacing_middle">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_xsmall"
-                    android:layout_marginLeft="@dimen/spacing_xsmall"
-                    android:layout_marginRight="@dimen/spacing_xsmall"
-                    android:layout_marginTop="@dimen/spacing_xsmall"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:id="@+id/openMapsBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/spacing_large">
-
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="40dp">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/shape_circle"
-                                app:tint="@color/orange_400" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/ic_baseline_location_on_24"
-                                app:tint="@android:color/white" />
-
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="@dimen/spacing_middle"
-                            android:layout_height="0dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Maps"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/grey_60"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Maps Desc"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <View
-                    android:layout_width="@dimen/spacing_middle"
-                    android:layout_height="0dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_xsmall"
-                    android:layout_marginLeft="@dimen/spacing_xsmall"
-                    android:layout_marginRight="@dimen/spacing_xsmall"
-                    android:layout_marginTop="@dimen/spacing_xsmall"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:id="@+id/nearByBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/spacing_large">
-
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="40dp">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/shape_circle"
-                                app:tint="@color/indigo_400" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/ic_baseline_near_me_24"
-                                app:tint="@android:color/white" />
-
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="@dimen/spacing_middle"
-                            android:layout_height="0dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:text="Near-by"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/grey_60"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Near-by Desc"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_middle" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_middle"
-                android:paddingRight="@dimen/spacing_middle">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_xsmall"
-                    android:layout_marginLeft="@dimen/spacing_xsmall"
-                    android:layout_marginRight="@dimen/spacing_xsmall"
-                    android:layout_marginTop="@dimen/spacing_xsmall"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:id="@+id/myBookingsBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/spacing_large">
-
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="40dp">
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/shape_circle"
-                                app:tint="@color/red_300" />
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/ic_baseline_history_24"
-                                app:tint="@android:color/white" />
-
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="@dimen/spacing_middle"
-                            android:layout_height="0dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:text="Booking History"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                                android:textColor="@color/grey_60"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="History Desc"
-                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                                android:textColor="@color/grey_40" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <View
-                    android:layout_width="@dimen/spacing_middle"
-                    android:layout_height="0dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_xsmall"
-                    android:layout_marginLeft="@dimen/spacing_xsmall"
-                    android:layout_marginRight="@dimen/spacing_xsmall"
-                    android:layout_marginTop="@dimen/spacing_xsmall"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="2dp"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_middle" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_middle"
-                android:paddingRight="@dimen/spacing_middle">
-
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing_middle" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/spacing_middle"
-                android:paddingRight="@dimen/spacing_middle">
+                android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_xsmall"
                     android:layout_marginLeft="@dimen/spacing_xsmall"
                     android:layout_marginRight="@dimen/spacing_xsmall"
                     android:layout_marginTop="@dimen/spacing_xsmall"
                     android:visibility="visible"
                     app:cardCornerRadius="2dp"
-                    app:cardElevation="2dp"/>
-
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <View
+                                android:layout_width="@dimen/spacing_large"
+                                android:layout_height="0dp" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="GPS Maps"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_60"
+                                android:textStyle="bold" />
+                            <ImageButton
+                                android:id="@+id/getLocationBtn"
+                                android:layout_width="?attr/actionBarSize"
+                                android:layout_height="?attr/actionBarSize"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:tint="@color/colorPrimary"
+                                app:srcCompat="@drawable/ic_baseline_my_location_24" />
+                        </LinearLayout>
+                        <fragment
+                            android:id="@+id/google_map"
+                            android:name="com.google.android.gms.maps.SupportMapFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/grey_10" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/checkService"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="checkService" />
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nested_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_10"
+                android:clipToPadding="false"
+                android:padding="@dimen/spacing_large"
+                android:scrollbars="none"
+                android:scrollingCache="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_large" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="blocksDescendants"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_large" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/spacing_middle"
+                        android:paddingRight="@dimen/spacing_middle">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_xsmall"
+                            android:layout_marginLeft="@dimen/spacing_xsmall"
+                            android:layout_marginRight="@dimen/spacing_xsmall"
+                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            app:cardCornerRadius="2dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:id="@+id/openMapsBtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/spacing_large">
+
+                                <RelativeLayout
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/shape_circle"
+                                        app:tint="@color/orange_400" />
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/ic_baseline_location_on_24"
+                                        app:tint="@android:color/white" />
+
+                                </RelativeLayout>
+
+                                <View
+                                    android:layout_width="@dimen/spacing_middle"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Maps"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/grey_60"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Maps Desc"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                        android:textColor="@color/grey_40" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_xsmall"
+                            android:layout_marginLeft="@dimen/spacing_xsmall"
+                            android:layout_marginRight="@dimen/spacing_xsmall"
+                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            app:cardCornerRadius="2dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:id="@+id/nearByBtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/spacing_large">
+
+                                <RelativeLayout
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/shape_circle"
+                                        app:tint="@color/indigo_400" />
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/ic_baseline_near_me_24"
+                                        app:tint="@android:color/white" />
+
+                                </RelativeLayout>
+
+                                <View
+                                    android:layout_width="@dimen/spacing_middle"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1"
+                                        android:text="Near-by"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/grey_60"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Near-by Desc"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                        android:textColor="@color/grey_40" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_middle" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/spacing_middle"
+                        android:paddingRight="@dimen/spacing_middle">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_xsmall"
+                            android:layout_marginLeft="@dimen/spacing_xsmall"
+                            android:layout_marginRight="@dimen/spacing_xsmall"
+                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            app:cardCornerRadius="2dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:id="@+id/myBookingsBtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:padding="@dimen/spacing_large">
+
+                                <RelativeLayout
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp">
+
+                                    <ImageView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/shape_circle"
+                                        app:tint="@color/red_300" />
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_centerInParent="true"
+                                        app:srcCompat="@drawable/ic_baseline_history_24"
+                                        app:tint="@android:color/white" />
+
+                                </RelativeLayout>
+
+                                <View
+                                    android:layout_width="@dimen/spacing_middle"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="0dp"
+                                        android:layout_weight="1"
+                                        android:text="Booking History"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/grey_60"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="History Desc"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
+                                        android:textColor="@color/grey_40" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_xsmall"
+                            android:layout_marginLeft="@dimen/spacing_xsmall"
+                            android:layout_marginRight="@dimen/spacing_xsmall"
+                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            app:cardCornerRadius="2dp"
+                            app:cardElevation="2dp"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_middle" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/spacing_middle"
+                        android:paddingRight="@dimen/spacing_middle">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/spacing_middle"
+                        android:paddingRight="@dimen/spacing_middle">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/spacing_medium"
+                            android:layout_marginLeft="@dimen/spacing_xsmall"
+                            android:layout_marginRight="@dimen/spacing_xsmall"
+                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:visibility="visible"
+                            app:cardCornerRadius="2dp"
+                            app:cardElevation="2dp"/>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/checkService"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="checkService" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spacing_large" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
 
-    </androidx.core.widget.NestedScrollView>
 
 
-</LinearLayout>
+

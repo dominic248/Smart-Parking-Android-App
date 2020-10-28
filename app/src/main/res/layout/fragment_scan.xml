@@ -135,8 +135,5 @@
             app:fabSize="normal"
             app:rippleColor="@android:color/white"
             app:srcCompat="@drawable/ic_baseline_add_24" />
-
     </LinearLayout>
-
-
 </RelativeLayout>
