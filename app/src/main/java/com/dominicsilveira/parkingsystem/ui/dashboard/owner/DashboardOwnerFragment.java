@@ -16,9 +16,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.dominicsilveira.parkingsystem.OwnerUser.AreaHistoryActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
@@ -43,9 +46,10 @@ import java.util.List;
 
 public class DashboardOwnerFragment extends Fragment {
 
-    LinearLayout expandCard;
-    TextView availableText,occupiedText,price2Text,price3Text,price4Text;
+    LinearLayout expandCard,slotStatus,slot_individual_list_view,historyBtn;
+    TextView availableText,occupiedText,price2Text,price3Text,price4Text,slotName,numberPlate;
     PieChart platforms_chart;
+    SlotNoInfo slotNoInfo;
 
     boolean dataSet=false;
 
@@ -56,8 +60,8 @@ public class DashboardOwnerFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_dashboard_owner, container, false);
 
-        initComponents(root);
-        attachListeners();
+        initComponents(root, inflater);
+        attachListeners(inflater);
 
         if(!auth.getCurrentUser().isEmailVerified()){
             alertVerifyEmail();
@@ -65,7 +69,7 @@ public class DashboardOwnerFragment extends Fragment {
         return root;
     }
 
-    private void initComponents(View root) {
+    private void initComponents(View root,LayoutInflater inflater) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
@@ -76,16 +80,21 @@ public class DashboardOwnerFragment extends Fragment {
         price3Text = expandCard.findViewById(R.id.price3Text);
         price4Text = expandCard.findViewById(R.id.price4Text);
         platforms_chart = expandCard.findViewById(R.id.platforms_chart);
+        slotStatus=root.findViewById(R.id.slotStatus);
+        historyBtn=root.findViewById(R.id.historyBtn);
+
+
+
     }
 
-    private void attachListeners() {
+    private void attachListeners(final LayoutInflater inflater) {
 
-//        historyBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
-//            }
-//        });
+        historyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
+            }
+        });
 
         db.getReference().child("ParkingAreas").orderByChild("userID").equalTo(auth.getCurrentUser().getUid())
                 .addChildEventListener(new ChildEventListener() {
@@ -95,7 +104,7 @@ public class DashboardOwnerFragment extends Fragment {
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
-                        setDashboardValues(parkingArea);
+                        setDashboardValues(parkingArea, inflater);
                     }
 
                     @Override
@@ -114,7 +123,7 @@ public class DashboardOwnerFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
-                            setDashboardValues(parkingArea);
+                            setDashboardValues(parkingArea, inflater);
                             Log.e("CalledTwice","12");
                         }
                     }
@@ -123,7 +132,7 @@ public class DashboardOwnerFragment extends Fragment {
                 });
     }
 
-    private void setDashboardValues(ParkingArea parkingArea) {
+    private void setDashboardValues(ParkingArea parkingArea,LayoutInflater inflater) {
         String prepend="Rs.";
         availableText.setText(String.valueOf(parkingArea.availableSlots));
         occupiedText.setText(String.valueOf(parkingArea.occupiedSlots));
@@ -147,6 +156,17 @@ public class DashboardOwnerFragment extends Fragment {
         }
         platforms_chart.notifyDataSetChanged();
         platforms_chart.invalidate();
+        if(((LinearLayout) slotStatus).getChildCount() > 0)
+            ((LinearLayout) slotStatus).removeAllViews();
+        for(int i=0;i<parkingArea.slotNos.size();i++){
+            slot_individual_list_view = (LinearLayout)inflater.inflate(R.layout.slot_individual_list_view, null);
+            slotName = (TextView)slot_individual_list_view.findViewById(R.id.slotName);
+            numberPlate = (TextView)slot_individual_list_view.findViewById(R.id.numberPlate);
+            slotNoInfo=parkingArea.slotNos.get(i);
+            slotName.setText(slotNoInfo.name);
+            numberPlate.setText(slotNoInfo.numberPlate);
+            slotStatus.addView(slot_individual_list_view);
+        }
     }
 
     private void alertVerifyEmail() {

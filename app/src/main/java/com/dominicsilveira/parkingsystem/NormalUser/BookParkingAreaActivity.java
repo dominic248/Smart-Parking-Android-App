@@ -276,7 +276,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     private void saveData() {
         bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
         final String key=db.getReference("BookedSlots").push().getKey();
-        bookingSlot.slotNo=parkingArea.allocateSlot();
+        bookingSlot.slotNo=parkingArea.allocateSlot(bookingSlot.numberPlate);
         db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

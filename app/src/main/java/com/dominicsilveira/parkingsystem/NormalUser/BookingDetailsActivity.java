@@ -333,7 +333,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
 
     private void payData() {
         bookingSlot.notificationID=Math.abs((int) Calendar.getInstance().getTimeInMillis());
-        bookingSlot.slotNo=parkingArea.allocateSlot();
+        bookingSlot.slotNo=parkingArea.allocateSlot(bookingSlot.numberPlate);
         db.getReference("BookedSlots").child(UUID).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

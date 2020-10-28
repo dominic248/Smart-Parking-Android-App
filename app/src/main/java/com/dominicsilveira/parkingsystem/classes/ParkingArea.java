@@ -37,25 +37,13 @@ public class ParkingArea implements Serializable{
             this.totalSlots=varData;
     }
 
-    public boolean deallocateSlot(String slotName){
-        SlotNoInfo slotNoInfo;
-        for (int i = 0; i < slotNos.size(); i++){
-            slotNoInfo=slotNos.get(i);
-            if(slotNoInfo.name.equals(slotName)){
-                slotNoInfo.isFull=false;
-                this.slotNos.set(i,slotNoInfo);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public String allocateSlot(){
+    public String allocateSlot(String numberPlate){
         SlotNoInfo slotNoInfo;
         for (int i = 0; i < this.slotNos.size(); i++){
             slotNoInfo=this.slotNos.get(i);
             if(!slotNoInfo.isFull){
                 slotNoInfo.isFull=true;
+                slotNoInfo.numberPlate=numberPlate;
                 this.slotNos.set(i,slotNoInfo);
                 return slotNoInfo.name;
             }
@@ -63,6 +51,20 @@ public class ParkingArea implements Serializable{
         return null;
     }
 
+    public boolean deallocateSlot(String slotName){
+        SlotNoInfo slotNoInfo;
+        for (int i = 0; i < slotNos.size(); i++){
+            slotNoInfo=slotNos.get(i);
+            if(slotNoInfo.name.equals(slotName)){
+                slotNoInfo.isFull=false;
+                slotNoInfo.numberPlate="NONE";
+
+                this.slotNos.set(i,slotNoInfo);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void allocateSpace(){
         this.availableSlots -= 1;
@@ -72,8 +74,6 @@ public class ParkingArea implements Serializable{
         this.availableSlots += 1;
         this.occupiedSlots -= 1;
     }
-
-
 
 }
 
