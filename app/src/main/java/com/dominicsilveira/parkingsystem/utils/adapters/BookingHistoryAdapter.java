@@ -21,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAdapter.MyViewHolder>{
@@ -37,13 +36,15 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView userHistoryCard;
-        TextView mainText,dateText;
+        TextView slotID,hasPaid,startDate,endDate;
 
         MyViewHolder(View itemView) {
             super(itemView);
             userHistoryCard = (MaterialCardView)itemView.findViewById(R.id.userHistoryCard);
-            mainText = (TextView)itemView.findViewById(R.id.mainText);
-            dateText = (TextView)itemView.findViewById(R.id.dateText);
+            slotID = (TextView)itemView.findViewById(R.id.slotID);
+            hasPaid = (TextView)itemView.findViewById(R.id.hasPaid);
+            startDate = (TextView)itemView.findViewById(R.id.startDate);
+            endDate = (TextView)itemView.findViewById(R.id.endDate);
         }
     }
 
@@ -57,7 +58,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     @Override
     public BookingHistoryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                                  int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_history_row_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_row_layout, parent, false);
         BookingHistoryAdapter.MyViewHolder pvh = new BookingHistoryAdapter.MyViewHolder(v);
         return pvh;
     }
@@ -75,11 +76,12 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
     public void setDatas(BookingHistoryAdapter.MyViewHolder holder, final BookedSlotKey bookedSlotKey){
         final BookedSlots bookedSlot=bookedSlotKey.bookedSlots;
-        holder.mainText.setText(bookedSlot.placeID);
-        Date date=bookedSlot.startTime;
+        holder.slotID.setText(bookedSlotKey.key);
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm a");
-        String dateStr= simpleDateFormat.format(date);
-        holder.dateText.setText(dateStr);
+        holder.startDate.setText(simpleDateFormat.format(bookedSlot.startTime));
+        holder.endDate.setText(simpleDateFormat.format(bookedSlot.endTime));
+        String hasPaid="Paid: ".concat((bookedSlot.hasPaid==1)?"Yes":"No");
+        holder.hasPaid.setText(hasPaid);
         holder.userHistoryCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
