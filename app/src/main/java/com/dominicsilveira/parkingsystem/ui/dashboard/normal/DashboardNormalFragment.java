@@ -141,10 +141,10 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
                             parkingAreasList.put(dataSnapshot.getKey(),parkingArea);
-                            Log.d("GPS Map",parkingArea.name);
+                            Log.d(String.valueOf(getActivity().getClass()),"GPS Map: "+parkingArea.name);
                         }
                         attachMarkerOnMap();
-                        Log.d("GPS Map", String.valueOf(parkingAreasList));
+                        Log.d(String.valueOf(getActivity().getClass()),"GPS Map list"+ String.valueOf(parkingAreasList));
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
@@ -218,7 +218,7 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
                 for (Map.Entry<String, ParkingArea> stringParkingAreaEntry : parkingAreasList.entrySet()) {
                     Map.Entry mapElement = (Map.Entry) stringParkingAreaEntry;
                     ParkingArea parking = (ParkingArea) mapElement.getValue();
-                    Log.e("GPSMAPTEST",parking.name);
+                    Log.e(String.valueOf(getActivity().getClass()),"Add marker on map: "+parking.name);
                     LatLng latLngParking = new LatLng(parking.latitude,
                                 parking.longitude);
                     MarkerOptions option = new MarkerOptions().position(latLngParking)
@@ -282,6 +282,11 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
 
         gMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             public void onInfoWindowClick(final Marker marker) {
+                LatLng position = marker.getPosition();
+                Log.d(String.valueOf(getActivity().getClass()),"Compare Location: "+globalLatLng.latitude+","+globalLatLng.longitude+" | "+position.latitude+","+position.longitude);
+                if (position.equals(globalLatLng)) {
+                    return;
+                }
                 String[] items={"Book Place","More Info"};
                 androidx.appcompat.app.AlertDialog.Builder itemDilog = new AlertDialog.Builder(getActivity());
                 itemDilog.setTitle("");
@@ -290,17 +295,17 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
                     public void onClick(DialogInterface dialog, int which) {
                         switch(which){
                             case 0:{
-                                Log.d("Funct1","Google maps");
+                                Log.d(getActivity().getComponentName().getClassName(),"Book Place");
                                 String UUID = marker.getTitle();
                                 ParkingArea val = (ParkingArea)parkingAreasList.get(UUID);
                                 Intent intent = new Intent(getActivity(), BookParkingAreaActivity.class);
                                 intent.putExtra("UUID", UUID);
                                 intent.putExtra("ParkingArea", val);
                                 startActivity(intent);
-                                Log.d("values", String.valueOf(2)+" "+UUID);
+                                Log.d(String.valueOf(getActivity().getClass()), "Value of UUID: "+UUID);
                             }break;
                             case 1:{
-                                Log.d("Funct2","Google maps");
+                                Log.d(String.valueOf(getActivity().getClass()),"More Info");
                             }break;
                         }
 

@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
@@ -184,7 +185,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                     while ((line = br.readLine()) != null) {
                         os.write(line.getBytes());
                         slotNoString.add(line);
-                        Log.w("FileLineDebug",line);
+                        Log.d(String.valueOf(AddPositionActivity.this.getClass()),"Read from file: "+String.valueOf(line));
                     }
                     nachoTextView.setText(slotNoString);
                     br.close();

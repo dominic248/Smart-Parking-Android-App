@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.dominicsilveira.parkingsystem.NormalUser.BookingDetailsActivity;
+import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;

@@ -10,31 +10,27 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
-import com.dominicsilveira.parkingsystem.NormalUser.BookingDetailsActivity;
-import com.dominicsilveira.parkingsystem.NormalUser.UserHistoryActivity;
+import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 
-import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.MyViewHolder>{
+public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAdapter.MyViewHolder>{
     Context context;
     List<BookedSlotKey> bookedSlotKeyList = new ArrayList<BookedSlotKey>();
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    public UserHistoryAdapter(List<BookedSlotKey> bookedSlotKeyList){
+    public BookingHistoryAdapter(List<BookedSlotKey> bookedSlotKeyList){
         this.bookedSlotKeyList = bookedSlotKeyList;
         Log.d("distParkingArea", String.valueOf(bookedSlotKeyList));
     }
@@ -59,16 +55,16 @@ public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.
 
     // Create new views (invoked by the layout manager)
     @Override
-    public UserHistoryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                int viewType) {
+    public BookingHistoryAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                 int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_history_row_layout, parent, false);
-        UserHistoryAdapter.MyViewHolder pvh = new UserHistoryAdapter.MyViewHolder(v);
+        BookingHistoryAdapter.MyViewHolder pvh = new BookingHistoryAdapter.MyViewHolder(v);
         return pvh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final UserHistoryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final BookingHistoryAdapter.MyViewHolder holder, int position) {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
         BookedSlotKey bookedSlotKey=bookedSlotKeyList.get(position);
@@ -77,7 +73,7 @@ public class UserHistoryAdapter extends RecyclerView.Adapter<UserHistoryAdapter.
         setDatas(holder,bookedSlotKey);
     }
 
-    public void setDatas(UserHistoryAdapter.MyViewHolder holder, final BookedSlotKey bookedSlotKey){
+    public void setDatas(BookingHistoryAdapter.MyViewHolder holder, final BookedSlotKey bookedSlotKey){
         final BookedSlots bookedSlot=bookedSlotKey.bookedSlots;
         holder.mainText.setText(bookedSlot.placeID);
         Date date=bookedSlot.startTime;

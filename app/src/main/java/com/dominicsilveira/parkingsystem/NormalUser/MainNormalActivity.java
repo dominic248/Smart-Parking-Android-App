@@ -42,7 +42,7 @@ public class MainNormalActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         // put your code here...
-        Log.i("RESUMETAGG","alertVerifyEmail();1");
+        Log.d(String.valueOf(MainNormalActivity.this.getClass()),"Resume verify email");
         auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
@@ -66,8 +66,7 @@ public class MainNormalActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
-
-        Log.i("isAuthenticatedCheck", String.valueOf(auth.getCurrentUser()));
+        Log.d(String.valueOf(MainNormalActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
         auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
@@ -134,12 +133,10 @@ public class MainNormalActivity extends AppCompatActivity {
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("isAuthenticatedCheck", String.valueOf(auth.getCurrentUser()));
-
+                Log.d(String.valueOf(MainNormalActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
                 auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
                         @Override
                         public void onSuccess(Object o) {
-                            Log.i("isAuthenticatedCheck1", String.valueOf(auth.getCurrentUser()));
                             FirebaseUser user = auth.getCurrentUser();
                             if(user.isEmailVerified()){
                                 dialog.cancel();
@@ -153,7 +150,7 @@ public class MainNormalActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.e("TAG", "onFailure()", e);
+                            Log.d(String.valueOf(MainNormalActivity.this.getClass()),"onFailure: "+e);
                             FirebaseAuth.getInstance().signOut();
                             stopService(new Intent(MainNormalActivity.this, MyParkingService.class));
                             AlarmUtils.cancelAllAlarms(MainNormalActivity.this,new Intent(MainNormalActivity.this, NotificationReceiver.class));

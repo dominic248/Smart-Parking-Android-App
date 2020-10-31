@@ -51,7 +51,7 @@ public class MainOwnerActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         // put your code here...
-        Log.i("RESUMETAGG","alertVerifyEmail();1");
+        Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"Resume verify email");
         auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
@@ -111,7 +111,8 @@ public class MainOwnerActivity extends AppCompatActivity {
                             if(parkingArea.userID.equals(auth.getCurrentUser().getUid())){
                                 found=1;
                             }
-                            Log.e("MainOwner", String.valueOf(parkingArea.longitude));
+                            Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"Load parking Area: "+String.valueOf(parkingArea));
+
                         }
                         if(found==1){
                             setContentView(R.layout.activity_main_owner);
@@ -185,7 +186,7 @@ public class MainOwnerActivity extends AppCompatActivity {
                         }
                     });
                 }catch(Exception e){
-                    Log.i("isAuthenticatedCheck", String.valueOf(auth.getCurrentUser()));
+                    Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
                     FirebaseAuth.getInstance().signOut();
                     stopService(new Intent(MainOwnerActivity.this, MyParkingService.class));
                     AlarmUtils.cancelAllAlarms(MainOwnerActivity.this,new Intent(MainOwnerActivity.this, NotificationReceiver.class));

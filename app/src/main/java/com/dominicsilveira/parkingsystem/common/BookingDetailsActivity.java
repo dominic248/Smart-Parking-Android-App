@@ -1,4 +1,4 @@
-package com.dominicsilveira.parkingsystem.NormalUser;
+package com.dominicsilveira.parkingsystem.common;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,38 +6,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
-import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
@@ -45,7 +30,6 @@ import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -64,7 +48,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,8 +142,12 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                 endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
                 numberPlateSpinner.setText(bookingSlot.numberPlate);
                 wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
-                amountText.setText(String.valueOf(bookingSlot.amount));
-
+                if(bookingSlot.hasPaid==0){
+                    amountText.setText(String.valueOf(bookingSlot.amount).concat(" (Not Paid)"));
+                }else{
+                    amountText.setText(String.valueOf(bookingSlot.amount).concat(" (Paid)"));
+                }
+                
                 updatePayCheckoutUI();
 
                 findViewById(R.id.openInvoicePdf).setOnClickListener(BookingDetailsActivity.this);
@@ -186,7 +173,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     }catch(Exception e){
                         e.printStackTrace();
                     }
-                    Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                    Log.e(String.valueOf(BookingDetailsActivity.this.getClass()),"Fetched updated BookedSlots:"+  String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
                 }
             }
             @Override
@@ -244,15 +231,13 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         if(bookingSlot.hasPaid==1){
             checkoutBtn.setVisibility(View.VISIBLE);
             payBtn.setVisibility(View.GONE);
-        }else{
+        }else if(userObj.userType==3 && bookingSlot.hasPaid==0){
             payBtn.setVisibility(View.VISIBLE);
             checkoutBtn.setVisibility(View.GONE);
         }
         if(bookingSlot.checkout!=0){
-            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) checkoutBtn.getLayoutParams();
-            params.setBehavior(null);
-            checkoutBtn.requestLayout();
             checkoutBtn.setVisibility(View.GONE);
+            payBtn.setVisibility(View.GONE);
         }
     }
 
@@ -270,7 +255,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                             }catch(Exception e){
                                 e.printStackTrace();
                             }
-                            Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                            Log.e(String.valueOf(BookingDetailsActivity.this.getClass()),"Fetched updated parking Area:"+  String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
                         }
                     }
                     @Override
@@ -287,7 +272,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ParkingArea parkingArea = snapshot.getValue(ParkingArea.class);
                         setAddValues(parkingArea);
-                        Log.e("CalledTwice", String.valueOf(snapshot.getKey()));
+                        Log.e(String.valueOf(BookingDetailsActivity.this.getClass()),"Fetched parking Area:"+ String.valueOf(snapshot.getKey()));
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
@@ -420,7 +405,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                 if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                     if (data != null) {
                         String trxt = data.getStringExtra("response");
-                        Log.d("UPI", "onActivityResult: " + trxt);
+                        Log.d(String.valueOf(BookingDetailsActivity.this.getClass()),"UPI:"+ "onActivityResult: " + trxt);
                         Map<String, String> myMap = new HashMap<String, String>();
                         String[] pairs = trxt.split("&");
                         for (String pair : pairs) {
@@ -430,13 +415,13 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                         paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);
 
                     } else {
-                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        Log.d(String.valueOf(BookingDetailsActivity.this.getClass()),"UPI:"+"onActivityResult: " + "Return data is null");
                         Map<String, String> myMap = new HashMap<String, String>();
                         myMap.put("status", "-1");
                         paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);
                     }
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    Log.d(String.valueOf(BookingDetailsActivity.this.getClass()),"UPI:"+ "onActivityResult: " + "Return data is null"); //when user simply back without payment
                     Map<String, String> myMap = new HashMap<String, String>();
                     myMap.put("status", "-1");
                     paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);

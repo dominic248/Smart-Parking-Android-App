@@ -131,7 +131,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("TAG", "User re-authenticated.");
+                                Log.d(String.valueOf(PersonalDetailsActivity.this.getClass()), "User re-authenticated.");
                                 user.updateEmail(userObj.email)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
@@ -146,7 +146,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                                                     intent.putExtra("FRAGMENT_NO", 2);
                                                     startActivity(intent);
                                                     finish();
-                                                    Log.d("TAG", "User email address updated.");
+                                                    Log.d(String.valueOf(PersonalDetailsActivity.this.getClass()), "User email address updated.");
                                                 }
                                             }
                                         });

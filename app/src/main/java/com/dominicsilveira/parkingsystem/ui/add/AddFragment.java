@@ -31,8 +31,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
@@ -198,7 +200,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
                             setAddValues(parkingArea,dataSnapshot.getKey());
-                            Log.e("CalledTwice","12");
+                            Log.e(String.valueOf(getActivity().getClass()),"Fetch parking area");
                         }
                     }
                     @Override
@@ -231,13 +233,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                         userObj=dataSnapshot.getValue(User.class);
                                         if(userObj.isVerified==1){
                                             bookingSlot.userID=dataSnapshot.getKey();
-                                            Log.i("UserOnType",bookingSlot.userID);
+                                            Log.i(String.valueOf(getActivity().getClass()),"UserID: "+bookingSlot.userID);
                                             db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                                                Log.i("UserOnType",dataSnapshot.getKey());
+                                                                Log.i(String.valueOf(getActivity().getClass()),dataSnapshot.getKey());
                                                                 NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
                                                                 if(numberPlate.isDeleted==0){
                                                                     numberPlateWheeler.add(numberPlate.wheelerType);
@@ -413,7 +415,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                         Toast.makeText(getActivity(), response.code() + " ", Toast.LENGTH_SHORT).show();
                         try {
                             String resp=response.body().string();
-                            Log.i("LogPlateRespon", resp);
+                            Log.i(String.valueOf(getActivity().getClass()),"Response: "+ resp);
                             JSONObject obj = new JSONObject(resp); //response.body().string() fetched only once
                             JSONArray geodata = obj.getJSONArray("results");
                             Bundle args = new Bundle();
@@ -422,7 +424,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             numberPlateDialog.setTargetFragment(AddFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
                             numberPlateDialog.setArguments(args);
                             numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
-                            Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
+                            Log.e(String.valueOf(getActivity().getClass()), "plateNumber"+geodata.getJSONObject(0).getString("plate"));
                         } catch (JSONException | IOException e) {
                             e.printStackTrace();
                         }

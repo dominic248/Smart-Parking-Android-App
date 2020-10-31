@@ -20,7 +20,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/spacing_middle"
+                android:paddingTop="@dimen/spacing_middle"
+                android:paddingRight="@dimen/spacing_middle">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -77,7 +80,6 @@
                 android:id="@+id/nested_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/grey_10"
                 android:clipToPadding="false"
                 android:padding="@dimen/spacing_large"
                 android:scrollbars="none"
@@ -98,8 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/spacing_middle"
-                        android:paddingRight="@dimen/spacing_middle">
+                        >
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"
@@ -254,8 +255,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/spacing_middle"
-                        android:paddingRight="@dimen/spacing_middle">
+                        >
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="0dp"

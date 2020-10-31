@@ -204,7 +204,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                             keys.addAll(treeMap.keySet());
                             mAdapter = new NumberPlateAdapter(treeMap,keys);
                             recyclerView.setAdapter(mAdapter);
-                            Log.d("GPS Map", String.valueOf(numberPlatesList));
+                            Log.d(String.valueOf(getActivity().getClass()),"GPS Map"+String.valueOf(numberPlatesList));
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {}
@@ -289,7 +289,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                         Toast.makeText(getActivity(), response.code() + " ", Toast.LENGTH_SHORT).show();
                         try {
                             String resp=response.body().string();
-                            Log.i("LogPlateRespon", resp);
+                            Log.i(String.valueOf(getActivity().getClass()),"Response: "+ resp);
                             JSONObject obj = new JSONObject(resp); //response.body().string() fetched only once
                             JSONArray geodata = obj.getJSONArray("results");
                             Bundle args = new Bundle();
@@ -298,7 +298,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                             numberPlateDialog.setTargetFragment(ScanFragment.this, AppConstants.NUMBER_PLATE_POPUP_REQUEST_CODE);
                             numberPlateDialog.setArguments(args);
                             numberPlateDialog.show(getParentFragmentManager(), "exampledialog");
-                            Log.e("ImageUploader", geodata.getJSONObject(0).getString("plate"));
+                            Log.e(String.valueOf(getActivity().getClass()),"ImageUploader"+ geodata.getJSONObject(0).getString("plate"));
                         } catch (JSONException | IOException e) {
                             e.printStackTrace();
                         }

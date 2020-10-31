@@ -5,23 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
-import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
-import com.dominicsilveira.parkingsystem.RegisterLogin.SplashScreen;
 import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
-import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
-import com.dominicsilveira.parkingsystem.classes.ParkingArea;
-import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
-import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
-import com.dominicsilveira.parkingsystem.utils.adapters.UserHistoryAdapter;
+import com.dominicsilveira.parkingsystem.utils.adapters.BookingHistoryAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,7 +78,7 @@ public class UserHistoryActivity extends AppCompatActivity {
                             BookedSlotKey bookedSlotKey=new BookedSlotKey(bookedSlot,dataSnapshot.getKey());
                             bookedSlotKeyList.add(bookedSlotKey);
                         }
-                        mAdapter = new UserHistoryAdapter(bookedSlotKeyList);
+                        mAdapter = new BookingHistoryAdapter(bookedSlotKeyList);
                         recyclerView.setAdapter(mAdapter);
                     }
                     @Override

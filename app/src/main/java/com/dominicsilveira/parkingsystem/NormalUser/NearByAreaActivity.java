@@ -124,7 +124,7 @@ public class NearByAreaActivity extends AppCompatActivity {
                                     }
                                     mAdapter = new CloseLocationAdapter(closestDistanceList);
                                     recyclerView.setAdapter(mAdapter);
-                                    Log.d("GPS Map", String.valueOf(closestDistanceList));
+                                    Log.d(String.valueOf(NearByAreaActivity.this.getClass()),"recyclerview pass: "+String.valueOf(closestDistanceList));
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {}

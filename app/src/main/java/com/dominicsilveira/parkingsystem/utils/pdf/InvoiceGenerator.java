@@ -59,7 +59,7 @@ public class InvoiceGenerator {
 
         PdfDocument pdfDocument=new PdfDocument();
         Paint paint=new Paint();
-        PdfDocument.PageInfo pageInfo=new PdfDocument.PageInfo.Builder(1000,700,1).create();
+        PdfDocument.PageInfo pageInfo=new PdfDocument.PageInfo.Builder(1000,725,1).create();
         PdfDocument.Page page=pdfDocument.startPage(pageInfo);
         Canvas canvas=page.getCanvas();
 
@@ -137,6 +137,8 @@ public class InvoiceGenerator {
 //        canvas.drawText("",550,615,paint);
         paint.setTextAlign(Paint.Align.RIGHT);
         canvas.drawText("Total Cost (Rs.):- "+String.valueOf(bookingSlot.amount),canvas.getWidth()-50,615,paint);
+        String paid=(bookingSlot.hasPaid==1)?"YES":"NO";
+        canvas.drawText("Paid:- "+paid,canvas.getWidth()-50,660,paint);
 
         pdfDocument.finishPage(page);
         try {

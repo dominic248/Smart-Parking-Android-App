@@ -35,6 +35,7 @@ import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
@@ -160,7 +161,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         bookingSlot.placeID=bundle.getString("UUID");
         final ParkingArea parkingArea = (ParkingArea) getIntent().getSerializableExtra("ParkingArea");
-        Log.e("BookParkingAreaActivity",parkingArea.name+" "+bookingSlot.placeID);
+        Log.e(String.valueOf(BookParkingAreaActivity.this.getClass()),"Fetched parking Area:"+ parkingArea.name+" "+bookingSlot.placeID);
 
         placeText.setText(parkingArea.name);
         globalLatLng=new LatLng(parkingArea.latitude,parkingArea.longitude);
@@ -236,7 +237,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         if(snapshot.getKey().equals("availableSlots") || snapshot.getKey().equals("occupiedSlots") || snapshot.getKey().equals("totalSlots")){
                             parkingArea.setData(snapshot.getKey(),snapshot.getValue(int.class));
-                            Log.e("CalledTwice", String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
+                            Log.e(String.valueOf(BookParkingAreaActivity.this.getClass()),"Fetched updated parking Area:"+ String.valueOf(snapshot.getKey())+snapshot.getValue(int.class));
                         }
                     }
                     @Override
@@ -419,7 +420,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 if ((RESULT_OK == resultCode) || (resultCode == 11)) {
                     if (data != null) {
                         String trxt = data.getStringExtra("response");
-                        Log.d("UPI", "onActivityResult: " + trxt);
+                        Log.d(String.valueOf(BookParkingAreaActivity.this.getClass()),"UPI:" +"onActivityResult: " + trxt);
                         Map<String, String> myMap = new HashMap<String, String>();
                         String[] pairs = trxt.split("&");
                         for (String pair : pairs) {
@@ -429,13 +430,13 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                         paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
 
                     } else {
-                        Log.d("UPI", "onActivityResult: " + "Return data is null");
+                        Log.d(String.valueOf(BookParkingAreaActivity.this.getClass()),"UPI:" + "onActivityResult: " + "Return data is null");
                         Map<String, String> myMap = new HashMap<String, String>();
                         myMap.put("status", "-1");
                         paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
                     }
                 } else {
-                    Log.d("UPI", "onActivityResult: " + "Return data is null"); //when user simply back without payment
+                    Log.d(String.valueOf(BookParkingAreaActivity.this.getClass()),"UPI:" + "onActivityResult: " + "Return data is null"); //when user simply back without payment
                     Map<String, String> myMap = new HashMap<String, String>();
                     myMap.put("status", "-1");
                     paid=upiPayment.upiPaymentDataOperation(myMap,BookParkingAreaActivity.this);
