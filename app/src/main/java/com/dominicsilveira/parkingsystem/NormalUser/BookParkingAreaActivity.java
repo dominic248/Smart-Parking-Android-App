@@ -155,6 +155,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
+        bookingSlot.readBookedNotification=1;
         bookingSlot.hasPaid=0;
         bookingSlot.userID=auth.getCurrentUser().getUid();
 

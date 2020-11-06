@@ -410,10 +410,14 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                         String[] pairs = trxt.split("&");
                         for (String pair : pairs) {
                             String[] keyValue = pair.split("=");
-                            myMap.put(keyValue[0].toLowerCase(), keyValue[1].toLowerCase());
+                            try{
+                                myMap.put(keyValue[0].toLowerCase(), keyValue[1].toLowerCase());
+                                paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);
+                            }catch(Exception e){
+                                myMap.put("status", "-1");
+                                paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);
+                            }
                         }
-                        paid=upiPayment.upiPaymentDataOperation(myMap,BookingDetailsActivity.this);
-
                     } else {
                         Log.d(String.valueOf(BookingDetailsActivity.this.getClass()),"UPI:"+"onActivityResult: " + "Return data is null");
                         Map<String, String> myMap = new HashMap<String, String>();

@@ -149,6 +149,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
+        bookingSlot.readBookedNotification=0;
         bookingSlot.hasPaid=0;
     }
 

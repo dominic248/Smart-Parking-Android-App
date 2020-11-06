@@ -57,15 +57,16 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity> <!-- Google Maps API key -->
+        </activity> 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" /> <!-- Notification receiver Start -->
+            android:value="@string/map_key" />  <!-- Google Maps API key -->
         <receiver
             android:name=".utils.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-        <receiver android:name=".utils.notifications.NotificationActionReceiver" /> <!-- Notification receiver End -->
+        <receiver android:name=".utils.notifications.NotificationActionReceiver" /> <!-- Notification receiver-->
+
         <!-- Home Screen Widget Start -->
         <receiver
             android:name=".utils.widgets.ParkingOwnerUserWidget"
@@ -73,7 +74,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_owner_user_widget_info" />
@@ -84,7 +84,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_normal_user_widget_info" />

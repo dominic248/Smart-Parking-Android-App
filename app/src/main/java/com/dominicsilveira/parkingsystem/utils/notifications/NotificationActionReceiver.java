@@ -31,9 +31,9 @@ public class NotificationActionReceiver extends BroadcastReceiver {
     FirebaseDatabase db;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void performMarkAsRead(Context context, Intent intent){
+    public void performMarkAsReadCheckout(Context context, Intent intent){
         NotificationHelper notificationHelper=new NotificationHelper(context);
-        Log.e("Welcom", Objects.requireNonNull(intent.getStringExtra("readID")));
+        Log.e("MarkAsReadCheckout", Objects.requireNonNull(intent.getStringExtra("readID")));
         db.getReference("BookedSlots").child(Objects.requireNonNull(intent.getStringExtra("readID"))).child("readNotification").setValue(1);
         notificationHelper.cancelNotification(intent.getIntExtra("notificationID",1));
         int notificationCount=notificationHelper.countNotificationGroup(context.getString(R.string.notification_group_id_1));
@@ -43,9 +43,19 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         Log.i(String.valueOf(this.getClass()),"Notifications Count: ".concat(String.valueOf(notificationCount)));
     }
 
-    private void showDateTime(Context context) {
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void performMarkAsReadBooking(Context context, Intent intent){
+        NotificationHelper notificationHelper=new NotificationHelper(context);
+        Log.e("MarkAsReadBooking", Objects.requireNonNull(intent.getStringExtra("readID")));
+        db.getReference("BookedSlots").child(Objects.requireNonNull(intent.getStringExtra("readID"))).child("readBookedNotification").setValue(1);
+        notificationHelper.cancelNotification(intent.getIntExtra("notificationID",1));
+        int notificationCount=notificationHelper.countNotificationGroup(context.getString(R.string.notification_group_id_1));
+        if(notificationCount<=1){
+            notificationHelper.cancelNotification(AppConstants.NOTIFICATION_GROUP_REQUEST_CODE);
+        }
+        Log.i(String.valueOf(this.getClass()),"Notifications Count: ".concat(String.valueOf(notificationCount)));
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -54,13 +64,10 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         db=FirebaseDatabase.getInstance();
         //Toast.makeText(context,"recieved",Toast.LENGTH_SHORT).show();
         String action=intent.getStringExtra("action");
-        if(action.equals("MarkAsRead")){
-            performMarkAsRead(context, intent);
-        }else if(action.equals("Calendar")){
-            showDateTime(context);
-            //This is used to close the notification tray
-            Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-            context.sendBroadcast(it);
+        if(action.equals("MarkAsReadCheckout")){
+            performMarkAsReadCheckout(context, intent);
+        }else if(action.equals("MarkAsReadBooking")){
+            performMarkAsReadBooking(context, intent);
         }
     }
 }

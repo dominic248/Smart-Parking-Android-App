@@ -65,7 +65,7 @@ public class NotificationHelper extends ContextWrapper {
         PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent intentAction = new Intent(this, NotificationActionReceiver.class);
-        intentAction.putExtra("action","MarkAsRead");
+        intentAction.putExtra("action","MarkAsReadCheckout");
         intentAction.putExtra("readID",readID);
         intentAction.putExtra("notificationID",notificationID);
         PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -88,11 +88,11 @@ public class NotificationHelper extends ContextWrapper {
         openIntent.putExtra("ORDER_ID",title);
         PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        Intent intentAction = new Intent(this, NotificationActionReceiver.class);
-//        intentAction.putExtra("action","MarkAsRead");
-//        intentAction.putExtra("readID",readID);
-//        intentAction.putExtra("notificationID",notificationID);
-//        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentAction = new Intent(this, NotificationActionReceiver.class);
+        intentAction.putExtra("action","MarkAsReadBooking");
+        intentAction.putExtra("readID",readID);
+        intentAction.putExtra("notificationID",notificationID);
+        PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
                 .setContentTitle("Order ID: " + title)
@@ -100,7 +100,8 @@ public class NotificationHelper extends ContextWrapper {
                 .setSmallIcon(R.drawable.ic_baseline_directions_car_24)
                 .setAutoCancel(true)
                 .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
-                .setContentIntent(openPendingIntent);
+                .setContentIntent(openPendingIntent)
+                .addAction(0, "Mark As Read", pIntentMarkAsRead);
     }
 
     public void cancelNotification(int id) {
