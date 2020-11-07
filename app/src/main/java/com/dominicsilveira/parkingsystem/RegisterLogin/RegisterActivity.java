@@ -3,6 +3,7 @@ package com.dominicsilveira.parkingsystem.RegisterLogin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button registerBtn;
     TextView loginSwitchText;
     RadioGroup userTypes;
+    ProgressDialog progressDialog;
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -51,6 +53,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
+        Intent in = getIntent();
+        String prevEmail = in.getStringExtra("EMAIL");
         name=findViewById(R.id.nameField);
         contactNo=findViewById(R.id.contactNoField);
         email=findViewById(R.id.emailField);
@@ -58,6 +62,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn=findViewById(R.id.registerBtn);
         loginSwitchText=findViewById(R.id.loginSwitchText);
         userTypes=findViewById(R.id.userTypes);
+
+        email.setText(prevEmail);
+        email.setSelection(email.getText().length());
 
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
@@ -74,12 +81,23 @@ public class RegisterActivity extends AppCompatActivity {
                 int checkedId=userTypes.getCheckedRadioButtonId();
                 int userType=findRadioButton(checkedId);
 
-                if(TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)){
-                    Toast.makeText(RegisterActivity.this,"Empty",Toast.LENGTH_SHORT).show();
+                if(!utils.isNameValid(txt_name)){
+                    Toast.makeText(RegisterActivity.this,"Name is Invalid!",Toast.LENGTH_SHORT).show();
+                }else if(!utils.isPhoneNoValid(txt_contact_no)){
+                    Toast.makeText(RegisterActivity.this,"Phone Number is Invalid!",Toast.LENGTH_SHORT).show();
+                }else if(TextUtils.isEmpty(txt_email)){
+                    Toast.makeText(RegisterActivity.this,"Email can't be blank!",Toast.LENGTH_SHORT).show();
+                }else if(TextUtils.isEmpty(txt_password)){
+                    Toast.makeText(RegisterActivity.this,"Password can't be blank!",Toast.LENGTH_SHORT).show();
                 }else if(txt_password.length()<6){
-                    Toast.makeText(RegisterActivity.this,"Password too short",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this,"Password too short!",Toast.LENGTH_SHORT).show();
                 }else{
                     if(utils.isNetworkAvailable(getApplication())) {
+                        progressDialog = new ProgressDialog(RegisterActivity.this);
+                        progressDialog.setMessage("Signing-up...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
                         registerUser(txt_email, txt_password, txt_name, txt_contact_no, userType);
                     }else{
                         Toast.makeText(RegisterActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
@@ -90,7 +108,14 @@ public class RegisterActivity extends AppCompatActivity {
         loginSwitchText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+                String passEmail=email.getText().toString();
+                Intent intent=new Intent(RegisterActivity.this, LoginActivity.class);
+                if(!passEmail.isEmpty()){
+                    intent.putExtra("EMAIL",passEmail);
+                    startActivity(intent);
+                }else{
+                    startActivity(intent);
+                }
                 finish();
             }
         });
@@ -148,6 +173,11 @@ public class RegisterActivity extends AppCompatActivity {
                                             intent = new Intent(RegisterActivity.this, MainNormalActivity.class);
                                         }
                                         intent.putExtra("FRAGMENT_NO", 0);
+                                        try{
+                                            progressDialog.dismiss();
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
                                         startActivity(intent);
                                         finish();
                                     }else{

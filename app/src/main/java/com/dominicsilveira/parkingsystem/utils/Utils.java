@@ -22,4 +22,16 @@ public class Utils {
             return nwInfo != null && nwInfo.isConnected();
         }
     }
+
+    public boolean isNameValid(String text){
+        return text.matches("^([a-zA-Z]{2,}\\s[a-zA-Z]{1,}'?-?[a-zA-Z]{2,}\\s?([a-zA-Z]{1,})?)");
+    }
+
+    public boolean isPhoneNoValid(String text){
+        return text.matches("^\\d{10}$");
+    }
+
+    public boolean isUpiIdValid(String text){
+        return text.matches("^\\w+@\\w+$");
+    }
 }

@@ -70,11 +70,12 @@
                         android:layout_margin="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:textColorHint="@color/grey_40">
 
                             <androidx.appcompat.widget.AppCompatEditText
@@ -86,8 +87,66 @@
                                 android:hint="Area Name" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.3"
+                            android:layout_marginLeft="10dp"
+                            android:textColorHint="@color/grey_40">
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/totalSlotsText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:hint="Slots*"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_10" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_smlarge">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Slot Name(s)"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <com.hootsuite.nachos.NachoTextView
+                                android:id="@+id/et_tag"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_middle"
+                                android:background="@android:color/transparent"
+                                android:layout_width="0dp">
+                            </com.hootsuite.nachos.NachoTextView>
+
+                            <Button
+                                android:layout_weight="0.4"
+                                android:id="@+id/loadFromFile"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_middle"
+                                android:background="@drawable/btn_purple_a400"
+                                android:text="Load file"
+                                android:textAllCaps="false"
+                                android:textColor="@android:color/white"
+                                android:layout_width="0dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -162,72 +221,12 @@
                                     android:hint="UPI Name*"
                              />
                             </com.google.android.material.textfield.TextInputLayout>
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.4"
-                                android:textColorHint="@color/grey_40">
-                                <androidx.appcompat.widget.AppCompatEditText
-                                    android:id="@+id/totalSlotsText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:maxLines="1"
-                                    android:singleLine="true"
-                                    android:hint="Slots*"
-                                    android:inputType="number" />
-                            </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_10" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/spacing_smlarge">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Slot No(s)"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <com.hootsuite.nachos.NachoTextView
-                                android:id="@+id/et_tag"
-                                android:layout_weight="1"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_middle"
-                                android:background="@android:color/transparent"
-                                android:layout_width="0dp">
-                            </com.hootsuite.nachos.NachoTextView>
-
-                            <Button
-                                android:layout_weight="0.4"
-                                android:id="@+id/loadFromFile"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing_middle"
-                                android:background="@drawable/btn_purple_a400"
-                                android:text="Load file"
-                                android:textAllCaps="false"
-                                android:textColor="@android:color/white"
-                                android:layout_width="0dp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_10"  />
+                        android:layout_height="1dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
