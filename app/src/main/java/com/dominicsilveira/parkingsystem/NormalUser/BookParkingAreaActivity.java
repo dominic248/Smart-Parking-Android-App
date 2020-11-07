@@ -197,35 +197,44 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         bookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BookParkingAreaActivity.this);
-                builder.setCancelable(true);
-                builder.setTitle("Confirm Booking");
-                builder.setMessage("Confirm Booking for this area?");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if(parkingArea.availableSlots>0) {
-                                    parkingArea.allocateSpace();
-                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
-                                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
+                if(numberPlateSpinner.getSelectedItemPosition()==0){
+                    Toast.makeText(BookParkingAreaActivity.this, "Please select a vehicle!", Toast.LENGTH_SHORT).show();
+                }else if(bookingSlot.endTime.equals(bookingSlot.startTime)){
+                    Toast.makeText(BookParkingAreaActivity.this,
+                                "Please set the end time!", Toast.LENGTH_SHORT).show();
+                }else if(!bookingSlot.timeDiffValid()){
+                    Toast.makeText(BookParkingAreaActivity.this,
+                            "Less time difference (<15 minutes)!", Toast.LENGTH_SHORT).show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(BookParkingAreaActivity.this);
+                    builder.setCancelable(true);
+                    builder.setTitle("Confirm Booking");
+                    builder.setMessage("Confirm Booking for this area?");
+                    builder.setPositiveButton("Confirm",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(parkingArea.availableSlots>0) {
+                                        parkingArea.allocateSpace();
+                                        db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                                        String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
 //                                upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
-                                    Boolean upi=upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookParkingAreaActivity.this);
+                                        Boolean upi=upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookParkingAreaActivity.this);
 //                                saveData();
-                                }else{
-                                    Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
+                            });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
 

@@ -53,6 +53,14 @@ public class BookedSlots implements Serializable {
         }
     }
 
+    public Boolean timeDiffValid(){
+        long diffInMillies = Math.abs(this.endTime.getTime() - this.startTime.getTime());
+        long diffHour = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffMin = TimeUnit.MINUTES.convert(diffInMillies, TimeUnit.MILLISECONDS) - diffHour * 60;
+        if(diffHour>0 || diffMin>=15)return true;
+        return false;
+    }
+
     public static Comparator<BookedSlots> DateComparator = new Comparator<BookedSlots>() {
         public int compare(BookedSlots s1, BookedSlots s2) {
             /*For ascending order*/
