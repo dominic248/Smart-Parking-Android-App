@@ -99,27 +99,31 @@ public class UpiDetailsActivity extends AppCompatActivity {
                 String upiId = upiIdText.getText().toString();
                 String upiName = upiNameText.getText().toString();
 
-                upiInfo=new UpiInfo(upiId,upiName);
-                db.getReference("UpiInfo")
-                        .child(userID)
-                        .setValue(upiInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(UpiDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            Intent intent;
-                            if(userObj.userType==2)
-                                intent=new Intent(UpiDetailsActivity.this, MainOwnerActivity.class);
-                            else
-                                intent=new Intent(UpiDetailsActivity.this, MainNormalActivity.class);
-                            intent.putExtra("FRAGMENT_NO", 2);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(UpiDetailsActivity.this, "Failed to add UPI details", Toast.LENGTH_SHORT).show();
+                if(upiId.isEmpty() || upiName.isEmpty()){
+                    Toast.makeText(UpiDetailsActivity.this, "Please fill all details!", Toast.LENGTH_SHORT).show();
+                }else{
+                    upiInfo=new UpiInfo(upiId,upiName);
+                    db.getReference("UpiInfo")
+                            .child(userID)
+                            .setValue(upiInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UpiDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                Intent intent;
+                                if(userObj.userType==2)
+                                    intent=new Intent(UpiDetailsActivity.this, MainOwnerActivity.class);
+                                else
+                                    intent=new Intent(UpiDetailsActivity.this, MainNormalActivity.class);
+                                intent.putExtra("FRAGMENT_NO", 2);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(UpiDetailsActivity.this, "Failed to add UPI details", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }

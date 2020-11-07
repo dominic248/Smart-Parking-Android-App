@@ -102,16 +102,14 @@
                                     android:id="@+id/phoneText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:inputType="number"
                                     android:maxLines="1"
                                     android:singleLine="true"
                                     android:hint="Phone Number" />
 
                             </com.google.android.material.textfield.TextInputLayout>
-
                         </LinearLayout>
-
                     </LinearLayout>
-
 
                     <Button
                         android:id="@+id/bt_submit"
@@ -124,7 +122,6 @@
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                         android:textColor="@android:color/black" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -267,7 +264,6 @@
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
-
 
                     <Button
                         android:id="@+id/bt_submit_email"

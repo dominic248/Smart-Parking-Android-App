@@ -83,7 +83,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 final String newPass=newPasswordText.getText().toString();
                 String oldPass=oldPasswordText.getText().toString();
                 String confirmPass=confirmPasswordText.getText().toString();
-                if(newPass.matches("") || oldPass.matches("") || confirmPass.matches("")){
+                if(newPass.isEmpty() || oldPass.isEmpty() || confirmPass.isEmpty()){
                     Toast.makeText(ChangePasswordActivity.this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
                 }else if(newPass.equals(confirmPass)){
                     newPasswordLayout.setError("");
