@@ -169,7 +169,19 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
 
         bookBtn.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                saveData();
+                if(emailText.getText().toString().isEmpty()){
+                    Toast.makeText(getActivity(), "Users Email can't be blank!", Toast.LENGTH_SHORT).show();
+                }else if(numberPlateSpinner.getSelectedItemPosition()==0){
+                    Toast.makeText(getActivity(), "Please select a vehicle!", Toast.LENGTH_SHORT).show();
+                }else if(bookingSlot.endTime.equals(bookingSlot.startTime)){
+                    Toast.makeText(getActivity(),
+                            "Please set the end time!", Toast.LENGTH_SHORT).show();
+                }else if(!bookingSlot.timeDiffValid()){
+                    Toast.makeText(getActivity(),
+                            "Less time difference (<15 minutes)!", Toast.LENGTH_SHORT).show();
+                }else{
+                    saveData();
+                }
             }
         });
 
@@ -255,7 +267,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                                     }
                                 }else{
                                     defaultSpinnerItems();
-                                    Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
                                 }
                             }
                             @Override

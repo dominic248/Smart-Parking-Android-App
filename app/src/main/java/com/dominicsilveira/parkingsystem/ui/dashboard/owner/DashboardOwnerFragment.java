@@ -122,7 +122,7 @@ public class DashboardOwnerFragment extends Fragment {
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
                             setDashboardValues(parkingArea, inflater);
-                            Log.e(String.valueOf(getActivity().getClass()),"Fetch parking area");
+                            Log.e("DashboardOwnerFragment","Fetch parking area");
                         }
                     }
                     @Override
