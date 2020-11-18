@@ -191,7 +191,10 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                 AlertDialog.Builder builder = new AlertDialog.Builder(BookingDetailsActivity.this);
                 builder.setCancelable(true);
                 builder.setTitle("Confirm Checkout");
-                builder.setMessage("Confirm checkout for this area?");
+                if(userObj.userType==2)
+                    builder.setMessage("Confirm to checkout the user vehicle?");
+                else
+                    builder.setMessage("Confirm checkout for this area?");
                 builder.setPositiveButton("Confirm",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -214,12 +217,37 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
             @Override
             public void onClick(View view) {
                 if(parkingArea.availableSlots>0) {
-                    parkingArea.allocateSpace();
-                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
-                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
-//                upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
-                    upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookingDetailsActivity.this);
-//                saveData();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(BookingDetailsActivity.this);
+                    builder.setCancelable(true);
+                    builder.setTitle("Confirm Payment");
+                    if(userObj.userType==2)
+                        builder.setMessage("Confirm cash payment by user?");
+                    else
+                        builder.setMessage("Confirm to proceed with payment?");
+                    builder.setPositiveButton("Confirm",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    parkingArea.allocateSpace();
+                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
+                                    if(userObj.userType==2){
+                                        bookingSlot.hasPaid=1;
+                                        payData();
+                                    }else {
+//                        upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this)
+                                        upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookingDetailsActivity.this);
+                                    }
+                                }
+                            });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }else{
                     Toast.makeText(BookingDetailsActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
                 }
@@ -231,7 +259,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         if(bookingSlot.hasPaid==1){
             checkoutBtn.setVisibility(View.VISIBLE);
             payBtn.setVisibility(View.GONE);
-        }else if(userObj.userType==3 && bookingSlot.hasPaid==0){
+        }else if(bookingSlot.hasPaid==0){
             payBtn.setVisibility(View.VISIBLE);
             checkoutBtn.setVisibility(View.GONE);
         }
@@ -345,8 +373,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
 
     private void checkoutData() {
         bookingSlot.checkout=1;
-        parkingArea.availableSlots+=1;
-        parkingArea.occupiedSlots-=1;
+        parkingArea.deallocateSpace();
         parkingArea.deallocateSlot(bookingSlot.slotNo);
         db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
@@ -365,8 +392,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                                     finish();
                                 }else{
                                     Toast.makeText(BookingDetailsActivity.this,"Failed",Toast.LENGTH_SHORT).show();
-                                    parkingArea.availableSlots-=1;
-                                    parkingArea.occupiedSlots+=1;
+                                    parkingArea.allocateSpace();
                                     db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                 }
                             }

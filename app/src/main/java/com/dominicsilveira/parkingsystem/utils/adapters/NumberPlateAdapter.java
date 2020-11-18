@@ -67,7 +67,7 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
         if(numberPlate.wheelerType==3)
             wheelerTypeStr="3 Wheeler";
         else if(numberPlate.wheelerType==2)
-            wheelerTypeStr="3 Wheeler";
+            wheelerTypeStr="2 Wheeler";
         else
             wheelerTypeStr="4 Wheeler";
         holder.wheelerType.setText(wheelerTypeStr);
