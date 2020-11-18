@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
@@ -24,6 +25,7 @@ import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,6 +56,7 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     GoogleMap gMap;
     LatLng globalLatLng;
+    BasicUtils utils=new BasicUtils();
 
     private FirebaseAuth auth;
     private FirebaseDatabase db;
@@ -78,6 +81,9 @@ public class GPSMapActivity extends AppCompatActivity implements OnMapReadyCallb
         attachListeners();
 
         getPreCurrentLocation();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(GPSMapActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

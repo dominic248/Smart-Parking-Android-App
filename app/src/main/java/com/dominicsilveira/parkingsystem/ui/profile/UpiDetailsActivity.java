@@ -19,6 +19,7 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +40,8 @@ public class UpiDetailsActivity extends AppCompatActivity {
     User userObj;
     String userID;
 
+    BasicUtils utils=new BasicUtils();
+
     AppConstants globalClass;
 
     @Override
@@ -48,6 +51,9 @@ public class UpiDetailsActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(UpiDetailsActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

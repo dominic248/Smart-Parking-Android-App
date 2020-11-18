@@ -1,5 +1,6 @@
 package com.dominicsilveira.parkingsystem.utils.pdf;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -20,6 +21,7 @@ import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -40,6 +42,7 @@ public class InvoiceGenerator {
     String bookingKey;
     User userObj;
     File file;
+    BasicUtils utils=new BasicUtils();
 
     public InvoiceGenerator(){}
 
@@ -151,81 +154,91 @@ public class InvoiceGenerator {
 
 
     //this method will upload the file
-    public void uploadFile(final Context context) {
-        //if there is a file to upload
-        Uri filePath=Uri.fromFile(file);
-        if (filePath != null) {
-            //displaying a progress dialog while upload is going on
-            final ProgressDialog progressDialog = new ProgressDialog(context);
-            progressDialog.setTitle("Uploading");
-            progressDialog.show();
+    public void uploadFile(final Context context,Application application) {
+        if(utils.isNetworkAvailable(application)) {
+            //if there is a file to upload
+            Uri filePath = Uri.fromFile(file);
+            if (filePath != null) {
+                //displaying a progress dialog while upload is going on
+                final ProgressDialog progressDialog = new ProgressDialog(context);
+                progressDialog.setTitle("Uploading");
+                progressDialog.show();
 
-            FirebaseStorage storage=FirebaseStorage.getInstance();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
 
-            StorageReference invoiceRef = storage.getReference().child("invoice/".concat(bookingSlot.userID).concat("/").concat(bookingKey).concat(".pdf"));
-            invoiceRef.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //if the upload is successfull
-                            //hiding the progress dialog
-                            try{
-                                progressDialog.dismiss();
-                            }catch (Exception e){
-                                e.printStackTrace();
+                StorageReference invoiceRef = storage.getReference().child("invoice/".concat(bookingSlot.userID).concat("/").concat(bookingKey).concat(".pdf"));
+                invoiceRef.putFile(filePath)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                //if the upload is successfull
+                                //hiding the progress dialog
+                                try {
+                                    progressDialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                //and displaying a success toast
+                                Toast.makeText(context, "File Uploaded ", Toast.LENGTH_LONG).show();
                             }
-                            //and displaying a success toast
-                            Toast.makeText(context, "File Uploaded ", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
-                            try{
-                                progressDialog.dismiss();
-                            }catch (Exception e){
-                                e.printStackTrace();
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                //if the upload is not successfull
+                                //hiding the progress dialog
+                                try {
+                                    progressDialog.dismiss();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                //and displaying error message
+                                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
                             }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                //calculating progress percentage
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                            //and displaying error message
-                            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //calculating progress percentage
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                            //displaying percentage in progress dialog
-                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                        }
-                    });
-        }
-        //if there is not any file
-        else {
-            //you can display an error toast
+                                //displaying percentage in progress dialog
+                                progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                            }
+                        });
+            }
+            //if there is not any file
+            else {
+                //you can display an error toast
+                Toast.makeText(context, "No file Available!", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void downloadFile(String userID, String bookingKey,Context context) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference invoiceRef = storage.getReference().child("invoice/".concat(userID).concat("/").concat(bookingKey).concat(".pdf"));
+    public void downloadFile(String userID, String bookingKey, Context context, Application application) {
+        if(utils.isNetworkAvailable(application)){
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference invoiceRef = storage.getReference().child("invoice/".concat(userID).concat("/").concat(bookingKey).concat(".pdf"));
 
-        final File localFile = new File(context.getExternalCacheDir(), File.separator + "invoice.pdf");
-        invoiceRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.e("firebase ",";local tem file created  created " +localFile.toString());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e("firebase ",";local tem file not created  created " +exception.toString());
-            }
-        });
+            final File localFile = new File(context.getExternalCacheDir(), File.separator + "invoice.pdf");
+            invoiceRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("firebase ",";local tem file created  created " +localFile.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("firebase ",";local tem file not created  created " +exception.toString());
+                }
+            });
+        }else{
+            Toast.makeText(context, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void openFile(Context context) {

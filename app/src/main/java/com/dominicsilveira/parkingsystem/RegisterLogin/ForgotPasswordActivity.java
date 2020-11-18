@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +21,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private Button sendMailBtn;
     private EditText email;
+    BasicUtils utils=new BasicUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(ForgotPasswordActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initComponents() {
@@ -54,17 +59,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void resetPasswordMail(final String email) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ForgotPasswordActivity.this, "Password Reset Email has been sent to ".concat(email), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }else{
-                            Toast.makeText(ForgotPasswordActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+        if(utils.isNetworkAvailable(getApplication())){
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(ForgotPasswordActivity.this, "Password Reset Email has been sent to ".concat(email), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }else{
+                                Toast.makeText(ForgotPasswordActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+        }else{
+            Toast.makeText(ForgotPasswordActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

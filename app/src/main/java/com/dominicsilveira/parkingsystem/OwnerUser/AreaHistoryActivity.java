@@ -7,11 +7,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlotKey;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.adapters.BookingHistoryAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +29,7 @@ public class AreaHistoryActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
+    BasicUtils utils=new BasicUtils();
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -42,6 +46,9 @@ public class AreaHistoryActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(AreaHistoryActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

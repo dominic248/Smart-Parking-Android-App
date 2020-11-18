@@ -22,6 +22,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
 import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
@@ -51,6 +52,8 @@ public class DashboardOwnerFragment extends Fragment {
     PieChart platforms_chart;
     SlotNoInfo slotNoInfo;
 
+    BasicUtils utils=new BasicUtils();
+
     boolean dataSet=false;
 
     FirebaseAuth auth;
@@ -63,9 +66,14 @@ public class DashboardOwnerFragment extends Fragment {
         initComponents(root, inflater);
         attachListeners(inflater);
 
+        if(!utils.isNetworkAvailable(getActivity().getApplication())){
+            Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
+
         if(!auth.getCurrentUser().isEmailVerified()){
             alertVerifyEmail();
         }
+
         return root;
     }
 

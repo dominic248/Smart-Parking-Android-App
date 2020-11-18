@@ -20,7 +20,7 @@ import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
-import com.dominicsilveira.parkingsystem.utils.Utils;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseDatabase db;
 
-    Utils utils=new Utils();
+    BasicUtils utils=new BasicUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(RegisterActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initComponents() {
@@ -91,17 +94,15 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this,"Password can't be blank!",Toast.LENGTH_SHORT).show();
                 }else if(txt_password.length()<6){
                     Toast.makeText(RegisterActivity.this,"Password too short!",Toast.LENGTH_SHORT).show();
+                }else if(utils.isNetworkAvailable(getApplication())) {
+                    progressDialog = new ProgressDialog(RegisterActivity.this);
+                    progressDialog.setMessage("Signing-up...");
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    registerUser(txt_email, txt_password, txt_name, txt_contact_no, userType);
                 }else{
-                    if(utils.isNetworkAvailable(getApplication())) {
-                        progressDialog = new ProgressDialog(RegisterActivity.this);
-                        progressDialog.setMessage("Signing-up...");
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
-                        registerUser(txt_email, txt_password, txt_name, txt_contact_no, userType);
-                    }else{
-                        Toast.makeText(RegisterActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(RegisterActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

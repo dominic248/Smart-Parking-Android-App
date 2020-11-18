@@ -20,6 +20,7 @@ import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
@@ -39,6 +40,7 @@ public class ProfileFragment extends Fragment {
     User userObj;
     AppConstants globalClass;
     FirebaseAuth auth;
+    BasicUtils utils=new BasicUtils();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +48,10 @@ public class ProfileFragment extends Fragment {
 
         initComponents(root);
         attachListeners();
+
+        if(!utils.isNetworkAvailable(getActivity().getApplication())){
+            Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
 
         return root;
     }

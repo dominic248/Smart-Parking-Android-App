@@ -37,6 +37,7 @@ import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
@@ -93,6 +94,8 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
 
+    BasicUtils utils=new BasicUtils();
+
     UpiInfo upiInfo;
 
     String[] PERMISSIONS = {
@@ -111,6 +114,10 @@ public class BookParkingAreaActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(BookParkingAreaActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
         addItemsOnSpinner();
         addListenerOnSpinnerItemSelection();
         askCameraFilePermission();
@@ -297,7 +304,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     File file = new File(BookParkingAreaActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
                     invoiceGenerator.create();
-                    invoiceGenerator.uploadFile(BookParkingAreaActivity.this);
+                    invoiceGenerator.uploadFile(BookParkingAreaActivity.this,getApplication());
                     Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
                     intent.putExtra("FRAGMENT_NO", 0);
                     startActivity(intent);

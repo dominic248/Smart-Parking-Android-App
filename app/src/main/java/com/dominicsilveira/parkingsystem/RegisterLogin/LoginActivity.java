@@ -19,15 +19,12 @@ import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
-import com.dominicsilveira.parkingsystem.utils.Utils;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     ProgressDialog progressDialog;
 
-    Utils utils=new Utils();
+    BasicUtils utils=new BasicUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(LoginActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initComponents() {

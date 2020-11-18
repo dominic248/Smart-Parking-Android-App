@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -26,6 +27,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     TextInputLayout oldPasswordLayout,newPasswordLayout,confirmPasswordLayout;
     FirebaseUser user;
     String email;
+    BasicUtils utils=new BasicUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(ChangePasswordActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

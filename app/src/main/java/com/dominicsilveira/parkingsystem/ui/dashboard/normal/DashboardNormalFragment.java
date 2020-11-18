@@ -35,6 +35,7 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
@@ -74,7 +75,7 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
     LinearLayout openMapsBtn,myBookingsBtn,nearByBtn;
 
     Button startService,stopService,checkService;
-
+    BasicUtils utils=new BasicUtils();
 
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
@@ -95,6 +96,9 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
         attachListeners();
 
         getPreCurrentLocation();
+        if(!utils.isNetworkAvailable(getActivity().getApplication())){
+            Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
 
         return root;
     }

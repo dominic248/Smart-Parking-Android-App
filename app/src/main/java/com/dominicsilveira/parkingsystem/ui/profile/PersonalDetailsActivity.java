@@ -15,21 +15,16 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
-import com.dominicsilveira.parkingsystem.RegisterLogin.RegisterActivity;
-import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
-import com.dominicsilveira.parkingsystem.utils.Utils;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class PersonalDetailsActivity extends AppCompatActivity {
 
@@ -42,7 +37,7 @@ public class PersonalDetailsActivity extends AppCompatActivity {
     User userObj;
     String userID;
 
-    Utils utils=new Utils();
+    BasicUtils utils=new BasicUtils();
 
     AppConstants globalClass;
 
@@ -53,6 +48,9 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(PersonalDetailsActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

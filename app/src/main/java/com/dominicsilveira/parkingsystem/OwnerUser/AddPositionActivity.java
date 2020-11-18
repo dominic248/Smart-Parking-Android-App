@@ -13,20 +13,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dominicsilveira.parkingsystem.NormalUser.NearByAreaActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
 import com.dominicsilveira.parkingsystem.classes.UpiInfo;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
-import com.dominicsilveira.parkingsystem.utils.Utils;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,15 +43,11 @@ import com.hootsuite.nachos.chip.Chip;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 
 public class AddPositionActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -74,7 +67,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
     FusedLocationProviderClient client;
     List<SlotNoInfo> slotNos = new ArrayList<>();
     List<String> slotNoString = new ArrayList<>();
-    Utils utils=new Utils();
+    BasicUtils utils=new BasicUtils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +76,9 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
 
         initComponents();
         attachListeners();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(AddPositionActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
 
         getPreCurrentLocation();
     }

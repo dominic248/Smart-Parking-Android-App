@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.SearchView;
 
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
@@ -23,6 +25,7 @@ import com.dominicsilveira.parkingsystem.classes.ClosestDistance;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.adapters.CloseLocationAdapter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,6 +44,7 @@ public class NearByAreaActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
+    BasicUtils utils=new BasicUtils();
 
     FusedLocationProviderClient client;
 
@@ -60,6 +64,9 @@ public class NearByAreaActivity extends AppCompatActivity {
 
         initComponents();
         getPreCurrentLocation();
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(NearByAreaActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

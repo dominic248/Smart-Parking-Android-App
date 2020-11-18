@@ -20,11 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.network.UPIPayment;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
@@ -66,6 +68,7 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     User userObj;
     NotificationHelper mNotificationHelper;
     AppConstants globalClass;
+    BasicUtils utils=new BasicUtils();
 
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -89,6 +92,10 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
 
         initComponents();
         attachListeners();
+
+        if(!utils.isNetworkAvailable(getApplication())){
+            Toast.makeText(BookingDetailsActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
 
         askCameraFilePermission();
     }
@@ -188,56 +195,19 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(BookingDetailsActivity.this);
-                builder.setCancelable(true);
-                builder.setTitle("Confirm Checkout");
-                if(userObj.userType==2)
-                    builder.setMessage("Confirm to checkout the user vehicle?");
-                else
-                    builder.setMessage("Confirm checkout for this area?");
-                builder.setPositiveButton("Confirm",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                checkoutData();
-                            }
-                        });
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
-
-        payBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(parkingArea.availableSlots>0) {
+                if(utils.isNetworkAvailable(getApplication())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(BookingDetailsActivity.this);
                     builder.setCancelable(true);
-                    builder.setTitle("Confirm Payment");
+                    builder.setTitle("Confirm Checkout");
                     if(userObj.userType==2)
-                        builder.setMessage("Confirm cash payment by user?");
+                        builder.setMessage("Confirm to checkout the user vehicle?");
                     else
-                        builder.setMessage("Confirm to proceed with payment?");
+                        builder.setMessage("Confirm checkout for this area?");
                     builder.setPositiveButton("Confirm",
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    parkingArea.allocateSpace();
-                                    db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
-                                    String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
-                                    if(userObj.userType==2){
-                                        bookingSlot.hasPaid=1;
-                                        payData();
-                                    }else {
-//                        upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this)
-                                        upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookingDetailsActivity.this);
-                                    }
+                                    checkoutData();
                                 }
                             });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -249,7 +219,52 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }else{
-                    Toast.makeText(BookingDetailsActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BookingDetailsActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        payBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(utils.isNetworkAvailable(getApplication())){
+                    if(parkingArea.availableSlots>0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BookingDetailsActivity.this);
+                        builder.setCancelable(true);
+                        builder.setTitle("Confirm Payment");
+                        if(userObj.userType==2)
+                            builder.setMessage("Confirm cash payment by user?");
+                        else
+                            builder.setMessage("Confirm to proceed with payment?");
+                        builder.setPositiveButton("Confirm",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        parkingArea.allocateSpace();
+                                        db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                                        String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
+                                        if(userObj.userType==2){
+                                            bookingSlot.hasPaid=1;
+                                            payData();
+                                        }else {
+//                        upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this)
+                                            upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookingDetailsActivity.this);
+                                        }
+                                    }
+                                });
+                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }else{
+                        Toast.makeText(BookingDetailsActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(BookingDetailsActivity.this, "No Network Available!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -314,12 +329,12 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         switch(view.getId()){
             case R.id.openInvoicePdf:
                 Toast.makeText(BookingDetailsActivity.this, "Open File", Toast.LENGTH_SHORT).show();
-                invoiceGenerator.downloadFile(bookingSlot.userID,UUID,BookingDetailsActivity.this);
+                invoiceGenerator.downloadFile(bookingSlot.userID,UUID,BookingDetailsActivity.this,getApplication());
                 invoiceGenerator.openFile(BookingDetailsActivity.this);
                 break;
             case R.id.shareInvoicePdf:
                 Toast.makeText(BookingDetailsActivity.this, "Share File", Toast.LENGTH_SHORT).show();
-                invoiceGenerator.downloadFile(bookingSlot.userID,UUID,BookingDetailsActivity.this);
+                invoiceGenerator.downloadFile(bookingSlot.userID,UUID,BookingDetailsActivity.this,getApplication());
                 invoiceGenerator.shareFile(BookingDetailsActivity.this);
                 break;
         }
@@ -356,8 +371,12 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                     File file = new File(BookingDetailsActivity.this.getExternalCacheDir(), File.separator + "invoice.pdf");
                     InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,UUID,userObj,file);
                     invoiceGenerator.create();
-                    invoiceGenerator.uploadFile(BookingDetailsActivity.this);
-                    Intent intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
+                    invoiceGenerator.uploadFile(BookingDetailsActivity.this,getApplication());
+                    Intent intent;
+                    if(userObj.userType==3)
+                        intent = new Intent(BookingDetailsActivity.this, MainOwnerActivity.class);
+                    else
+                        intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
                     intent.putExtra("FRAGMENT_NO", 0);
                     startActivity(intent);
                     finish();
@@ -386,7 +405,11 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                                     Toast.makeText(BookingDetailsActivity.this,"Success",Toast.LENGTH_SHORT).show();
                                     Intent notifyIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
                                     AlarmUtils.cancelAlarm(BookingDetailsActivity.this,notifyIntent,bookingSlot.notificationID);
-                                    Intent intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
+                                    Intent intent;
+                                    if(userObj.userType==3)
+                                        intent = new Intent(BookingDetailsActivity.this, MainOwnerActivity.class);
+                                    else
+                                        intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
                                     intent.putExtra("FRAGMENT_NO", 0);
                                     startActivity(intent);
                                     finish();

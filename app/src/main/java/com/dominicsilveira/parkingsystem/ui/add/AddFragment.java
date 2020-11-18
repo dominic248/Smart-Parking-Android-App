@@ -37,6 +37,7 @@ import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.classes.NumberPlate;
 import com.dominicsilveira.parkingsystem.classes.User;
+import com.dominicsilveira.parkingsystem.utils.BasicUtils;
 import com.dominicsilveira.parkingsystem.utils.pdf.InvoiceGenerator;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
@@ -90,6 +91,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     FirebaseAuth auth;
     FirebaseDatabase db;
     Calendar calendar;
+    BasicUtils utils=new BasicUtils();
 
     List<Integer> numberPlateWheeler = new ArrayList<Integer>();
     List<String> numberPlateNumber = new ArrayList<String>();
@@ -110,6 +112,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
 
         initComponents(root);
         attachListeners();
+
+        if(!utils.isNetworkAvailable(getActivity().getApplication())){
+            Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
+        }
 
         defaultSpinnerItems();
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
@@ -236,43 +242,47 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
             @Override
             public void afterTextChanged(Editable et) {
-                String emailStr=et.toString();
-                db.getReference().child("Users").orderByChild("email").equalTo(emailStr).limitToFirst(1)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.exists()){
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        userObj=dataSnapshot.getValue(User.class);
-                                        if(userObj.isVerified==1){
-                                            bookingSlot.userID=dataSnapshot.getKey();
-                                            Log.i(String.valueOf(getActivity().getClass()),"UserID: "+bookingSlot.userID);
-                                            db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                                                Log.i(String.valueOf(getActivity().getClass()),dataSnapshot.getKey());
-                                                                NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
-                                                                if(numberPlate.isDeleted==0){
-                                                                    numberPlateWheeler.add(numberPlate.wheelerType);
-                                                                    numberPlateNumber.add(numberPlate.numberPlate);
+                if(utils.isNetworkAvailable(getActivity().getApplication())){
+                    String emailStr=et.toString();
+                    db.getReference().child("Users").orderByChild("email").equalTo(emailStr).limitToFirst(1)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            userObj=dataSnapshot.getValue(User.class);
+                                            if(userObj.isVerified==1){
+                                                bookingSlot.userID=dataSnapshot.getKey();
+                                                Log.i(String.valueOf(getActivity().getClass()),"UserID: "+bookingSlot.userID);
+                                                db.getReference().child("NumberPlates").orderByChild("userID").equalTo(bookingSlot.userID)
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                                    Log.i(String.valueOf(getActivity().getClass()),dataSnapshot.getKey());
+                                                                    NumberPlate numberPlate = dataSnapshot.getValue(NumberPlate.class);
+                                                                    if(numberPlate.isDeleted==0){
+                                                                        numberPlateWheeler.add(numberPlate.wheelerType);
+                                                                        numberPlateNumber.add(numberPlate.numberPlate);
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {}
-                                                    });
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {}
+                                                        });
+                                            }
                                         }
-                                    }
-                                }else{
-                                    defaultSpinnerItems();
+                                    }else{
+                                        defaultSpinnerItems();
 //                                    Toast.makeText(getActivity(),"User Doesn't exist",Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {}
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {}
+                            });
+                }else{
+                    Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -351,27 +361,32 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
     }
 
     private void saveData() {
-        bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
-        final String key=db.getReference("BookedSlots").push().getKey();
-        bookingSlot.slotNo="None";
-        if(parkingArea.availableSlots>0){
-            db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
-                        File file = new File(getActivity().getExternalCacheDir(), File.separator + "invoice.pdf");
-                        InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
-                        invoiceGenerator.create();
-                        invoiceGenerator.uploadFile(getActivity());
-                    }else{
-                        Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+        if(utils.isNetworkAvailable(getActivity().getApplication())){
+            bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
+            final String key=db.getReference("BookedSlots").push().getKey();
+            bookingSlot.slotNo="None";
+            if(parkingArea.availableSlots>0){
+                db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getActivity(),"Success",Toast.LENGTH_SHORT).show();
+                            File file = new File(getActivity().getExternalCacheDir(), File.separator + "invoice.pdf");
+                            InvoiceGenerator invoiceGenerator=new InvoiceGenerator(bookingSlot,parkingArea,key,userObj,file);
+                            invoiceGenerator.create();
+                            invoiceGenerator.uploadFile(getActivity(),getActivity().getApplication());
+                        }else{
+                            Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
-        }else {
-            Toast.makeText(getActivity(),"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+                });
+            }else {
+                Toast.makeText(getActivity(),"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
