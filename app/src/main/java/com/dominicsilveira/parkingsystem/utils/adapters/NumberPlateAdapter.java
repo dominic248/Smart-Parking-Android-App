@@ -51,7 +51,7 @@ public class NumberPlateAdapter extends RecyclerView.Adapter<NumberPlateAdapter.
     @Override
     public NumberPlateAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                               int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.number_plate_row_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.include_number_plate_row_layout, parent, false);
         MyViewHolder pvh = new MyViewHolder(v);
         return pvh;
     }

@@ -23,9 +23,6 @@ import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.ParkingArea;
 import com.dominicsilveira.parkingsystem.classes.SlotNoInfo;
 import com.dominicsilveira.parkingsystem.utils.BasicUtils;
-import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
-import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
-import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -165,7 +162,7 @@ public class DashboardOwnerFragment extends Fragment {
         if(((LinearLayout) slotStatus).getChildCount() > 0)
             ((LinearLayout) slotStatus).removeAllViews();
         for(int i=0;i<parkingArea.slotNos.size();i++){
-            slot_individual_list_view = (LinearLayout)inflater.inflate(R.layout.slot_individual_list_view, null);
+            slot_individual_list_view = (LinearLayout)inflater.inflate(R.layout.include_slot_individual_list_view, null);
             slotName = (TextView)slot_individual_list_view.findViewById(R.id.slotName);
             numberPlate = (TextView)slot_individual_list_view.findViewById(R.id.numberPlate);
             slotNoInfo=parkingArea.slotNos.get(i);

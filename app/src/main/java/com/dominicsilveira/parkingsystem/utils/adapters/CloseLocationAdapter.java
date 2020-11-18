@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dominicsilveira.parkingsystem.NormalUser.BookParkingAreaActivity;
@@ -39,9 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdapter.MyViewHolder>{
 
@@ -84,7 +81,7 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     @Override
     public CloseLocationAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                                 int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.close_location_row_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.include_close_location_row_layout, parent, false);
         MyViewHolder pvh = new MyViewHolder(v);
         return pvh;
     }

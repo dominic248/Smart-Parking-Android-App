@@ -9,9 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,7 +39,7 @@ public class NumberPlatePopUp extends AppCompatDialogFragment {
         String numberPlate = mArgs.getString("numberPlate").toUpperCase();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.add_plate_popup_layout, null);
+        View view = inflater.inflate(R.layout.include_add_plate_popup_layout, null);
         builder.setView(view)
                 .setTitle("Add Vehicle")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

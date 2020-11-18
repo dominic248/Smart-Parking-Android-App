@@ -81,7 +81,7 @@
 
                         <include
                             android:id="@+id/expandCard"
-                            layout="@layout/place_dropdown_info"
+                            layout="@layout/include_place_dropdown_info"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:paddingBottom="12dp"
