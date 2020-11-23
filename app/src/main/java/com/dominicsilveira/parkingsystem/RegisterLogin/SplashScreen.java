@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,11 +32,16 @@ public class SplashScreen extends AppCompatActivity {
     FirebaseAuth auth;
     int activityInt;
     Intent parentIntent,intent;
+    Boolean showIntro=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth=FirebaseAuth.getInstance();
+        SharedPreferences sh = getSharedPreferences("ShowIntro", MODE_PRIVATE);// The value will be default as empty string because for the very first time when the app is opened, there is nothing to show
+        if (sh.getBoolean("show",true)){
+            showIntro = true;
+        }
         new GpsUtils(SplashScreen.this).turnGPSOn(new GpsUtils.onGpsListener() {
             @Override
             public void gpsStatus(boolean isGPSEnable) {
@@ -49,6 +55,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AppConstants.GPS_REQUEST_CODE) {
                 Log.e("location","enabled");
@@ -74,7 +81,11 @@ public class SplashScreen extends AppCompatActivity {
             activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
             Log.e("location","enabled");
             isGPS = true; // flag maintain before get location
-            if(auth.getCurrentUser()==null){
+            if(showIntro && auth.getCurrentUser()==null){
+                intent=new Intent(SplashScreen.this, StepperWizardActivity.class);
+                startActivity(intent);
+                finish();
+            }else if(auth.getCurrentUser()==null){
                 intent=new Intent(SplashScreen.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

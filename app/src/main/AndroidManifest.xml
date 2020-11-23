@@ -19,8 +19,11 @@
         android:roundIcon="@drawable/logo_with_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterLogin.ResetPasswordActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".RegisterLogin.StepperWizardActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".RegisterLogin.ResetPasswordActivity"
+            android:theme="@style/NoActionBar" />
         <activity android:name=".common.BookingDetailsActivity" />
         <activity android:name=".ui.profile.UpiDetailsActivity" />
         <activity android:name=".ui.profile.AboutMeActivity" />
@@ -69,13 +72,13 @@
         <activity android:name=".NormalUser.GPSMapActivity" />
         <activity
             android:name=".RegisterLogin.ForgotPasswordActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".RegisterLogin.RegisterActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".RegisterLogin.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

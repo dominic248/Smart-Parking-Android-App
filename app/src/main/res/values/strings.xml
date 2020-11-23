@@ -5,7 +5,7 @@
     <string name="firebase_page_protocol">https</string>
     <string name="firebase_page_url">parking-system-v1.firebaseapp.com</string>
     <string name="firebase_page_path">/__/auth/action</string>
-<!--    https://parking-system-v1.firebaseapp.com/__/auth/action?mode=resetPassword&oobCode=sPNW-vWnGHwN3-ILdtOo-blKWVllqnIX7b-Rf6deJOYAAAF184Vgvw&apiKey=AIzaSyDm3T3QPk_K8ViBY8m4PhPJzuVTdMsueas&lang=en-->
+    <!--    https://parking-system-v1.firebaseapp.com/__/auth/action?mode=resetPassword&oobCode=sPNW-vWnGHwN3-ILdtOo-blKWVllqnIX7b-Rf6deJOYAAAF184Vgvw&apiKey=AIzaSyDm3T3QPk_K8ViBY8m4PhPJzuVTdMsueas&lang=en-->
 
 
     <string name="map_key">AIzaSyDn1u_2ALiD_tDnxZozLkVw6_NZYnB25Xw</string>
