@@ -2,6 +2,12 @@
     <string name="app_name">Smart Parking</string>
     <string name="splash_screen">Splash Screen</string>
 
+    <string name="firebase_page_protocol">https</string>
+    <string name="firebase_page_url">parking-system-v1.firebaseapp.com</string>
+    <string name="firebase_page_path">/__/auth/action</string>
+<!--    https://parking-system-v1.firebaseapp.com/__/auth/action?mode=resetPassword&oobCode=sPNW-vWnGHwN3-ILdtOo-blKWVllqnIX7b-Rf6deJOYAAAF184Vgvw&apiKey=AIzaSyDm3T3QPk_K8ViBY8m4PhPJzuVTdMsueas&lang=en-->
+
+
     <string name="map_key">AIzaSyDn1u_2ALiD_tDnxZozLkVw6_NZYnB25Xw</string>
 
     <string name="title_activity_main">MainActivity</string>

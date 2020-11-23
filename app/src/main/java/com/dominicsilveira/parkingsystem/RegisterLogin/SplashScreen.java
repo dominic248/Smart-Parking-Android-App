@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -29,7 +30,7 @@ public class SplashScreen extends AppCompatActivity {
     boolean isGPS;
     FirebaseAuth auth;
     int activityInt;
-    Intent parentIntent;
+    Intent parentIntent,intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,57 +60,75 @@ public class SplashScreen extends AppCompatActivity {
 
     private void startApp() {
         parentIntent=getIntent();
-        activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
-        Log.e("location","enabled");
-        isGPS = true; // flag maintain before get location
-        if(auth.getCurrentUser()==null){
-            Intent intent=new Intent(SplashScreen.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }else{
-            final AppConstants globalClass=(AppConstants)getApplicationContext();
-            FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userObj=snapshot.getValue(User.class);
-                    Log.e("userTyp",String.valueOf(userObj.userType));
-                    globalClass.setUserObj(userObj);
-                    Intent intent;
-                    if(activityInt==0){
-                        if (userObj.userType==2)
-                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
-                        else
-                            intent=new Intent(SplashScreen.this, MainNormalActivity.class);
-                    }else{      // For Home Screen Widgets
-                        if(activityInt==21 && userObj.userType==2){
-                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
-                        }else if(activityInt==22 && userObj.userType==2){
-                            intent=new Intent(SplashScreen.this, AreaHistoryActivity.class);
-                        }else if(activityInt==31 && userObj.userType==3){
-                            intent=new Intent(SplashScreen.this, GPSMapActivity.class);
-                        }else if(activityInt==32 && userObj.userType==3){
-                            intent=new Intent(SplashScreen.this, NearByAreaActivity.class);
-                        }else if(activityInt==33 && userObj.userType==3){
-                            intent=new Intent(SplashScreen.this, UserHistoryActivity.class);
-                        }else if(activityInt==34 && userObj.userType==3){
-                            intent=new Intent(SplashScreen.this, BookingDetailsActivity.class);
-                            intent.putExtra("UUID",parentIntent.getStringExtra("ORDER_ID"));
-                        }else if(userObj.userType==2){
-                            intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
-                        }else if(userObj.userType==3){
-                            intent=new Intent(SplashScreen.this, MainNormalActivity.class);
-                        }else{
-                            intent=new Intent(SplashScreen.this, LoginActivity.class);
-                        }
-                    }
-                    startActivity(intent);
-                    finish();
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+        Uri uri = parentIntent.getData();
+        if (uri != null && auth.getCurrentUser()==null) {
+            // Get the action to complete.
+            String mode = uri.getQueryParameter("mode");
+            // Get the one-time code from the query parameter.
+            String actionCode = uri.getQueryParameter("oobCode");
 
-                }
-            });
+            if(mode.equals("resetPassword")){
+                resetPasswordActivity(actionCode);
+            }
+        }else{
+            activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
+            Log.e("location","enabled");
+            isGPS = true; // flag maintain before get location
+            if(auth.getCurrentUser()==null){
+                intent=new Intent(SplashScreen.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                final AppConstants globalClass=(AppConstants)getApplicationContext();
+                FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User userObj=snapshot.getValue(User.class);
+                        Log.e("userTyp",String.valueOf(userObj.userType));
+                        globalClass.setUserObj(userObj);
+                        if(activityInt==0){
+                            if (userObj.userType==2)
+                                intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                            else
+                                intent=new Intent(SplashScreen.this, MainNormalActivity.class);
+                        }else{      // For Home Screen Widgets
+                            if(activityInt==21 && userObj.userType==2){
+                                intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                            }else if(activityInt==22 && userObj.userType==2){
+                                intent=new Intent(SplashScreen.this, AreaHistoryActivity.class);
+                            }else if(activityInt==31 && userObj.userType==3){
+                                intent=new Intent(SplashScreen.this, GPSMapActivity.class);
+                            }else if(activityInt==32 && userObj.userType==3){
+                                intent=new Intent(SplashScreen.this, NearByAreaActivity.class);
+                            }else if(activityInt==33 && userObj.userType==3){
+                                intent=new Intent(SplashScreen.this, UserHistoryActivity.class);
+                            }else if(activityInt==34 && userObj.userType==3){
+                                intent=new Intent(SplashScreen.this, BookingDetailsActivity.class);
+                                intent.putExtra("UUID",parentIntent.getStringExtra("ORDER_ID"));
+                            }else if(userObj.userType==2){
+                                intent=new Intent(SplashScreen.this, MainOwnerActivity.class);
+                            }else if(userObj.userType==3){
+                                intent=new Intent(SplashScreen.this, MainNormalActivity.class);
+                            }else{
+                                intent=new Intent(SplashScreen.this, LoginActivity.class);
+                            }
+                        }
+                        startActivity(intent);
+                        finish();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
         }
+    }
+
+    private void resetPasswordActivity(String actionCode) {
+        intent=new Intent(SplashScreen.this, ResetPasswordActivity.class);
+        intent.putExtra("TOKEN",actionCode);
+        startActivity(intent);
+        finish();
     }
 }

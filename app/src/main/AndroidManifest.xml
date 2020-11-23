@@ -19,6 +19,8 @@
         android:roundIcon="@drawable/logo_with_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".RegisterLogin.ResetPasswordActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".common.BookingDetailsActivity" />
         <activity android:name=".ui.profile.UpiDetailsActivity" />
         <activity android:name=".ui.profile.AboutMeActivity" />
@@ -34,6 +36,28 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "https://dms24081999.loca.lt/api/users/reset-password/” -->
+                <data
+                    android:host="@string/firebase_page_url"
+                    android:pathPrefix="@string/firebase_page_path"
+                    android:scheme="@string/firebase_page_protocol" />
+                <!-- note that the leading "/" is required for pathPrefix -->
+            </intent-filter>
+            <intent-filter android:label="one-Q-shop">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "one_q_shop://reset_password” -->
+                <data
+                    android:host="reset_password"
+                    android:scheme="one_q_shop" />
             </intent-filter>
         </activity>
         <activity android:name=".OwnerUser.MainOwnerActivity" />
@@ -57,16 +81,16 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity> 
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" />  <!-- Google Maps API key -->
+            android:value="@string/map_key" /> <!-- Google Maps API key -->
         <receiver
             android:name=".utils.notifications.NotificationReceiver"
             android:enabled="true"
             android:exported="false" />
-        <receiver android:name=".utils.notifications.NotificationActionReceiver" /> <!-- Notification receiver-->
-
+        <receiver android:name=".utils.notifications.NotificationActionReceiver" /> <!-- Notification receiver -->
         <!-- Home Screen Widget Start -->
         <receiver
             android:name=".utils.widgets.ParkingOwnerUserWidget"
@@ -74,6 +98,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_owner_user_widget_info" />
@@ -84,6 +109,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/parking_normal_user_widget_info" />
