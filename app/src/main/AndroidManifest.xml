@@ -19,7 +19,10 @@
         android:roundIcon="@drawable/logo_with_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterLogin.StepperWizardActivity"
+        <activity android:name=".RegisterLogin.VerifiedActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".RegisterLogin.StepperWizardActivity"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".RegisterLogin.ResetPasswordActivity"

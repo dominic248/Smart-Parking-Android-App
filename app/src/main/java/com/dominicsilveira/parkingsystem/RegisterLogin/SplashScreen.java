@@ -76,6 +76,8 @@ public class SplashScreen extends AppCompatActivity {
 
             if(mode.equals("resetPassword")){
                 resetPasswordActivity(actionCode);
+            }else if(mode.equals("verifyEmail")){
+                verifyAccount(actionCode);
             }
         }else{
             activityInt= parentIntent.getIntExtra("ACTIVITY_NO",0);
@@ -134,6 +136,13 @@ public class SplashScreen extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void verifyAccount(String actionCode) {
+        intent=new Intent(SplashScreen.this, VerifiedActivity.class);
+        intent.putExtra("TOKEN",actionCode);
+        startActivity(intent);
+        finish();
     }
 
     private void resetPasswordActivity(String actionCode) {
