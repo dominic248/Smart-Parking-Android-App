@@ -38,26 +38,6 @@ public class MainNormalActivity extends AppCompatActivity {
 
     Boolean dialogshown=false;
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        // put your code here...
-        Log.d(String.valueOf(MainNormalActivity.this.getClass()),"Resume verify email");
-        auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(!user.isEmailVerified()){
-                    if(!dialogshown) alertVerifyEmail();
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(0);
-                }else{
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                }
-            }
-        });
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,19 +47,6 @@ public class MainNormalActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
         Log.d(String.valueOf(MainNormalActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
-        auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(!user.isEmailVerified()){
-                    if(!dialogshown) alertVerifyEmail();
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(0);
-                }else{
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                }
-            }
-        });
 
         if(!isMyServiceRunning(MyParkingService.class))
             MainNormalActivity.this.startService(new Intent(MainNormalActivity.this, MyParkingService.class));
@@ -114,83 +81,5 @@ public class MainNormalActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    private void alertVerifyEmail() {
-        dialogshown=true;
-        final AlertDialog dialog = new AlertDialog.Builder(MainNormalActivity.this)
-                .setTitle("Verify your E-mail ID!")
-                .setMessage("Please Verify your E-mail ID and click on the OK button!")
-                .setPositiveButton("YES", null)
-                .setNegativeButton("Logout", null)
-                .setNeutralButton("Resend E-mail", null)
-                .show();
-
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(String.valueOf(MainNormalActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
-                auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            FirebaseUser user = auth.getCurrentUser();
-                            if(user.isEmailVerified()){
-                                dialog.cancel();
-                                dialog.dismiss();
-                                dialogshown=false;
-                                db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                            }else{
-                                Toast.makeText(MainNormalActivity.this, "Verify email " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(String.valueOf(MainNormalActivity.this.getClass()),"onFailure: "+e);
-                            FirebaseAuth.getInstance().signOut();
-                            stopService(new Intent(MainNormalActivity.this, MyParkingService.class));
-                            AlarmUtils.cancelAllAlarms(MainNormalActivity.this,new Intent(MainNormalActivity.this, NotificationReceiver.class));
-                            Toast.makeText(MainNormalActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainNormalActivity.this, LoginActivity.class));
-                            finish();
-                            e.printStackTrace();
-                        }
-                    });
-            }
-        });
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                dialog.cancel();
-                Toast.makeText(MainNormalActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainNormalActivity.this, LoginActivity.class));
-                finish();
-            }
-        });
-        neutralButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FirebaseUser user = auth.getCurrentUser();
-                user.sendEmailVerification()
-                        .addOnCompleteListener(MainNormalActivity.this, new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(MainNormalActivity.this, "Verification email sent to " + user.getEmail()+"!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(MainNormalActivity.this, "Failed to send verification email!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
     }
 }

@@ -162,24 +162,19 @@ public class RegisterActivity extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task task) {
                                                         if (task.isSuccessful()) {
                                                             Toast.makeText(RegisterActivity.this, "Verification email sent to " + user.getEmail()+"!", Toast.LENGTH_SHORT).show();
+                                                            FirebaseAuth.getInstance().signOut();
                                                         } else {
                                                             Toast.makeText(RegisterActivity.this, "Failed to send verification email!", Toast.LENGTH_SHORT).show();
+                                                            FirebaseAuth.getInstance().signOut();
                                                         }
                                                     }
                                                 });
-                                        Intent intent;
-                                        if(userObj.userType==2){
-                                            intent = new Intent(RegisterActivity.this, MainOwnerActivity.class);
-                                        }else{
-                                            intent = new Intent(RegisterActivity.this, MainNormalActivity.class);
-                                        }
-                                        intent.putExtra("FRAGMENT_NO", 0);
                                         try{
                                             progressDialog.dismiss();
                                         }catch (Exception e){
                                             e.printStackTrace();
                                         }
-                                        startActivity(intent);
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                                         finish();
                                     }else{
                                         Toast.makeText(RegisterActivity.this,"Failed to add User Details!",Toast.LENGTH_SHORT).show();

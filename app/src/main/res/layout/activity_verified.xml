@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/white"
-    tools:context=".RegisterLogin.VerifiedActivity">
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/circle"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/ic_circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/done"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintBottom_toBottomOf="@+id/circle"
-        app:layout_constraintEnd_toEndOf="@+id/circle"
-        app:layout_constraintStart_toStartOf="@+id/circle"
-        app:layout_constraintTop_toTopOf="@+id/circle"
-        app:srcCompat="@drawable/tick_anim" />
-
-    <Button
-        android:id="@+id/loginBtn"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:background="@drawable/btn_purple_a400"
-        android:text="SIGN-IN"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circle" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/verifyTick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/include_verify_tick" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Account Verified!"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_grey_800"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/loginBtn"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_purple_a400"
+            android:text="SIGN-IN"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

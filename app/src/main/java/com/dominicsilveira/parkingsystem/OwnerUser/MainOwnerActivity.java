@@ -52,19 +52,6 @@ public class MainOwnerActivity extends AppCompatActivity {
         super.onResume();
         // put your code here...
         Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"Resume verify email");
-        auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(!user.isEmailVerified()){
-                    if(!dialogshown) alertVerifyEmail();
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(0);
-                }else{
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                }
-            }
-        });
     }
 
     @Override
@@ -84,20 +71,6 @@ public class MainOwnerActivity extends AppCompatActivity {
 
         db=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
-
-        auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-            @Override
-            public void onSuccess(Object o) {
-                FirebaseUser user = auth.getCurrentUser();
-                if(!user.isEmailVerified()){
-                    if(!dialogshown) alertVerifyEmail();
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(0);
-                }else{
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
-                    db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                }
-            }
-        });
     }
 
     private void attachListeners() {
@@ -152,81 +125,5 @@ public class MainOwnerActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    private void alertVerifyEmail() {
-        final AlertDialog dialog = new AlertDialog.Builder(MainOwnerActivity.this)
-                .setTitle("Verify your E-mail ID!")
-                .setMessage("Please Verify your E-mail ID and click on the OK button!")
-                .setPositiveButton("YES", null)
-                .setNegativeButton("Logout", null)
-                .setNeutralButton("Resend E-mail", null)
-                .show();
-
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            FirebaseUser user = auth.getCurrentUser();
-                            if(user.isEmailVerified()){
-                                dialog.cancel();
-                                dialog.dismiss();
-                                dialogshown=false;
-                                db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                            }else{
-                                Toast.makeText(MainOwnerActivity.this, "Verify email " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }catch(Exception e){
-                    Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"isAuthenticatedCheck: "+String.valueOf(auth.getCurrentUser()));
-                    FirebaseAuth.getInstance().signOut();
-                    stopService(new Intent(MainOwnerActivity.this, MyParkingService.class));
-                    AlarmUtils.cancelAllAlarms(MainOwnerActivity.this,new Intent(MainOwnerActivity.this, NotificationReceiver.class));
-                    Toast.makeText(MainOwnerActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(MainOwnerActivity.this, LoginActivity.class));
-                    finish();
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                dialog.cancel();
-                Toast.makeText(MainOwnerActivity.this, "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainOwnerActivity.this, LoginActivity.class));
-                finish();
-            }
-        });
-        neutralButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FirebaseUser user = auth.getCurrentUser();
-                user.sendEmailVerification()
-                        .addOnCompleteListener(MainOwnerActivity.this, new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(MainOwnerActivity.this, "Verification email sent to " + user.getEmail()+"!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(MainOwnerActivity.this, "Failed to send verification email!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
     }
 }

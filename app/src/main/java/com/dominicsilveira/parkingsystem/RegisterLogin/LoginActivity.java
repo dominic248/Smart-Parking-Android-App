@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgotPasswordText,registerSwitchText;
 
     private FirebaseAuth auth;
+    private FirebaseDatabase db;
     ProgressDialog progressDialog;
 
     BasicUtils utils=new BasicUtils();
@@ -129,36 +130,57 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User userObj=snapshot.getValue(User.class);
-                            globalClass.setUserObj(userObj);
-                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent;
-                            if(userObj.userType==2)
-                                intent=new Intent(LoginActivity.this, MainOwnerActivity.class);
-                            else
-                                intent=new Intent(LoginActivity.this, MainNormalActivity.class);
-                            intent.putExtra("FRAGMENT_NO", 0);
-                            try{
-                                progressDialog.dismiss();
-                            }catch (Exception e){
-                                e.printStackTrace();
+                    if(!auth.getCurrentUser().isEmailVerified()){
+//                        db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(0);
+                        Toast.makeText(LoginActivity.this, "Please verify your email", Toast.LENGTH_SHORT).show();
+                        auth.getCurrentUser().sendEmailVerification()
+                                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(LoginActivity.this, "Verification email sent to " + auth.getCurrentUser().getEmail()+"!", Toast.LENGTH_SHORT).show();
+                                            FirebaseAuth.getInstance().signOut();
+                                            try{ progressDialog.dismiss();
+                                            }catch (Exception e){ e.printStackTrace();}
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Failed to send verification email!", Toast.LENGTH_SHORT).show();
+                                            FirebaseAuth.getInstance().signOut();
+                                            try{ progressDialog.dismiss();
+                                            }catch (Exception e){ e.printStackTrace();}
+                                        }
+                                    }
+                                });
+                    }else{
+                        db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
+                        db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User userObj=snapshot.getValue(User.class);
+                                globalClass.setUserObj(userObj);
+                                Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                Intent intent;
+                                if(userObj.userType==2)
+                                    intent=new Intent(LoginActivity.this, MainOwnerActivity.class);
+                                else
+                                    intent=new Intent(LoginActivity.this, MainNormalActivity.class);
+                                intent.putExtra("FRAGMENT_NO", 0);
+                                try{ progressDialog.dismiss();
+                                }catch (Exception e){ e.printStackTrace();}
+                                startActivity(intent);
+                                finish();
                             }
-                            startActivity(intent);
-                            finish();
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {}
-                    });
-                }else{
-                    try{
-                        progressDialog.dismiss();
-                    }catch (Exception e){
-                        e.printStackTrace();
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                try{ progressDialog.dismiss();
+                                }catch (Exception e){ e.printStackTrace();}
+                            }
+                        });
                     }
+                }else{
+                    try{ progressDialog.dismiss();
+                    }catch (Exception e){ e.printStackTrace();}
                     try {
                         throw task.getException(); // if user enters wrong email.
                     }catch (FirebaseAuthInvalidCredentialsException invalid) {

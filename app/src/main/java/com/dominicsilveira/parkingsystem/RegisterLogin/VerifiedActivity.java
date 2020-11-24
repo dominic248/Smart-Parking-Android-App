@@ -2,6 +2,7 @@ package com.dominicsilveira.parkingsystem.RegisterLogin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import android.content.Intent;
@@ -11,6 +12,8 @@ import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,9 +27,11 @@ public class VerifiedActivity extends AppCompatActivity {
     ImageView done;
     AnimatedVectorDrawable animatedVectorDrawable;
     AnimatedVectorDrawableCompat animatedVectorDrawableCompat;
+    ConstraintLayout verifyTick;
     FirebaseAuth auth;
     Intent prevIntent;
     String token;
+    Button loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,17 @@ public class VerifiedActivity extends AppCompatActivity {
         prevIntent=getIntent();
         token=prevIntent.getStringExtra("TOKEN");
         auth=FirebaseAuth.getInstance();
-        done=findViewById(R.id.done);
+        verifyTick=findViewById(R.id.verifyTick);
+        done=verifyTick.findViewById(R.id.done);
+        loginBtn=findViewById(R.id.loginBtn);
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(VerifiedActivity.this,LoginActivity.class));
+                finish();
+            }
+        });
 
         auth.applyActionCode(token).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
