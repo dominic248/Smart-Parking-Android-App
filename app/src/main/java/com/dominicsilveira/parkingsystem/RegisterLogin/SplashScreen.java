@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.NormalUser.GPSMapActivity;
@@ -20,6 +21,9 @@ import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.gps.GpsUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,6 +80,8 @@ public class SplashScreen extends AppCompatActivity {
 
             if(mode.equals("resetPassword")){
                 resetPasswordActivity(actionCode);
+            }else if(mode.equals("recoverEmail")){
+                recoverAccount(actionCode);
             }else if(mode.equals("verifyEmail")){
                 verifyAccount(actionCode);
             }
@@ -136,6 +142,13 @@ public class SplashScreen extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void recoverAccount(String actionCode) {
+        intent=new Intent(SplashScreen.this, RecoverAccountActivity.class);
+        intent.putExtra("TOKEN",actionCode);
+        startActivity(intent);
+        finish();
     }
 
     private void verifyAccount(String actionCode) {

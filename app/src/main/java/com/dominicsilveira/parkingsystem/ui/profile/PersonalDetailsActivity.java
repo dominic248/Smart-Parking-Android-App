@@ -15,9 +15,13 @@ import android.widget.Toast;
 import com.dominicsilveira.parkingsystem.NormalUser.MainNormalActivity;
 import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
 import com.dominicsilveira.parkingsystem.R;
+import com.dominicsilveira.parkingsystem.RegisterLogin.LoginActivity;
 import com.dominicsilveira.parkingsystem.classes.User;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.utils.BasicUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
+import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
+import com.dominicsilveira.parkingsystem.utils.services.MyParkingService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -132,8 +136,11 @@ public class PersonalDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final String newEmail=newEmailText.getText().toString();
-                if(newEmail.isEmpty() || currentPasswordText.getText().toString().isEmpty() || emailText.getText().toString().isEmpty()){
+                final String email=emailText.getText().toString();
+                if(newEmail.isEmpty() || currentPasswordText.getText().toString().isEmpty() || email.isEmpty()) {
                     Toast.makeText(PersonalDetailsActivity.this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
+                }else if(newEmail.equals(email)){
+                    Toast.makeText(PersonalDetailsActivity.this, "Please enter a new Email ID!", Toast.LENGTH_SHORT).show();
                 }else{
                     final FirebaseUser user = auth.getCurrentUser();
                     AuthCredential credential = EmailAuthProvider
@@ -148,17 +155,15 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-//                                                    db.getReference("Users").child(userID).child("email").setValue(userObj.email);
-                                                        Intent intent;
-                                                        userObj.email = newEmail;
-                                                        if(userObj.userType==2)
-                                                            intent=new Intent(PersonalDetailsActivity.this, MainOwnerActivity.class);
-                                                        else
-                                                            intent=new Intent(PersonalDetailsActivity.this, MainNormalActivity.class);
-                                                        intent.putExtra("FRAGMENT_NO", 2);
-                                                        startActivity(intent);
+                                                        Toast.makeText(PersonalDetailsActivity.this, "Email Updated! Please Login again!", Toast.LENGTH_SHORT).show();
+                                                        FirebaseAuth.getInstance().signOut();
+                                                        stopService(new Intent(PersonalDetailsActivity.this, MyParkingService.class));
+                                                        AlarmUtils.cancelAllAlarms(PersonalDetailsActivity.this,new Intent(PersonalDetailsActivity.this,NotificationReceiver.class));
+                                                        startActivity(new Intent(PersonalDetailsActivity.this, LoginActivity.class));
                                                         finish();
                                                         Log.d(String.valueOf(PersonalDetailsActivity.this.getClass()), "User email address updated.");
+                                                    }else{
+                                                        Toast.makeText(PersonalDetailsActivity.this, "Failed to update Email!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });

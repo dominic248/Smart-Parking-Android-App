@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         email.setSelection(email.getText().length());
 
         auth=FirebaseAuth.getInstance();
+        db=FirebaseDatabase.getInstance();
     }
 
     private void attachListeners() {
@@ -153,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                     }else{
                         db.getReference("Users").child(auth.getCurrentUser().getUid()).child("isVerified").setValue(1);
                         db.getReference("Users").child(auth.getCurrentUser().getUid()).child("email").setValue(auth.getCurrentUser().getEmail());
-                        FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        db.getReference().child("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 User userObj=snapshot.getValue(User.class);
