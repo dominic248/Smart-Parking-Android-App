@@ -24,6 +24,6 @@
         app:layout_constraintEnd_toEndOf="@+id/circle"
         app:layout_constraintStart_toStartOf="@+id/circle"
         app:layout_constraintTop_toTopOf="@+id/circle"
-        app:srcCompat="@drawable/tick_anim" />
+        android:src="@drawable/tick_anim" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,15 +29,22 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        initComponents();
+        attachListeners();
+    }
+
+    private void initComponents() {
+        prevIntent=getIntent();
+        token=prevIntent.getStringExtra("TOKEN");
+
+        auth=FirebaseAuth.getInstance();
 
         resetPasswordBtn=findViewById(R.id.resetPasswordBtn);
         newPasswordField=findViewById(R.id.newPasswordField);
         confirmPasswordField=findViewById(R.id.confirmPasswordField);
+    }
 
-        prevIntent=getIntent();
-        token=prevIntent.getStringExtra("TOKEN");
-        auth=FirebaseAuth.getInstance();
-
+    private void attachListeners() {
         auth.verifyPasswordResetCode(token).addOnCompleteListener(this, new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {

@@ -38,13 +38,21 @@ public class VerifiedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verified);
 
+        initComponents();
+        attachListeners();
+
+    }
+
+    private void initComponents() {
         prevIntent=getIntent();
         token=prevIntent.getStringExtra("TOKEN");
         auth=FirebaseAuth.getInstance();
         verifyTick=findViewById(R.id.verifyTick);
         done=verifyTick.findViewById(R.id.done);
         loginBtn=findViewById(R.id.loginBtn);
+    }
 
+    private void attachListeners() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,19 +79,5 @@ public class VerifiedActivity extends AppCompatActivity {
                 }
             }
         });
-//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Drawable drawable=done.getDrawable();
-//                if(drawable instanceof AnimatedVectorDrawableCompat){
-//                    animatedVectorDrawableCompat=(AnimatedVectorDrawableCompat) drawable;
-//                    animatedVectorDrawableCompat.start();
-//                }else if(drawable instanceof  AnimatedVectorDrawable){
-//                    animatedVectorDrawable=(AnimatedVectorDrawable) drawable;
-//                    animatedVectorDrawable.start();
-//                }
-//            }
-//        }, 5000);
-
     }
 }
