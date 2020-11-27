@@ -164,6 +164,7 @@ public class AddPositionActivity extends AppCompatActivity implements OnMapReady
                                             Intent intent = new Intent(AddPositionActivity.this, MainOwnerActivity.class);
                                             intent.putExtra("FRAGMENT_NO", 0);
                                             startActivity(intent);
+                                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                                             finish();
                                         } else {
                                             Toast.makeText(AddPositionActivity.this, "Failed to add UPI details", Toast.LENGTH_SHORT).show();

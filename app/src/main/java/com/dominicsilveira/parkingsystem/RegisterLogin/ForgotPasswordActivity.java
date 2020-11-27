@@ -58,6 +58,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
+    }
+
     private void resetPasswordMail(final String email) {
         if(utils.isNetworkAvailable(getApplication())){
             FirebaseAuth.getInstance().sendPasswordResetEmail(email)

@@ -67,10 +67,6 @@ public class DashboardOwnerFragment extends Fragment {
             Toast.makeText(getActivity(), "No Network Available!", Toast.LENGTH_SHORT).show();
         }
 
-        if(!auth.getCurrentUser().isEmailVerified()){
-            alertVerifyEmail();
-        }
-
         return root;
     }
 
@@ -96,6 +92,7 @@ public class DashboardOwnerFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), AreaHistoryActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -170,66 +167,5 @@ public class DashboardOwnerFragment extends Fragment {
             numberPlate.setText(slotNoInfo.numberPlate);
             slotStatus.addView(slot_individual_list_view);
         }
-    }
-
-    private void alertVerifyEmail() {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle("Verify your E-mail ID!")
-                .setMessage("Please Verify your E-mail ID and click on the OK button!")
-                .setPositiveButton("YES", null)
-                .setNegativeButton("Logout", null)
-                .setNeutralButton("Resend E-mail", null)
-                .show();
-
-        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        Button negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        Button neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.getCurrentUser().reload().addOnSuccessListener(new OnSuccessListener() {
-                    @Override
-                    public void onSuccess(Object o) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        if(user.isEmailVerified()){
-                            dialog.cancel();
-                            dialog.dismiss();
-                        }else{
-                            Toast.makeText(getActivity(), "Verify email " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
-        });
-        negativeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                dialog.cancel();
-                Toast.makeText(getActivity(), "Logout Success", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
-            }
-        });
-        neutralButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final FirebaseUser user = auth.getCurrentUser();
-                user.sendEmailVerification()
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Verification email sent to " + user.getEmail()+"!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getActivity(), "Failed to send verification email!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
     }
 }

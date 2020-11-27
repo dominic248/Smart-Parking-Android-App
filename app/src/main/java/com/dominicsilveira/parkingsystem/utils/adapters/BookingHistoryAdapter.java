@@ -1,6 +1,7 @@
 package com.dominicsilveira.parkingsystem.utils.adapters;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAdapter.MyViewHolder>{
-    Context context;
+    Activity context;
     List<BookedSlotKey> bookedSlotKeyList = new ArrayList<BookedSlotKey>();
     FirebaseAuth auth;
     FirebaseDatabase db;
@@ -51,7 +52,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        context = recyclerView.getContext();
+        context = (Activity) recyclerView.getContext();
     }
 
     // Create new views (invoked by the layout manager)
@@ -89,6 +90,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
                 intent.putExtra("UUID", bookedSlotKey.key);
                 intent.putExtra("BookedSlot", bookedSlot);
                 context.startActivity(intent);
+                context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

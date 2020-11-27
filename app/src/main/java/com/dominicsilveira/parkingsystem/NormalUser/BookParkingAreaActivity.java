@@ -127,8 +127,15 @@ public class BookParkingAreaActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
     }
 
     private void initComponents() {
@@ -308,6 +315,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                     Intent intent = new Intent(BookParkingAreaActivity.this, MainNormalActivity.class);
                     intent.putExtra("FRAGMENT_NO", 0);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                     finish();
                 }else{
                     Toast.makeText(BookParkingAreaActivity.this,"Failed",Toast.LENGTH_SHORT).show();

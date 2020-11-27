@@ -183,6 +183,7 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), NearByAreaActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -190,6 +191,7 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), UserHistoryActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -197,10 +199,9 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), GPSMapActivity.class));
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-
-
     }
 
 
@@ -306,6 +307,7 @@ public class DashboardNormalFragment extends Fragment implements OnMapReadyCallb
                                 intent.putExtra("UUID", UUID);
                                 intent.putExtra("ParkingArea", val);
                                 startActivity(intent);
+                                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                                 Log.d(String.valueOf(getActivity().getClass()), "Value of UUID: "+UUID);
                             }break;
                             case 1:{

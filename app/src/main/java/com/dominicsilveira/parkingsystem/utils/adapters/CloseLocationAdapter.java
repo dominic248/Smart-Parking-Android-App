@@ -1,5 +1,6 @@
 package com.dominicsilveira.parkingsystem.utils.adapters;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -41,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdapter.MyViewHolder>{
-
+    Activity context;
     List<ClosestDistance> closestDistances;
     List<ClosestDistance> arrayListFiltered;
     FirebaseAuth auth;
@@ -75,6 +76,7 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        context = (Activity) recyclerView.getContext();
     }
 
     // Create new views (invoked by the layout manager)
@@ -168,7 +170,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
                 Intent intent=new Intent(v.getContext(), BookParkingAreaActivity.class);
                 intent.putExtra("UUID", id);
                 intent.putExtra("ParkingArea", parkingArea);
-                v.getContext().startActivity(intent);
+                context.startActivity(intent);
+                context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -180,7 +183,8 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
                 intent.putExtra("LOCATION_NAME", parkingArea.name);
                 intent.putExtra("LOCATION_LATITUDE", parkingArea.latitude);
                 intent.putExtra("LOCATION_LONGITUDE", parkingArea.longitude);
-                v.getContext().startActivity(intent);
+                context.startActivity(intent);
+                context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }

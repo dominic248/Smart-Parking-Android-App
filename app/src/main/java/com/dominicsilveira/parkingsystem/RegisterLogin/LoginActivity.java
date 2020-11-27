@@ -106,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -120,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     startActivity(intent);
                 }
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }

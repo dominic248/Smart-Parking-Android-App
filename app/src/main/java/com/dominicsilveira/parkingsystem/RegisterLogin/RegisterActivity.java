@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         db=FirebaseDatabase.getInstance();
     }
 
+
     private void attachListeners() {
         registerBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -118,6 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
             }
         });
     }
@@ -176,6 +178,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         }
                                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                                         finish();
+                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                                     }else{
                                         Toast.makeText(RegisterActivity.this,"Failed to add User Details!",Toast.LENGTH_SHORT).show();
                                     }
