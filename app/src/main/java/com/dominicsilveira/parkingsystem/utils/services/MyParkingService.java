@@ -106,7 +106,8 @@ public class MyParkingService extends Service {
                         intent,
                         Math.abs(bookedSlots.notificationID)-1,
                         calendar);
-            }else if(bookedSlots.hasPaid==0 && bookedSlots.readBookedNotification==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
+            }
+            if(bookedSlots.readBookedNotification==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
                 Calendar calendar = Calendar.getInstance();
                 Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
                 intent.putExtra("title", snapshot.getKey());
