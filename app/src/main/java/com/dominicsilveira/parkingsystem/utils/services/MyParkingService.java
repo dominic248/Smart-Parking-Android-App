@@ -102,6 +102,7 @@ public class MyParkingService extends Service {
                 intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
                 intent.putExtra("readID", snapshot.getKey());
                 intent.putExtra("when", "later");
+                calendar.add(Calendar.MINUTE, -5); //subtract 5 minutes
                 AlarmUtils.addAlarm(getApplicationContext(),
                         intent,
                         Math.abs(bookedSlots.notificationID)-1,
