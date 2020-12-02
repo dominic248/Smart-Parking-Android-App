@@ -156,7 +156,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
         bookingSlot.readNotification=0;
         bookingSlot.readBookedNotification=0;
-        bookingSlot.hasPaid=0;
+        bookingSlot.hasPaid=1;
     }
 
     private void attachListeners() {
@@ -364,8 +364,11 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         if(utils.isNetworkAvailable(getActivity().getApplication())){
             bookingSlot.notificationID=Math.abs((int)Calendar.getInstance().getTimeInMillis());
             final String key=db.getReference("BookedSlots").push().getKey();
-            bookingSlot.slotNo="None";
+//            bookingSlot.slotNo="None";
             if(parkingArea.availableSlots>0){
+                parkingArea.allocateSpace();
+                bookingSlot.slotNo=parkingArea.allocateSlot(bookingSlot.numberPlate);
+                db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                 db.getReference("BookedSlots").child(key).setValue(bookingSlot).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -376,7 +379,10 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                             invoiceGenerator.create();
                             invoiceGenerator.uploadFile(getActivity(),getActivity().getApplication());
                         }else{
-                            Toast.makeText(getActivity(),"Failed",Toast.LENGTH_SHORT).show();
+                            parkingArea.deallocateSpace();
+                            parkingArea.deallocateSlot(bookingSlot.slotNo);
+                            db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
+                            Toast.makeText(getActivity(),"Failed! Slots are full!",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
