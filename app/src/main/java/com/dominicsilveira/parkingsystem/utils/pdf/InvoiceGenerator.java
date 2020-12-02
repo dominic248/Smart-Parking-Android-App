@@ -255,8 +255,7 @@ public class InvoiceGenerator {
     }
 
     public void shareFile(Context context) {
-        final File localFile = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "invoice.pdf");
+        final File localFile = new File(context.getExternalCacheDir(), File.separator + "invoice.pdf");
         Intent share = new Intent(Intent.ACTION_SEND);
         if(localFile.exists()) {
             share.setType("application/pdf");

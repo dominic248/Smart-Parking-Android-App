@@ -232,9 +232,9 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                                         parkingArea.allocateSpace();
                                         db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea);
                                         String note ="Payment for ".concat(bookingSlot.placeID).concat(" and number ").concat(bookingSlot.numberPlate);
-//                                upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
-                                        Boolean upi=upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookParkingAreaActivity.this);
-//                                saveData();
+//                                        Boolean upi=upiPayment.payUsingUpi(String.valueOf(1), "micsilveira111@oksbi", "Michael", note,BookParkingAreaActivity.this);
+                                        Boolean upi=upiPayment.payUsingUpi(String.valueOf(bookingSlot.amount), upiInfo.upiId, upiInfo.upiName, note,BookParkingAreaActivity.this);
+//                                        saveData();
                                     }else{
                                         Toast.makeText(BookParkingAreaActivity.this,"Failed! Slots are full.",Toast.LENGTH_SHORT).show();
                                     }
