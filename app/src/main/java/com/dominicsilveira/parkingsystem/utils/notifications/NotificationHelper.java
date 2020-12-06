@@ -61,7 +61,7 @@ public class NotificationHelper extends ContextWrapper {
 
         Intent openIntent=new Intent(this, SplashScreen.class);
         openIntent.putExtra("ACTIVITY_NO",34);
-        openIntent.putExtra("ORDER_NO",title);
+        openIntent.putExtra("ORDER_ID",title);
         PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent intentAction = new Intent(this, NotificationActionReceiver.class);
