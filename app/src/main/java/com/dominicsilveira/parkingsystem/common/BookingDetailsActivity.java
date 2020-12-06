@@ -407,9 +407,9 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                                     AlarmUtils.cancelAlarm(BookingDetailsActivity.this,notifyIntent,bookingSlot.notificationID);
                                     Intent intent;
                                     if(userObj.userType==3)
-                                        intent = new Intent(BookingDetailsActivity.this, MainOwnerActivity.class);
-                                    else
                                         intent = new Intent(BookingDetailsActivity.this, MainNormalActivity.class);
+                                    else
+                                        intent = new Intent(BookingDetailsActivity.this, MainOwnerActivity.class);
                                     intent.putExtra("FRAGMENT_NO", 0);
                                     startActivity(intent);
                                     finish();

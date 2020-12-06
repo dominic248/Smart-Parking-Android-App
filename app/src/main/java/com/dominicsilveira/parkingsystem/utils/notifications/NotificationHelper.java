@@ -68,6 +68,7 @@ public class NotificationHelper extends ContextWrapper {
         intentAction.putExtra("action","MarkAsReadCheckout");
         intentAction.putExtra("readID",readID);
         intentAction.putExtra("notificationID",notificationID);
+        openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
@@ -86,12 +87,14 @@ public class NotificationHelper extends ContextWrapper {
         Intent openIntent=new Intent(this, SplashScreen.class);
         openIntent.putExtra("ACTIVITY_NO",34);
         openIntent.putExtra("ORDER_ID",title);
+        openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent intentAction = new Intent(this, NotificationActionReceiver.class);
         intentAction.putExtra("action","MarkAsReadBooking");
         intentAction.putExtra("readID",readID);
         intentAction.putExtra("notificationID",notificationID);
+        intentAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pIntentMarkAsRead = PendingIntent.getBroadcast(this,notificationID+2,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
