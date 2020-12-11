@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
@@ -51,6 +53,7 @@ public class NearByAreaActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CloseLocationAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    TextView empty_view;
 
     List<ClosestDistance> closestDistanceList=new ArrayList<ClosestDistance>();
 
@@ -95,6 +98,7 @@ public class NearByAreaActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
+        empty_view=findViewById(R.id.empty_view);
         recyclerView = (RecyclerView) findViewById(R.id.closest_location_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(NearByAreaActivity.this);
@@ -138,6 +142,13 @@ public class NearByAreaActivity extends AppCompatActivity {
                                     }
                                     mAdapter = new CloseLocationAdapter(closestDistanceList);
                                     recyclerView.setAdapter(mAdapter);
+                                    if(closestDistanceList.isEmpty()){
+                                        recyclerView.setVisibility(View.GONE);
+                                        empty_view.setVisibility(View.VISIBLE);
+                                    }else{
+                                        recyclerView.setVisibility(View.VISIBLE);
+                                        empty_view.setVisibility(View.GONE);
+                                    }
                                     Log.d(String.valueOf(NearByAreaActivity.this.getClass()),"recyclerview pass: "+String.valueOf(closestDistanceList));
                                 }
                                 @Override

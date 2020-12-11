@@ -45,12 +45,14 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     Activity context;
     List<ClosestDistance> closestDistances;
     List<ClosestDistance> arrayListFiltered;
+    List<ClosestDistance> filteredList;
     FirebaseAuth auth;
     FirebaseDatabase db;
 
     public CloseLocationAdapter(List<ClosestDistance> closestDistances){
         this.closestDistances = closestDistances;
         this.arrayListFiltered = new ArrayList<>(closestDistances);
+        this.filteredList = new ArrayList<>(closestDistances);
         Collections.sort(closestDistances, ClosestDistance.ClosestDistComparator);
         Log.d("distParkingArea", String.valueOf(closestDistances));
     }
@@ -202,12 +204,11 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
     private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<ClosestDistance> filteredList = new ArrayList<>();
+            filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(arrayListFiltered);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-
                 for (ClosestDistance item : arrayListFiltered) {
                     if (item.parkingArea.name.toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
@@ -217,14 +218,14 @@ public class CloseLocationAdapter extends RecyclerView.Adapter<CloseLocationAdap
 
             FilterResults results = new FilterResults();
             results.values = filteredList;
-
             return results;
         }
 
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults results) {
             closestDistances.clear();
-            closestDistances.addAll((Collection<? extends ClosestDistance>) results.values);
+            try{closestDistances.addAll((Collection<? extends ClosestDistance>) results.values);}
+            catch (Exception e){e.printStackTrace();}
             notifyDataSetChanged();
         }
     };

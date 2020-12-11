@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dominicsilveira.parkingsystem.R;
@@ -29,6 +31,7 @@ public class UserHistoryActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseDatabase db;
     BasicUtils utils=new BasicUtils();
+    TextView empty_view;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -75,6 +78,7 @@ public class UserHistoryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        empty_view=findViewById(R.id.empty_view);
         recyclerView = (RecyclerView) findViewById(R.id.user_history_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(UserHistoryActivity.this);
@@ -93,6 +97,13 @@ public class UserHistoryActivity extends AppCompatActivity {
                         }
                         mAdapter = new BookingHistoryAdapter(bookedSlotKeyList);
                         recyclerView.setAdapter(mAdapter);
+                        if(bookedSlotKeyList.isEmpty()){
+                            recyclerView.setVisibility(View.GONE);
+                            empty_view.setVisibility(View.VISIBLE);
+                        }else{
+                            recyclerView.setVisibility(View.VISIBLE);
+                            empty_view.setVisibility(View.GONE);
+                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
