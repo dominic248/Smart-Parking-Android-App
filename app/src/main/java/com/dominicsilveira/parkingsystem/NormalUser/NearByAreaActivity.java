@@ -141,6 +141,21 @@ public class NearByAreaActivity extends AppCompatActivity {
                                         closestDistanceList.add(closestDistance);
                                     }
                                     mAdapter = new CloseLocationAdapter(closestDistanceList);
+                                    mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                                        @Override public void onChanged() {
+                                            super.onChanged();
+                                            if(mAdapter.getItemCount()>0){
+                                                recyclerView.setVisibility(View.VISIBLE);
+                                                empty_view.setVisibility(View.GONE);
+                                                Log.i("FilterSearch","not");
+                                            }else{
+                                                recyclerView.setVisibility(View.GONE);
+                                                empty_view.setVisibility(View.VISIBLE);
+                                                Log.i("FilterSearch","empty");
+                                            }
+                                            // access adapter's dataset size here or in that method
+                                        }
+                                    });
                                     recyclerView.setAdapter(mAdapter);
                                     if(closestDistanceList.isEmpty()){
                                         recyclerView.setVisibility(View.GONE);
