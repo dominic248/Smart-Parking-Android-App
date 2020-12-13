@@ -282,7 +282,7 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:text="Exit Date and Time"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/grey_80" />
@@ -350,6 +350,107 @@
 
                             <TextView
                                 android:id="@+id/endTimeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_10"  />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_middle"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="@dimen/spacing_middle"
+                            android:layout_margin="@dimen/spacing_medium"
+                            android:src="@drawable/shape_circle"
+                            app:tint="@color/red_400" />
+
+                        <View
+                            android:layout_width="@dimen/spacing_middle"
+                            android:layout_height="0dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Check-out Date and Time"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                            android:textColor="@color/grey_80" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/checkoutDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_large"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/checkoutDateText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                                android:textColor="@color/grey_80" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/checkoutTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:gravity="center_vertical"
+                            android:minHeight="@dimen/spacing_xxlarge"
+                            android:orientation="horizontal"
+                            android:paddingRight="@dimen/spacing_small">
+
+                            <ImageButton
+                                android:layout_width="@dimen/spacing_xmlarge"
+                                android:layout_height="@dimen/spacing_xmlarge"
+                                android:background="@android:color/transparent"
+                                android:tint="@color/grey_40"
+                                app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+                            <View
+                                android:layout_width="@dimen/spacing_large"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/checkoutTimeText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=""

@@ -80,7 +80,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
         holder.slotID.setText(bookedSlotKey.key);
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy HH:mm a");
         holder.startDate.setText(simpleDateFormat.format(bookedSlot.startTime));
-        holder.endDate.setText(simpleDateFormat.format(bookedSlot.endTime));
+        holder.endDate.setText(simpleDateFormat.format(bookedSlot.checkoutTime));
         String hasPaid="Paid: ".concat((bookedSlot.hasPaid==1)?"Yes":"No");
         holder.hasPaid.setText(hasPaid);
         holder.userHistoryCard.setOnClickListener(new View.OnClickListener() {

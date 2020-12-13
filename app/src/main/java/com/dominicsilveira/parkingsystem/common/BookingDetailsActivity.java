@@ -51,12 +51,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class BookingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView placeText,wheelerText,amountText,endDateText,endTimeText,startDateText,startTimeText,numberPlateSpinner;
+    TextView placeText,wheelerText,amountText,checkoutDateText,checkoutTimeText,endDateText,endTimeText,startDateText,startTimeText,numberPlateSpinner;
     FloatingActionButton checkoutBtn,payBtn;
 
     SupportMapFragment supportMapFragment;
@@ -136,6 +137,8 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
         endTimeText = findViewById(R.id.endTimeText);
         startDateText = findViewById(R.id.startDateText);
         startTimeText = findViewById(R.id.startTimeText);
+        checkoutDateText = findViewById(R.id.checkoutDateText);
+        checkoutTimeText = findViewById(R.id.checkoutTimeText);
         checkoutBtn = findViewById(R.id.checkoutBtn);
         payBtn = findViewById(R.id.payBtn);
         wheelerText = findViewById(R.id.wheelerText);
@@ -151,9 +154,11 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
                 startTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
                 endTimeText.setText(simpleDateFormat.format(bookingSlot.endTime));
+                checkoutTimeText.setText(simpleDateFormat.format(bookingSlot.checkoutTime));
                 simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
                 startDateText.setText(simpleDateFormat.format(bookingSlot.startTime));
                 endDateText.setText(simpleDateFormat.format(bookingSlot.endTime));
+                checkoutDateText.setText(simpleDateFormat.format(bookingSlot.checkoutTime));
                 numberPlateSpinner.setText(bookingSlot.numberPlate);
                 wheelerText.setText(String.valueOf(bookingSlot.wheelerType));
                 if(bookingSlot.hasPaid==0){
@@ -398,7 +403,9 @@ public class BookingDetailsActivity extends AppCompatActivity implements View.On
     }
 
     private void checkoutData() {
+        Calendar calendar=new GregorianCalendar();
         bookingSlot.checkout=1;
+        bookingSlot.checkoutTime=calendar.getTime();
         parkingArea.deallocateSpace();
         parkingArea.deallocateSlot(bookingSlot.slotNo);
         db.getReference("ParkingAreas").child(bookingSlot.placeID).setValue(parkingArea).addOnCompleteListener(new OnCompleteListener<Void>() {

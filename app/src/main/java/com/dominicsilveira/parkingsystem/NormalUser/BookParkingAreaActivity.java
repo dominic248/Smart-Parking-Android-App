@@ -163,7 +163,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
         mNotificationHelper=new NotificationHelper(this);
 
         calendar=new GregorianCalendar();
-        bookingSlot.startTime=bookingSlot.endTime=calendar.getTime();
+        bookingSlot.startTime=bookingSlot.endTime=bookingSlot.checkoutTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
         endTimeText.setText(simpleDateFormat.format(bookingSlot.endTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
@@ -336,7 +336,7 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 calendar.set(Calendar.DAY_OF_MONTH,date);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
                 button.setText(simpleDateFormat.format(calendar.getTime()));
-                bookingSlot.endTime = calendar.getTime();
+                bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                 calcRefreshAmount();
             }
         };
@@ -353,13 +353,13 @@ public class BookParkingAreaActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE,minute);
                 calendar.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-                bookingSlot.endTime = calendar.getTime();
+                bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                 if(bookingSlot.endTime.after(bookingSlot.startTime)){
                     button.setText(simpleDateFormat.format(calendar.getTime()));
-                    bookingSlot.endTime = calendar.getTime();
+                    bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                     calcRefreshAmount();
                 }else{
-                    bookingSlot.endTime = bookingSlot.startTime;
+                    bookingSlot.endTime = bookingSlot.checkoutTime = bookingSlot.startTime;
                     Toast.makeText(BookParkingAreaActivity.this,
                             "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }

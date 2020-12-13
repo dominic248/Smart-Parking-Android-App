@@ -149,7 +149,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         numberPlateSpinner = root.findViewById(R.id.vehicleSelect);
 
         calendar=new GregorianCalendar();
-        bookingSlot.startTime=bookingSlot.endTime=calendar.getTime();
+        bookingSlot.startTime=bookingSlot.endTime=bookingSlot.checkoutTime=calendar.getTime();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
         endTimeText.setText(simpleDateFormat.format(bookingSlot.startTime));
         simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
@@ -291,7 +291,6 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
         numberPlateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(getActivity(), "Spinner", Toast.LENGTH_SHORT).show();
                 if(position!=0){
                     bookingSlot.numberPlate=numberPlateNumber.get(position);
                     bookingSlot.wheelerType=numberPlateWheeler.get(position);
@@ -327,7 +326,7 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 calendar.set(Calendar.DAY_OF_MONTH,date);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-yyyy");
                 button.setText(simpleDateFormat.format(calendar.getTime()));
-                bookingSlot.endTime = calendar.getTime();
+                bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                 calcRefreshAmount();
             }
         };
@@ -344,13 +343,13 @@ public class AddFragment extends Fragment implements NumberPlatePopUp.NumberPlat
                 calendar.set(Calendar.MINUTE,minute);
                 calendar.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("hh:mm a");
-                bookingSlot.endTime = calendar.getTime();
+                bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                 if(bookingSlot.endTime.after(bookingSlot.startTime)){
                     button.setText(simpleDateFormat.format(calendar.getTime()));
-                    bookingSlot.endTime = calendar.getTime();
+                    bookingSlot.endTime = bookingSlot.checkoutTime = calendar.getTime();
                     calcRefreshAmount();
                 }else{
-                    bookingSlot.endTime = bookingSlot.startTime;
+                    bookingSlot.endTime = bookingSlot.checkoutTime = bookingSlot.startTime;
                     Toast.makeText(getActivity(),
                             "Please select a time after Present time!", Toast.LENGTH_SHORT).show();
                 }
