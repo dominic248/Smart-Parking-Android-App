@@ -20,6 +20,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationCompat.Builder nb;
         if(Objects.equals(intent.getStringExtra("when"), "now")){
             nb= notificationHelper.setNowChannelNotification(intent.getStringExtra("title"),intent.getStringExtra("message"),intent.getStringExtra("readID"),intent.getIntExtra("notificationID",1));
+        }else if(Objects.equals(intent.getIntExtra("admin",0), 1)){
+            nb= notificationHelper.setAdminLaterChannelNotification(intent.getStringExtra("title"),intent.getStringExtra("message"),intent.getStringExtra("readID"),intent.getIntExtra("notificationID",1));
         }else{
             nb= notificationHelper.setLaterChannelNotification(intent.getStringExtra("title"),intent.getStringExtra("message"),intent.getStringExtra("readID"),intent.getIntExtra("notificationID",1));
         }

@@ -81,6 +81,23 @@ public class NotificationHelper extends ContextWrapper {
                 .addAction(0, "Mark As Read", pIntentMarkAsRead);
     }
 
+    public NotificationCompat.Builder setAdminLaterChannelNotification(String title, String message,String readID,int notificationID){
+        Log.i("NotificationSet",title+":"+message);
+
+        Intent openIntent=new Intent(this, SplashScreen.class);
+        openIntent.putExtra("ACTIVITY_NO",34);
+        openIntent.putExtra("ORDER_ID",title);
+        PendingIntent openPendingIntent=PendingIntent.getActivity(this,notificationID+1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return new NotificationCompat.Builder(getApplicationContext(),getApplicationContext().getString(R.string.notification_channel_id_1))
+                .setContentTitle("Order ID: " + title)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.ic_baseline_directions_car_24)
+                .setAutoCancel(true)
+                .setGroup(getApplicationContext().getString(R.string.notification_group_id_1))
+                .setContentIntent(openPendingIntent);
+    }
+
     public NotificationCompat.Builder setNowChannelNotification(String title, String message,String readID,int notificationID){
         Log.i("NotificationSet",title+":"+message);
 

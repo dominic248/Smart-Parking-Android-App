@@ -144,6 +144,7 @@ public class MyParkingService extends Service {
                 intent.putExtra("message", "User exceeded time limit!");
                 intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
                 intent.putExtra("readID", snapshot.getKey());
+                intent.putExtra("admin", 1);
                 intent.putExtra("when", "later");
                 AlarmUtils.addAlarm(getApplicationContext(),
                         intent,
