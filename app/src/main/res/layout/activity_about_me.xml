@@ -281,7 +281,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Marketing"
+                                android:text="Documentation"
                                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                                 android:textColor="@color/grey_60"
                                 app:fontFamily="sans-serif-light" />
