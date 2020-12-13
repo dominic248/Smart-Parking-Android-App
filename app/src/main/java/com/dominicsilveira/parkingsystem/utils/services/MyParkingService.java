@@ -14,18 +14,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
+import com.dominicsilveira.parkingsystem.OwnerUser.AddPositionActivity;
+import com.dominicsilveira.parkingsystem.OwnerUser.MainOwnerActivity;
+import com.dominicsilveira.parkingsystem.classes.ParkingArea;
+import com.dominicsilveira.parkingsystem.common.BookingDetailsActivity;
 import com.dominicsilveira.parkingsystem.utils.notifications.AlarmUtils;
 import com.dominicsilveira.parkingsystem.utils.AppConstants;
 import com.dominicsilveira.parkingsystem.R;
 import com.dominicsilveira.parkingsystem.classes.BookedSlots;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationHelper;
 import com.dominicsilveira.parkingsystem.utils.notifications.NotificationReceiver;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,6 +44,8 @@ public class MyParkingService extends Service {
 
     FirebaseAuth auth;
     FirebaseDatabase db;
+    boolean foundArea=false;
+
     @Override
     public IBinder onBind(Intent intent) {
         Toast.makeText(MyParkingService.this,"bind",Toast.LENGTH_SHORT).show();
@@ -46,27 +58,69 @@ public class MyParkingService extends Service {
         Log.i(String.valueOf(this.getClass()),"Service onStartCommand");
         auth=FirebaseAuth.getInstance();
         db=FirebaseDatabase.getInstance();
+        foundArea=false;
 
+        if(auth.getCurrentUser()!=null){
+            db.getReference().child("BookedSlots")
+                    .addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                            updateBookedSlots(snapshot,bookedSlots);
+                        }
+                        @RequiresApi(api = Build.VERSION_CODES.M)
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
+                            updateBookedSlots(snapshot,bookedSlots);
+                            notificationUpdate();
+                        }
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {}
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+
+            db.getReference().child("ParkingAreas")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
+                                if(parkingArea.userID.equals(auth.getCurrentUser().getUid())){
+                                    foundArea=true;
+                                    setAdminNotification(dataSnapshot.getKey());
+                                    break;
+                                }
+                                Log.d(String.valueOf(this.getClass()),"Load parking Area: "+String.valueOf(parkingArea));
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {}
+                    });
+        }
+        return START_STICKY;
+    }
+
+    private void setAdminNotification(final String parkingArea) {
         db.getReference().child("BookedSlots")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
-                        updateBookedSlots(snapshot,bookedSlots);
+                        setExceedAlarm(snapshot,bookedSlots,parkingArea);
                     }
 
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
-                        updateBookedSlots(snapshot,bookedSlots);
-                        NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
-                        int notificationCount=notificationHelper.countNotificationGroup(getApplicationContext().getString(R.string.notification_group_id_1));
-                        if(notificationCount<=1){
-                            notificationHelper.cancelNotification(AppConstants.NOTIFICATION_GROUP_REQUEST_CODE);
-                        }
-                        Log.i(String.valueOf(this.getClass()),"Notifications Count: ".concat(String.valueOf(notificationCount)));
-
+                        setExceedAlarm(snapshot,bookedSlots,parkingArea);
+                        notificationUpdate();
                     }
 
                     @Override
@@ -78,7 +132,28 @@ public class MyParkingService extends Service {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {}
                 });
-        return START_STICKY;
+    }
+
+    private void setExceedAlarm(DataSnapshot snapshot, BookedSlots bookedSlots,String parkingArea) {
+        if(auth.getCurrentUser()!=null){
+            if(bookedSlots.placeID.equals(parkingArea) && bookedSlots.checkout==0 && bookedSlots.hasPaid==1) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(bookedSlots.endTime);
+                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                intent.putExtra("title", snapshot.getKey());
+                intent.putExtra("message", "User exceeded time limit!");
+                intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
+                intent.putExtra("readID", snapshot.getKey());
+                intent.putExtra("when", "later");
+                AlarmUtils.addAlarm(getApplicationContext(),
+                        intent,
+                        Math.abs(bookedSlots.notificationID)-1,
+                        calendar);
+            }else if(bookedSlots.placeID.equals(parkingArea) && bookedSlots.checkout==1 && bookedSlots.hasPaid==1){
+                Intent notifyIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                AlarmUtils.cancelAlarm(getApplicationContext(),notifyIntent,bookedSlots.notificationID);
+            }
+        }
     }
 
     private void updateBookedSlots(DataSnapshot snapshot,BookedSlots bookedSlots) {
@@ -108,7 +183,7 @@ public class MyParkingService extends Service {
                         Math.abs(bookedSlots.notificationID)-1,
                         calendar);
             }
-            if(bookedSlots.readBookedNotification==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
+            if(bookedSlots.readBookedNotification==0 && bookedSlots.checkout==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
                 Calendar calendar = Calendar.getInstance();
                 Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
                 intent.putExtra("title", snapshot.getKey());
@@ -125,6 +200,16 @@ public class MyParkingService extends Service {
                 }
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void notificationUpdate() {
+        NotificationHelper notificationHelper=new NotificationHelper(getApplicationContext());
+        int notificationCount=notificationHelper.countNotificationGroup(getApplicationContext().getString(R.string.notification_group_id_1));
+        if(notificationCount<=1){
+            notificationHelper.cancelNotification(AppConstants.NOTIFICATION_GROUP_REQUEST_CODE);
+        }
+        Log.i(String.valueOf(this.getClass()),"Notifications Count: ".concat(String.valueOf(notificationCount)));
     }
 
     @Override

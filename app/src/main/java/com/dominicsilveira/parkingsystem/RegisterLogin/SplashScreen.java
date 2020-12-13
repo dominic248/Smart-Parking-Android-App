@@ -121,7 +121,7 @@ public class SplashScreen extends AppCompatActivity {
                                 intent=new Intent(SplashScreen.this, NearByAreaActivity.class);
                             }else if(activityInt==33 && userObj.userType==3){
                                 intent=new Intent(SplashScreen.this, UserHistoryActivity.class);
-                            }else if(activityInt==34 && userObj.userType==3){
+                            }else if(activityInt==34){
                                 intent=new Intent(SplashScreen.this, BookingDetailsActivity.class);
                                 intent.putExtra("UUID",parentIntent.getStringExtra("ORDER_ID"));
                             }else if(userObj.userType==2){

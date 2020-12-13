@@ -83,6 +83,7 @@ public class MainOwnerActivity extends AppCompatActivity {
                             ParkingArea parkingArea = dataSnapshot.getValue(ParkingArea.class);
                             if(parkingArea.userID.equals(auth.getCurrentUser().getUid())){
                                 found=1;
+                                break;
                             }
                             Log.d(String.valueOf(MainOwnerActivity.this.getClass()),"Load parking Area: "+String.valueOf(parkingArea));
 
