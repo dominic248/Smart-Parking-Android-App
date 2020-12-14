@@ -63,10 +63,12 @@ public class MyParkingService extends Service {
         if(auth.getCurrentUser()!=null){
             db.getReference().child("BookedSlots")
                     .addChildEventListener(new ChildEventListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                             BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
                             updateBookedSlots(snapshot,bookedSlots);
+                            notificationUpdate();
                         }
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
@@ -109,10 +111,12 @@ public class MyParkingService extends Service {
     private void setAdminNotification(final String parkingArea) {
         db.getReference().child("BookedSlots")
                 .addChildEventListener(new ChildEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         BookedSlots bookedSlots = snapshot.getValue(BookedSlots.class);
                         setExceedAlarm(snapshot,bookedSlots,parkingArea);
+                        notificationUpdate();
                     }
 
                     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -150,7 +154,9 @@ public class MyParkingService extends Service {
                         intent,
                         Math.abs(bookedSlots.notificationID)-1,
                         calendar);
+                Log.i("NotificationTrigger","Add Admin alarm");
             }else if(bookedSlots.placeID.equals(parkingArea) && bookedSlots.checkout==1 && bookedSlots.hasPaid==1){
+                Log.i("NotificationTrigger","Cancel Admin alarm");
                 Intent notifyIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
                 AlarmUtils.cancelAlarm(getApplicationContext(),notifyIntent,bookedSlots.notificationID);
             }
@@ -183,6 +189,7 @@ public class MyParkingService extends Service {
                         intent,
                         Math.abs(bookedSlots.notificationID)-1,
                         calendar);
+                Log.i("NotificationTrigger","Add user checkout alarm");
             }
             if(bookedSlots.readBookedNotification==0 && bookedSlots.checkout==0 && bookedSlots.userID.equals(auth.getCurrentUser().getUid())){
                 Calendar calendar = Calendar.getInstance();
@@ -192,13 +199,18 @@ public class MyParkingService extends Service {
                 intent.putExtra("notificationID", Math.abs(bookedSlots.notificationID));
                 intent.putExtra("readID", snapshot.getKey());
                 intent.putExtra("when", "now");
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), Math.abs(bookedSlots.notificationID)-1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
+                AlarmUtils.addAlarm(getApplicationContext(),
+                        intent,
+                        Math.abs(bookedSlots.notificationID)-1,
+                        calendar);
+//                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), Math.abs(bookedSlots.notificationID)-1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//                } else {
+//                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//                }
+                Log.i("NotificationTrigger","Add user confirm alarm");
             }
         }
     }

@@ -112,6 +112,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     Toast.makeText(ChangePasswordActivity.this, "Password changed", Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                                                 } else {
                                                     Toast.makeText(ChangePasswordActivity.this, "Password not changed", Toast.LENGTH_SHORT).show();
                                                 }

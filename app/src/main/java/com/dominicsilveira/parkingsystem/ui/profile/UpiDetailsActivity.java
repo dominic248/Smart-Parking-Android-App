@@ -123,14 +123,8 @@ public class UpiDetailsActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(UpiDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                Intent intent;
-                                if(userObj.userType==2)
-                                    intent=new Intent(UpiDetailsActivity.this, MainOwnerActivity.class);
-                                else
-                                    intent=new Intent(UpiDetailsActivity.this, MainNormalActivity.class);
-                                intent.putExtra("FRAGMENT_NO", 2);
-                                startActivity(intent);
                                 finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                             } else {
                                 Toast.makeText(UpiDetailsActivity.this, "Failed to add UPI details", Toast.LENGTH_SHORT).show();
                             }

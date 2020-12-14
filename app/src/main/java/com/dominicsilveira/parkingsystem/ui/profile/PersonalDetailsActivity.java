@@ -121,14 +121,8 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(PersonalDetailsActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                Intent intent;
-                                if(userObj.userType==2)
-                                    intent=new Intent(PersonalDetailsActivity.this, MainOwnerActivity.class);
-                                else
-                                    intent=new Intent(PersonalDetailsActivity.this, MainNormalActivity.class);
-                                intent.putExtra("FRAGMENT_NO", 2);
-                                startActivity(intent);
                                 finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);  //slide from left to right
                             } else {
                                 Toast.makeText(PersonalDetailsActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                             }
