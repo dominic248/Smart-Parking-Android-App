@@ -1,10 +1,8 @@
 # Smart Parking
-https://youtu.be/eC41zpoCmeI
-Android Studio App with Firebase, for parking lot owner and users. Get users location and find nearest parking areas, book area & pay via UPI, get Notifications from background service, view history. Parking lot owners can register parking area on Maps, add/checkout users from parking area, view history.
-
 ---
+**Tech. Stack:** Java, Android Studio, Firebase
 
-## Contributors:
-- [Dominic Silveira]( https://github.com/dms24081999 ) (Senior Developer)
-- [Joel Monis]( https://github.com/JoelMonis ) (Associate Developer)
-- [Lenin Bardeskar]( https://github.com/lenin-bb ) (Documentation Developer)
+**Demo:** https://youtu.be/eC41zpoCmeI
+
+- Users can find nearest parking areas and can scan the plate number and pay via UPI to book a parking area slot at the given locations and get notifications before expiry time to check-out and view history
+- Parking lot owners can register parking area on Maps, add/check-out users and view history
