@@ -306,7 +306,7 @@ public class ScanFragment extends Fragment implements NumberPlatePopUp.NumberPla
                 MultipartBody.Part body = MultipartBody.Part.createFormData("upload",
                         file.getName(), reqFile);
                 RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload");
-                Call<ResponseBody> req = apiService.postImage(body, name,"Token 0bd1219a5d0dfc9c5a4a633af1e3e9dd74fb882b");
+                Call<ResponseBody> req = apiService.postImage(body, name,"Token ".concat(getActivity().getApplicationContext().getString(R.string.platerecognizer_api_key)));
                 req.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

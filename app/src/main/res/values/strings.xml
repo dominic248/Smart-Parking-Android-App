@@ -8,7 +8,8 @@
     <!--    https://parking-system-v1.firebaseapp.com/__/auth/action?mode=resetPassword&oobCode=sPNW-vWnGHwN3-ILdtOo-blKWVllqnIX7b-Rf6deJOYAAAF184Vgvw&apiKey=AIzaSyDm3T3QPk_K8ViBY8m4PhPJzuVTdMsueas&lang=en-->
 
 
-    <string name="map_key"><Google maps API-Key></string>
+    <string name="map_key">Google_maps_API-Key</string>
+    <string name="platerecognizer_api_key">platerecognizer_api_key</string>
 
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_main_owner">MainActivity</string>
