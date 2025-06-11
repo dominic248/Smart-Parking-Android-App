@@ -1,7 +1,13 @@
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=dominic248/smart-parking-android-app@github)](https://gitads.dev/v1/ad-track?source=dominic248/smart-parking-android-app@github)
+
+
 # Smart Parking
+
 ---
 **Tech. Stack:** Java, Android Studio, Firebase
 <!-- GitAds-Verify: KFM96IDJTHAIM5ZNRBS7VU1Y9B4RT1KL -->
+
 - Users can find nearest parking areas and can scan the plate number and pay via UPI to book a parking area slot at the given locations and get notifications before expiry time to check-out and view history
 - Parking lot owners can register parking area on Maps, add/check-out users and view history
 
