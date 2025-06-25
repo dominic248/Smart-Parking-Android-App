@@ -1,3 +1,6 @@
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=dominic248/smart-parking-android-app@github)](https://gitads.dev/v1/ad-track?source=dominic248/smart-parking-android-app@github)
+
+
 # Smart Parking
 
 ---
